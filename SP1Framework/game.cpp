@@ -15,12 +15,9 @@ double  g_dElapsedTime;
 double  g_dDeltaTime;
 bool    g_abKeyPressed[K_COUNT];
 char level1[125][125];
-<<<<<<< HEAD
 double startgame = 3.0;
-=======
 char level2[125][125];
 int level = 0;
->>>>>>> 88b8bfa8ff8fe557a9557f2e972c87602561c595
 
 // Game specific variables here
 SGameChar   g_sChar;
@@ -291,7 +288,7 @@ void renderSplashScreen()  // renders the splash screen
 
 void renderGame()
 {
-	renderBronzeMap(); // renders the map to the buffer first
+	renderTutorialMap(); // renders the map to the buffer first
 	renderCharacter();   // renders the character into the buffer
 }
 

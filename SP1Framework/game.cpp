@@ -15,6 +15,7 @@ double  g_dElapsedTime;
 double  g_dDeltaTime;
 bool    g_abKeyPressed[K_COUNT];
 char level1[125][125];
+double startgame = 3.0;
 
 // Game specific variables here
 SGameChar   g_sChar;
@@ -26,7 +27,7 @@ EGAMESTATES g_eGameState = S_SPLASHSCREEN;
 double  g_dBounceTime; // this is to prevent key bouncing, so we won't trigger keypresses more than once
 
 					   // Console object
-Console g_Console(300, 50, "SP1 Framework");
+Console g_Console(300, 75, "SP1 Framework");
 
 //--------------------------------------------------------------
 // Purpose  : Initialisation function
@@ -156,7 +157,7 @@ void render()
 
 void splashScreenWait()    // waits for time to pass in splash screen
 {
-	if (g_dElapsedTime > 3.0) // wait for 3 seconds to switch to game mode, else do nothing
+	if (g_dElapsedTime > startgame) // wait for 3 seconds to switch to game mode, else do nothing
 		g_eGameState = S_GAME;
 }
 

@@ -1,0 +1,13 @@
+
+.vs/SP1Framework/v14/.suo
+*.ilk
+*.pdb
+/SP1Framework/Debug
+*.opendb
+/Debug
+*.db
+README.md
+SP1Framework/SP1Framework.vcxproj
+SP1Framework/SP1Framework.vcxproj.filters
+SP1Framework/game.cpp~RF2ad507ab.TMP
+SP1Framework/game.cpp~RF2ad455df.TMP

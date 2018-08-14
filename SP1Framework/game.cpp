@@ -14,7 +14,8 @@ using namespace std;
 double  g_dElapsedTime;
 double  g_dDeltaTime;
 bool    g_abKeyPressed[K_COUNT];
-char level1[125][125];
+char    level1[125][125];
+double startgame = 3.0;
 
 // Game specific variables here
 SGameChar   g_sChar;
@@ -156,7 +157,7 @@ void render()
 
 void splashScreenWait()    // waits for time to pass in splash screen
 {
-	if (g_dElapsedTime > 3.0) // wait for 3 seconds to switch to game mode, else do nothing
+	if (g_dElapsedTime > startgame) // wait for 3 seconds to switch to game mode, else do nothing
 		g_eGameState = S_GAME;
 }
 
@@ -164,9 +165,28 @@ void gameplay()            // gameplay logic
 {
 	processUserInput(); // checks if you should change states or do something else with the game, e.g. pause, exit
 	moveCharacter();    // moves the character, collision detection, physics, etc
-						// sound can be played here too.
+	Level1AIMovement(); //AI movement 
+	                   // sound can be played here too.
 }
+void Level1AIMovement()
+{	
+	bool Foward = true;
+	while (g_sLevel1GuardCells.m_cLocation.X < 15 && g_dElapsedTime > startgame && Foward == true)
+	{
+		g_sLevel1GuardCells.m_cLocation.X++;
+		startgame += 0.25;
+	}
 
+	Foward = false;
+
+	while (g_sLevel1GuardCells.m_cLocation.X > 2 && g_dElapsedTime > startgame && Foward == false)
+	{
+		g_sLevel1GuardCells.m_cLocation.X--;
+		startgame += 0.25;
+	}
+
+	
+}
 void moveCharacter()
 {
 	bool bSomethingHappened = false;

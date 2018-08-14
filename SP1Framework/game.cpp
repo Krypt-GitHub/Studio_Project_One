@@ -17,6 +17,10 @@ bool    g_abKeyPressed[K_COUNT];
 
 // Game specific variables here
 SGameChar   g_sChar;
+SGameChar   g_sLevel1GuardCells;
+SGameChar   g_sLevel1GuardCafe;
+SGameChar   g_sLevel1GuardField1;
+SGameChar   g_sLevel1GuardField2;
 EGAMESTATES g_eGameState = S_SPLASHSCREEN;
 double  g_dBounceTime; // this is to prevent key bouncing, so we won't trigger keypresses more than once
 
@@ -42,6 +46,19 @@ void init(void)
 	g_sChar.m_cLocation.X = 6; //g_Console.getConsoleSize().X / 2;
 	g_sChar.m_cLocation.Y = 4; //g_Console.getConsoleSize().Y / 2;
 	g_sChar.m_bActive = true;
+	g_sLevel1GuardCells.m_cLocation.X = 3; //g_Console.getConsoleSize().X / 2;
+	g_sLevel1GuardCells.m_cLocation.Y = 12; //g_Console.getConsoleSize().Y / 2;
+	g_sLevel1GuardCells.m_bActive = true;
+	g_sLevel1GuardCafe.m_cLocation.X = 40; //g_Console.getConsoleSize().X / 2;
+	g_sLevel1GuardCafe.m_cLocation.Y = 12; //g_Console.getConsoleSize().Y / 2;
+	g_sLevel1GuardCafe.m_bActive = true;
+	g_sLevel1GuardField1.m_cLocation.X = 105; //g_Console.getConsoleSize().X / 2;
+	g_sLevel1GuardField1.m_cLocation.Y = 15; //g_Console.getConsoleSize().Y / 2;
+	g_sLevel1GuardField1.m_bActive = true;
+	g_sLevel1GuardField2.m_cLocation.X = 115; //g_Console.getConsoleSize().X / 2;
+	g_sLevel1GuardField2.m_cLocation.Y = 5; //g_Console.getConsoleSize().Y / 2;
+	g_sLevel1GuardField2.m_bActive = true;
+
 	// sets the width, height and the font name to use in the console
 	g_Console.setConsoleFont(0, 16, L"Consolas");
 }
@@ -397,6 +414,10 @@ void renderCharacter()
 {
 	// Draw the location of the character
 	g_Console.writeToBuffer(g_sChar.m_cLocation, (char)1, 0x0C);
+	g_Console.writeToBuffer(g_sLevel1GuardCells.m_cLocation, (char)2, 0X0F);
+	g_Console.writeToBuffer(g_sLevel1GuardCafe.m_cLocation, (char)2, 0X0F);
+	g_Console.writeToBuffer(g_sLevel1GuardField1.m_cLocation, (char)2, 0X0F);
+	g_Console.writeToBuffer(g_sLevel1GuardField2.m_cLocation, (char)2, 0X0F);
 }
 
 void characterInteraction()

@@ -14,11 +14,22 @@ using namespace std;
 double  g_dElapsedTime;
 double  g_dDeltaTime;
 bool    g_abKeyPressed[K_COUNT];
+<<<<<<< HEAD
 char    level1[125][125];
 double startgame = 3.0;
+=======
+char level1[125][125];
+<<<<<<< HEAD
+double startgame = 3.0;
+=======
+char level2[125][125];
+int level = 0;
+>>>>>>> 88b8bfa8ff8fe557a9557f2e972c87602561c595
+>>>>>>> c95ba77e3f6760b79ba456f8623716325ddc82ca
 
 // Game specific variables here
 SGameChar   g_sChar;
+SGameChar   g_sLevel2Char;
 SGameChar   g_sLevel1GuardCells;
 SGameChar   g_sLevel1GuardCafe;
 SGameChar   g_sLevel1GuardField1;
@@ -27,7 +38,7 @@ EGAMESTATES g_eGameState = S_SPLASHSCREEN;
 double  g_dBounceTime; // this is to prevent key bouncing, so we won't trigger keypresses more than once
 
 					   // Console object
-Console g_Console(300, 50, "SP1 Framework");
+Console g_Console(300, 75, "SP1 Framework");
 
 //--------------------------------------------------------------
 // Purpose  : Initialisation function
@@ -47,19 +58,17 @@ void init(void)
 
 	g_sChar.m_cLocation.X = 6; //g_Console.getConsoleSize().X / 2;
 	g_sChar.m_cLocation.Y = 4; //g_Console.getConsoleSize().Y / 2;
-	g_sChar.m_bActive = true;
+	g_sLevel2Char.m_cLocation.X = 46; //g_Console.getConsoleSize().X / 2;
+	g_sLevel2Char.m_cLocation.Y = 3; //g_Console.getConsoleSize().Y / 2;
 	g_sLevel1GuardCells.m_cLocation.X = 3; //g_Console.getConsoleSize().X / 2;
 	g_sLevel1GuardCells.m_cLocation.Y = 12; //g_Console.getConsoleSize().Y / 2;
-	g_sLevel1GuardCells.m_bActive = true;
 	g_sLevel1GuardCafe.m_cLocation.X = 40; //g_Console.getConsoleSize().X / 2;
 	g_sLevel1GuardCafe.m_cLocation.Y = 12; //g_Console.getConsoleSize().Y / 2;
-	g_sLevel1GuardCafe.m_bActive = true;
 	g_sLevel1GuardField1.m_cLocation.X = 105; //g_Console.getConsoleSize().X / 2;
 	g_sLevel1GuardField1.m_cLocation.Y = 15; //g_Console.getConsoleSize().Y / 2;
-	g_sLevel1GuardField1.m_bActive = true;
 	g_sLevel1GuardField2.m_cLocation.X = 115; //g_Console.getConsoleSize().X / 2;
 	g_sLevel1GuardField2.m_cLocation.Y = 5; //g_Console.getConsoleSize().Y / 2;
-	g_sLevel1GuardField2.m_bActive = true;
+
 
 	// sets the width, height and the font name to use in the console
 	g_Console.setConsoleFont(0, 16, L"Consolas");
@@ -195,6 +204,7 @@ void moveCharacter()
 
 	// Updating the location of the character based on the key press
 	// providing a beep sound whenver we shift the character
+	//Level 1
 	if ((g_abKeyPressed[K_UP] || g_abKeyPressed[W]) && level1[g_sChar.m_cLocation.Y - 1][g_sChar.m_cLocation.X ] == 'x') //To move up checking
 	{
 		//Beep(1440, 30);
@@ -220,9 +230,38 @@ void moveCharacter()
 		g_sChar.m_cLocation.X++;
 		bSomethingHappened = true;
 	}
+
+	//Level 2
+
+	if ((g_abKeyPressed[K_UP] || g_abKeyPressed[W]) && level1[g_sLevel2Char.m_cLocation.Y - 1][g_sLevel2Char.m_cLocation.X] == 'x') //To move up checking
+	{
+		//Beep(1440, 30);
+		g_sLevel2Char.m_cLocation.Y--;
+		bSomethingHappened = true;
+
+	}
+	if ((g_abKeyPressed[K_LEFT] || g_abKeyPressed[A]) && level1[g_sLevel2Char.m_cLocation.Y][g_sLevel2Char.m_cLocation.X - 1] == 'x')
+	{
+		//Beep(1440, 30);
+		g_sLevel2Char.m_cLocation.X--;
+		bSomethingHappened = true;
+	}
+	if ((g_abKeyPressed[K_DOWN] || g_abKeyPressed[S]) && level1[g_sLevel2Char.m_cLocation.Y + 1][g_sLevel2Char.m_cLocation.X] == 'x')
+	{
+		//Beep(1440, 30);
+		g_sLevel2Char.m_cLocation.Y++;
+		bSomethingHappened = true;
+	}
+	if ((g_abKeyPressed[K_RIGHT] || g_abKeyPressed[D]) && level1[g_sLevel2Char.m_cLocation.Y][g_sLevel2Char.m_cLocation.X + 1] == 'x')
+	{
+		//Beep(1440, 30);
+		g_sLevel2Char.m_cLocation.X++;
+		bSomethingHappened = true;
+	}
+
+
 	if (g_abKeyPressed[K_SPACE])
 	{
-		g_sChar.m_bActive = !g_sChar.m_bActive;
 		bSomethingHappened = true;
 	}
 
@@ -276,7 +315,7 @@ void renderSplashScreen()  // renders the splash screen
 
 void renderGame()
 {
-	renderTutorialMap(); // renders the map to the buffer first
+	renderBronzeMap(); // renders the map to the buffer first
 	renderCharacter();   // renders the character into the buffer
 }
 
@@ -291,6 +330,7 @@ void renderTutorialMap()
 
 	int x = 1;
 	int y = 1;
+	level = 1;
 
 	if (myfile.is_open())
 	{
@@ -372,6 +412,8 @@ void renderBronzeMap()
 	c.Y = 1;
 
 	int x = 1;
+	int y = 1;
+	level = 2;
 
 	if (myfile.is_open())
 	{
@@ -431,12 +473,18 @@ void renderBronzeMap()
 				{
 					line[col] = 206;
 				}
+				if (line[col] == ' ')
+				{
+					level1[x][y] = 'x';
+				}
 				g_Console.writeToBuffer(c, line[col], 0x03);
 				c.X++;
+				y++;
 			}
+			x++;
+			y = 1;
 			c.Y++;
 			c.X = 1;
-			x++;
 		}
 	}
 }
@@ -444,11 +492,19 @@ void renderBronzeMap()
 void renderCharacter()
 {
 	// Draw the location of the character
-	g_Console.writeToBuffer(g_sChar.m_cLocation, (char)1, 0x0C);
-	g_Console.writeToBuffer(g_sLevel1GuardCells.m_cLocation, (char)2, 0X0F);
-	g_Console.writeToBuffer(g_sLevel1GuardCafe.m_cLocation, (char)2, 0X0F);
-	g_Console.writeToBuffer(g_sLevel1GuardField1.m_cLocation, (char)2, 0X0F);
-	g_Console.writeToBuffer(g_sLevel1GuardField2.m_cLocation, (char)2, 0X0F);
+	if (level == 1)
+	{
+		g_Console.writeToBuffer(g_sChar.m_cLocation, (char)1, 0x0C);
+		g_Console.writeToBuffer(g_sLevel1GuardCells.m_cLocation, (char)2, 0X0F);
+		g_Console.writeToBuffer(g_sLevel1GuardCafe.m_cLocation, (char)2, 0X0F);
+		g_Console.writeToBuffer(g_sLevel1GuardField1.m_cLocation, (char)2, 0X0F);
+		g_Console.writeToBuffer(g_sLevel1GuardField2.m_cLocation, (char)2, 0X0F);
+	}
+	if (level == 2)
+	{
+		g_Console.writeToBuffer(g_sLevel2Char.m_cLocation, (char)1, 0x0C);
+	}
+
 }
 
 void characterInteraction()
@@ -467,6 +523,7 @@ void renderFramerate()
 	c.Y = 0;
 	g_Console.writeToBuffer(c, ss.str());
 }
+
 void renderToScreen()
 {
 	// Writes the buffer to the console, hence you will see what you have written

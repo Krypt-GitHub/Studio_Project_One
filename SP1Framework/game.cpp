@@ -13,27 +13,31 @@ using namespace std;
 
 double  g_dElapsedTime;
 double  g_dDeltaTime;
+double  g_dGuardTime = 0.0;
+
 bool    g_abKeyPressed[K_COUNT];
-<<<<<<< HEAD
+
 char    level1[125][125];
+
 double startgame = 3.0;
-=======
-char level1[125][125];
-<<<<<<< HEAD
-double startgame = 3.0;
-=======
+
 char level2[125][125];
 int level = 0;
->>>>>>> 88b8bfa8ff8fe557a9557f2e972c87602561c595
->>>>>>> c95ba77e3f6760b79ba456f8623716325ddc82ca
 
 // Game specific variables here
-SGameChar   g_sChar;
-SGameChar   g_sLevel2Char;
-SGameChar   g_sLevel1GuardCells;
+SGameChar   g_sChar; //Player character
+
+SGameChar   g_sLevel2Char; //Level 2 Characters
+
+SGameChar   g_sLevel1GuardCells; //Level 1 guards
 SGameChar   g_sLevel1GuardCafe;
 SGameChar   g_sLevel1GuardField1;
 SGameChar   g_sLevel1GuardField2;
+
+SGameChar   g_sLevel1PrisonerCells; //Level 1 Prisoners
+SGameChar   g_sLevel1PrisonerShowers;
+SGameChar   g_sLevel1PrisonerCafe;
+
 EGAMESTATES g_eGameState = S_SPLASHSCREEN;
 double  g_dBounceTime; // this is to prevent key bouncing, so we won't trigger keypresses more than once
 
@@ -56,19 +60,35 @@ void init(void)
 	// sets the initial state for the game
 	g_eGameState = S_SPLASHSCREEN;
 
-	g_sChar.m_cLocation.X = 6; //g_Console.getConsoleSize().X / 2;
-	g_sChar.m_cLocation.Y = 4; //g_Console.getConsoleSize().Y / 2;
-	g_sLevel2Char.m_cLocation.X = 46; //g_Console.getConsoleSize().X / 2;
-	g_sLevel2Char.m_cLocation.Y = 3; //g_Console.getConsoleSize().Y / 2;
-	g_sLevel1GuardCells.m_cLocation.X = 3; //g_Console.getConsoleSize().X / 2;
-	g_sLevel1GuardCells.m_cLocation.Y = 12; //g_Console.getConsoleSize().Y / 2;
-	g_sLevel1GuardCafe.m_cLocation.X = 40; //g_Console.getConsoleSize().X / 2;
-	g_sLevel1GuardCafe.m_cLocation.Y = 12; //g_Console.getConsoleSize().Y / 2;
-	g_sLevel1GuardField1.m_cLocation.X = 105; //g_Console.getConsoleSize().X / 2;
-	g_sLevel1GuardField1.m_cLocation.Y = 15; //g_Console.getConsoleSize().Y / 2;
-	g_sLevel1GuardField2.m_cLocation.X = 115; //g_Console.getConsoleSize().X / 2;
-	g_sLevel1GuardField2.m_cLocation.Y = 5; //g_Console.getConsoleSize().Y / 2;
+	//g_Console.getConsoleSize().X / 2;
+	//g_Console.getConsoleSize().Y / 2;
 
+	g_sChar.m_cLocation.X = 6; //Player spawn point
+	g_sChar.m_cLocation.Y = 4;
+
+	g_sLevel2Char.m_cLocation.X = 46; //Level 2 Character spawn point
+	g_sLevel2Char.m_cLocation.Y = 3; 
+
+	g_sLevel1GuardCells.m_cLocation.X = 3; //Spawn Point of Guard near the Cells area
+	g_sLevel1GuardCells.m_cLocation.Y = 10; 
+
+	g_sLevel1GuardCafe.m_cLocation.X = 40; //Spawn Point of Guard near the Cafe area
+	g_sLevel1GuardCafe.m_cLocation.Y = 12; 
+	
+	g_sLevel1GuardField1.m_cLocation.X = 105; //Spawn Point of Guard 1 near the Field area
+	g_sLevel1GuardField1.m_cLocation.Y = 15;
+	
+	g_sLevel1GuardField2.m_cLocation.X = 115;  //Spawn Point of Guard 2 near the Field area
+	g_sLevel1GuardField2.m_cLocation.Y = 5;
+
+	g_sLevel1PrisonerCells.m_cLocation.X = 15; //Spawn Point of Prisoner near the Cells area
+	g_sLevel1PrisonerCells.m_cLocation.Y = 4;
+
+	g_sLevel1PrisonerShowers.m_cLocation.X = 45;  //Spawn Point of Prisoner near the Showers area
+	g_sLevel1PrisonerShowers.m_cLocation.Y = 25;
+
+	g_sLevel1PrisonerCafe.m_cLocation.X = 40;  //Spawn Point of Prisoner near the Cafe area
+	g_sLevel1PrisonerCafe.m_cLocation.Y = 10;
 
 	// sets the width, height and the font name to use in the console
 	g_Console.setConsoleFont(0, 16, L"Consolas");
@@ -172,30 +192,41 @@ void splashScreenWait()    // waits for time to pass in splash screen
 
 void gameplay()            // gameplay logic
 {
+	g_dGuardTime += g_dDeltaTime;
 	processUserInput(); // checks if you should change states or do something else with the game, e.g. pause, exit
 	moveCharacter();    // moves the character, collision detection, physics, etc
 	Level1AIMovement(); //AI movement 
 	                   // sound can be played here too.
 }
+
+//Global Variables for AI
+int XPosGuardCell = g_sLevel1GuardCells.m_cLocation.X;
+int YPosGuardCell = g_sLevel1GuardCells.m_cLocation.Y;
+int Steps = 0;
+int direction = 1;
+
 void Level1AIMovement()
 {	
-	bool Foward = true;
-	while (g_sLevel1GuardCells.m_cLocation.X < 15 && g_dElapsedTime > startgame && Foward == true)
+	if (g_dGuardTime >= 0.20)
 	{
-		g_sLevel1GuardCells.m_cLocation.X++;
-		startgame += 0.25;
+		if (g_sLevel1GuardCells.m_cLocation.X < 13 && Steps != 10)
+		{
+			g_sLevel1GuardCells.m_cLocation.X++;
+			g_dGuardTime = 0.0;
+			Steps++;
+		}
 	}
-
-	Foward = false;
-
-	while (g_sLevel1GuardCells.m_cLocation.X > 2 && g_dElapsedTime > startgame && Foward == false)
+	if (g_dGuardTime >= 0.20 && Steps == 10)
 	{
-		g_sLevel1GuardCells.m_cLocation.X--;
-		startgame += 0.25;
+		if (g_sLevel1GuardCells.m_cLocation.X > 2)
+		{
+			g_sLevel1GuardCells.m_cLocation.X--;
+			g_dGuardTime = 0.0;
+		}
 	}
-
-	
 }
+
+
 void moveCharacter()
 {
 	bool bSomethingHappened = false;
@@ -315,7 +346,7 @@ void renderSplashScreen()  // renders the splash screen
 
 void renderGame()
 {
-	renderBronzeMap(); // renders the map to the buffer first
+	renderTutorialMap(); // renders the map to the buffer first
 	renderCharacter();   // renders the character into the buffer
 }
 
@@ -494,11 +525,16 @@ void renderCharacter()
 	// Draw the location of the character
 	if (level == 1)
 	{
-		g_Console.writeToBuffer(g_sChar.m_cLocation, (char)1, 0x0C);
-		g_Console.writeToBuffer(g_sLevel1GuardCells.m_cLocation, (char)2, 0X0F);
-		g_Console.writeToBuffer(g_sLevel1GuardCafe.m_cLocation, (char)2, 0X0F);
-		g_Console.writeToBuffer(g_sLevel1GuardField1.m_cLocation, (char)2, 0X0F);
-		g_Console.writeToBuffer(g_sLevel1GuardField2.m_cLocation, (char)2, 0X0F);
+		g_Console.writeToBuffer(g_sChar.m_cLocation, (char)1, 0x0C); //Player Character rendering
+
+		g_Console.writeToBuffer(g_sLevel1GuardCells.m_cLocation, (char)2, 0X0F); //Rendering of Guard near the cells area
+		g_Console.writeToBuffer(g_sLevel1GuardCafe.m_cLocation, (char)2, 0X0F); //Rendering of Guard near the Cafe area
+		g_Console.writeToBuffer(g_sLevel1GuardField1.m_cLocation, (char)2, 0X0F); //Rendering of Guard near the Field area
+		g_Console.writeToBuffer(g_sLevel1GuardField2.m_cLocation, (char)2, 0X0F); //Rendering of Guard near the Field area
+
+		g_Console.writeToBuffer(g_sLevel1PrisonerCells.m_cLocation, (char)2, 0X0B); //Rendering of Guard near the cells area
+		g_Console.writeToBuffer(g_sLevel1PrisonerCafe.m_cLocation, (char)2, 0X0B); //Rendering of Guard near the cafe area
+		g_Console.writeToBuffer(g_sLevel1PrisonerShowers.m_cLocation, (char)2, 0X0B); //Rendering of Guard near the showers area
 	}
 	if (level == 2)
 	{

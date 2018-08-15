@@ -14,11 +14,11 @@ using namespace std;
 double  g_dElapsedTime;
 double  g_dDeltaTime;
 bool    g_abKeyPressed[K_COUNT];
-<<<<<<< HEAD
 char level1[125][125];
 double startgame = 3.0;
 char level2[125][125];
 int level = 0;
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
 char    level1[125][125];
@@ -34,6 +34,8 @@ int level = 0;
 >>>>>>> c95ba77e3f6760b79ba456f8623716325ddc82ca
 >>>>>>> e704f22cbd1c2573f0227413a440e074ff7b3512
 >>>>>>> f0df7c4527e5bf34328506b259e7bd4c4b2ff918
+=======
+>>>>>>> parent of 6b21d9d... Merge branch 'master' of https://github.com/Krypt-GitHub/Studio_Project_One
 
 // Game specific variables here
 SGameChar   g_sChar;
@@ -185,6 +187,7 @@ void gameplay()            // gameplay logic
 	Level1AIMovement(); //AI movement 
 	                   // sound can be played here too.
 }
+<<<<<<< HEAD
 void Level1AIMovement()
 {	
 	bool Foward = true;
@@ -203,6 +206,35 @@ void Level1AIMovement()
 	}
 
 	
+=======
+
+void Level1AIMovement()
+{
+	bool Forward = true;
+	long t = time(0);
+
+	while (g_sLevel1GuardCells.m_cLocation.X < 15)
+	{
+		if (time(0) > t && time(0) + 1 < t)
+		{
+			g_sLevel1GuardCells.m_cLocation.X++;
+		}
+	}
+
+	//while (g_dElapsedTime > startgame && Foward == true)
+	//{
+	//	g_sLevel1GuardCells.m_cLocation.X++;
+	//	startgame += 0.25;
+	//}
+
+	//Foward = false;
+
+	//while (g_sLevel1GuardCells.m_cLocation.X > 2 && g_dElapsedTime > startgame && Foward == false)
+	//{
+	//	g_sLevel1GuardCells.m_cLocation.X--;
+	//	startgame += 0.25;
+	//}
+>>>>>>> parent of 6b21d9d... Merge branch 'master' of https://github.com/Krypt-GitHub/Studio_Project_One
 }
 void moveCharacter()
 {
@@ -210,8 +242,11 @@ void moveCharacter()
 	if (g_dBounceTime > g_dElapsedTime)
 		return;
 
+<<<<<<< HEAD
 	// Updating the location of the character based on the key press
 	// providing a beep sound whenver we shift the character
+=======
+>>>>>>> parent of 6b21d9d... Merge branch 'master' of https://github.com/Krypt-GitHub/Studio_Project_One
 	//Level 1
 	if ((g_abKeyPressed[K_UP] || g_abKeyPressed[W]) && level1[g_sChar.m_cLocation.Y - 1][g_sChar.m_cLocation.X ] == 'x') //To move up checking
 	{
@@ -325,7 +360,10 @@ void renderGame()
 {
 	renderTutorialMap(); // renders the map to the buffer first
 	renderCharacter();   // renders the character into the buffer
+<<<<<<< HEAD
 	characterInteraction();
+=======
+>>>>>>> parent of 6b21d9d... Merge branch 'master' of https://github.com/Krypt-GitHub/Studio_Project_One
 }
 
 void renderTutorialMap()

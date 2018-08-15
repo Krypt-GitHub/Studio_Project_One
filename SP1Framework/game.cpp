@@ -19,15 +19,27 @@ double  g_dGuardTimeY = 0.0;
 double  g_dGameOver = 0.0;
 bool    g_abKeyPressed[K_COUNT];
 
+char level1[125][125];
+
 char    level1[125][125];
 double startgame = 1.0; //SPLASHSCREEN TIME
 char level2[125][125];
+char level3[125][125];
+double startgame = 5.0;
+signed int MenuItem = 0;
 int level = 0;
+
 
 // Game specific variables here
 SGameChar   g_sChar; //Player character
 
 SGameChar   g_sLevel2Char; //Level 2 Characters
+
+SGameChar   g_sLevel1GuardCells; //Level 1 guards
+
+ //Level 2 Characters
+SGameChar   g_sChar; //Player character
+SGameChar   g_sLevel2Char;
 
 SGameChar   g_sLevel1GuardCells; //Level 1 guards
 SGameChar   g_sLevel1GuardCafe;
@@ -64,6 +76,32 @@ void init(void)
 	//g_Console.getConsoleSize().X / 2;
 	//g_Console.getConsoleSize().Y / 2;
 
+	g_sChar.m_cLocation.X = 6; //Player spawn point
+	g_sChar.m_cLocation.Y = 4;
+
+	g_sLevel2Char.m_cLocation.X = 46; //Level 2 Character spawn point
+	g_sLevel2Char.m_cLocation.Y = 3; 
+
+	g_sLevel1GuardCells.m_cLocation.X = 3; //Spawn Point of Guard near the Cells area
+	g_sLevel1GuardCells.m_cLocation.Y = 10; 
+
+	g_sLevel1GuardCafe.m_cLocation.X = 35; //Spawn Point of Guard near the Cafe area
+	g_sLevel1GuardCafe.m_cLocation.Y = 15; 
+	
+	g_sLevel1GuardField1.m_cLocation.X = 105; //Spawn Point of Guard 1 near the Field area
+	g_sLevel1GuardField1.m_cLocation.Y = 15;
+	
+	g_sLevel1GuardField2.m_cLocation.X = 115;  //Spawn Point of Guard 2 near the Field area
+	g_sLevel1GuardField2.m_cLocation.Y = 5;
+
+	g_sLevel1PrisonerCells.m_cLocation.X = 15; //Spawn Point of Prisoner near the Cells area
+	g_sLevel1PrisonerCells.m_cLocation.Y = 4;
+
+	g_sLevel1PrisonerShowers.m_cLocation.X = 45;  //Spawn Point of Prisoner near the Showers area
+	g_sLevel1PrisonerShowers.m_cLocation.Y = 25;
+
+	g_sLevel1PrisonerCafe.m_cLocation.X = 45;  //Spawn Point of Prisoner near the Cafe area
+	g_sLevel1PrisonerCafe.m_cLocation.Y = 10;
 	g_sChar.m_cLocation.X = 6; //Player spawn point
 	g_sChar.m_cLocation.Y = 4;
 
@@ -132,7 +170,9 @@ void getInput(void)
 	g_abKeyPressed[K_RIGHT] = isKeyPressed(VK_RIGHT);
 	g_abKeyPressed[D] = isKeyPressed(0x44);
 	g_abKeyPressed[K_SPACE] = isKeyPressed(VK_SPACE);
+	g_abKeyPressed[K_RETURN] = isKeyPressed(0x52);
 	g_abKeyPressed[K_ESCAPE] = isKeyPressed(VK_ESCAPE);
+	g_abKeyPressed[K_ENTER] = isKeyPressed(VK_RETURN);
 }
 
 //--------------------------------------------------------------
@@ -162,7 +202,11 @@ void update(double dt)
 	{
 	case S_SPLASHSCREEN: splashScreenWait(); // game logic for the splash screen
 		break;
-	case S_GAME: gameplay(); // gameplay logic when we are in the game
+	case S_GAMELEVEL1: gameplayLevel1(); // gameplay logic when we are in the Level 1
+		break;
+	case S_GAMELEVEL2: gameplayLevel2();
+		break;
+	case S_GAMELEVEL3: gameplayLevel3();
 		break;
 	case S_GAMEOVER: gameoverwait();
 		break;
@@ -183,7 +227,13 @@ void render()
 	{
 	case S_SPLASHSCREEN: renderSplashScreen();
 		break;
-	case S_GAME: renderGame();
+	case S_GAMELEVEL1: renderLevelOne();
+		break;
+	case S_GAMELEVEL2: renderLevelTwo();
+		break;
+	case S_GAMELEVEL3: renderLevelThree();
+		break;
+	case S_GAMEEXIT: g_bQuitGame;
 		break;
 	case S_GAMEOVER: gameovercondition();
 		break;
@@ -194,6 +244,40 @@ void render()
 
 void splashScreenWait()    // waits for time to pass in splash screen
 {
+	if (g_dElapsedTime > g_dBounceTime && (g_abKeyPressed[K_DOWN] || g_abKeyPressed[S]))
+	{
+		MenuItem = (MenuItem + 1) % 4;
+		g_dBounceTime = g_dElapsedTime + 0.125;
+	}
+	if (g_dElapsedTime > g_dBounceTime && (g_abKeyPressed[K_UP] || g_abKeyPressed[W]))
+	{
+		MenuItem = (MenuItem - 1) % 4;
+		g_dBounceTime = g_dElapsedTime + 0.125;
+		if (MenuItem == -1)
+		{
+			MenuItem = 3;
+		}
+	}
+	if (g_abKeyPressed[K_ENTER])
+	{
+		if (MenuItem == 0)
+		{
+			g_eGameState = S_GAMELEVEL1;
+		}
+		if (MenuItem == 1)
+		{
+			g_eGameState = S_GAMELEVEL2;
+		}
+		if (MenuItem == 2)
+		{
+			g_eGameState = S_GAMELEVEL3;
+		}
+		if(MenuItem == 3)
+		{
+			g_bQuitGame = true;
+		}
+	}
+}
 	if (g_dElapsedTime > startgame) // wait for 3 seconds to switch to game mode, else do nothing // THIS IS WHERE YOU CHANGE SPLASHSCREEN TIME
 		g_eGameState = S_GAME;
 }
@@ -212,10 +296,22 @@ void gameovercondition()
 }
 
 void gameplay()            // gameplay logic
+void gameplayLevel1()            // gameplay logic
 {
+	g_dGuardTime += g_dDeltaTime;
 	processUserInput(); // checks if you should change states or do something else with the game, e.g. pause, exit
-	moveCharacter();    // moves the character, collision detection, physics, etc
-	Level1AIMove(); //AI movement                   // sound can be played here too.
+	moveCharacterLevel1();    // moves the character, collision detection, physics, etc
+	Level1AIMovement(); //AI movement 
+	                   // sound can be played here too.
+}
+
+void gameplayLevel2()
+{
+	g_dGuardTime += g_dDeltaTime;
+	processUserInput(); // checks if you should change states or do something else with the game, e.g. pause, exit
+	moveCharacterLevel2();    // moves the character, collision detection, physics, etc
+							  //AI movement 
+						// sound can be played here too.
 }
 
 struct AI {
@@ -229,6 +325,22 @@ int move = 0;
 int move1 = 0;
 
 void Level1AIMove()
+
+void gameplayLevel3()
+{
+	g_dGuardTime += g_dDeltaTime;
+	processUserInput(); // checks if you should change states or do something else with the game, e.g. pause, exit
+	moveCharacterLevel2();    // moves the character, collision detection, physics, etc
+							  //AI movement 
+}
+
+//Global Variables for AI
+int XPosGuardCell = g_sLevel1GuardCells.m_cLocation.X;
+int YPosGuardCell = g_sLevel1GuardCells.m_cLocation.Y;
+int Steps = 0;
+int direction = 1;
+
+void Level1AIMovement()
 {	
 	if (g_dGuardTimeX >= 0.20)
 	{
@@ -376,30 +488,52 @@ void moveCharacter()
 		}
 	}
 
+	
+
+	if (g_abKeyPressed[K_SPACE])
+	{
+		bSomethingHappened = true;
+	}
+
+	if (bSomethingHappened)
+	{
+		// set the bounce time to some time in the future to prevent accidental triggers
+		g_dBounceTime = g_dElapsedTime + 0.125; // 125ms should be enough
+	}
+}
+
+void moveCharacterLevel2()
+{
+	bool bSomethingHappened = false;
+	if (g_dBounceTime > g_dElapsedTime)
+		return;
+
+	// Updating the location of the character based on the key press
+	// providing a beep sound whenver we shift the character
+	//Level 2
 	///////////
 	//Level 2//
 	///////////
-
-	if ((g_abKeyPressed[K_UP] || g_abKeyPressed[W]) && level1[g_sLevel2Char.m_cLocation.Y - 1][g_sLevel2Char.m_cLocation.X] == 'x') //To move up checking
+	if ((g_abKeyPressed[K_UP] || g_abKeyPressed[W]) && level2[g_sLevel2Char.m_cLocation.Y - 1][g_sLevel2Char.m_cLocation.X] == 'x') //To move up checking
 	{
 		//Beep(1440, 30);
 		g_sLevel2Char.m_cLocation.Y--;
 		bSomethingHappened = true;
 
 	}
-	if ((g_abKeyPressed[K_LEFT] || g_abKeyPressed[A]) && level1[g_sLevel2Char.m_cLocation.Y][g_sLevel2Char.m_cLocation.X - 1] == 'x')
+	if ((g_abKeyPressed[K_LEFT] || g_abKeyPressed[A]) && level2[g_sLevel2Char.m_cLocation.Y][g_sLevel2Char.m_cLocation.X - 1] == 'x')
 	{
 		//Beep(1440, 30);
 		g_sLevel2Char.m_cLocation.X--;
 		bSomethingHappened = true;
 	}
-	if ((g_abKeyPressed[K_DOWN] || g_abKeyPressed[S]) && level1[g_sLevel2Char.m_cLocation.Y + 1][g_sLevel2Char.m_cLocation.X] == 'x')
+	if ((g_abKeyPressed[K_DOWN] || g_abKeyPressed[S]) && level2[g_sLevel2Char.m_cLocation.Y + 1][g_sLevel2Char.m_cLocation.X] == 'x')
 	{
 		//Beep(1440, 30);
 		g_sLevel2Char.m_cLocation.Y++;
 		bSomethingHappened = true;
 	}
-	if ((g_abKeyPressed[K_RIGHT] || g_abKeyPressed[D]) && level1[g_sLevel2Char.m_cLocation.Y][g_sLevel2Char.m_cLocation.X + 1] == 'x')
+	if ((g_abKeyPressed[K_RIGHT] || g_abKeyPressed[D]) && level2[g_sLevel2Char.m_cLocation.Y][g_sLevel2Char.m_cLocation.X + 1] == 'x')
 	{
 		//Beep(1440, 30);
 		g_sLevel2Char.m_cLocation.X++;
@@ -420,7 +554,25 @@ void processUserInput()
 {
 	// quits the game if player hits the escape key
 	if (g_abKeyPressed[K_ESCAPE])
+	{
 		g_bQuitGame = true;
+	}
+	if (g_abKeyPressed[K_RETURN])
+	{
+		g_eGameState = S_SPLASHSCREEN;
+		if (level = 1)
+		{
+			level = 0;
+			g_sChar.m_cLocation.X = 6; //Player spawn point
+			g_sChar.m_cLocation.Y = 4;
+		}
+		else if (level = 2)
+		{
+			level = 0;
+			g_sLevel2Char.m_cLocation.X = 46; //Level 2 Character spawn point
+			g_sLevel2Char.m_cLocation.Y = 3;
+		}
+	}
 }
 
 void clearScreen()
@@ -457,12 +609,69 @@ void renderSplashScreen()  // renders the splash screen
 			c.X = 1;
 		}
 	}
+
+	c.X = 21;
+	c.Y = 20;
+	g_Console.writeToBuffer(c, "Welcome to the BlackStone Prison Complex, do your best to escape", 0X0F);
+	c.X = 21;
+	c.Y = 21;
+	g_Console.writeToBuffer(c, "----------------------------------------------------------------", 0X0F);
+	c.X = 21;
+	c.Y = 22;
+	g_Console.writeToBuffer(c, " Complex: Stone", 0X0F);
+	c.X = 21;
+	c.Y = 23;
+	g_Console.writeToBuffer(c, " Complex: Bronze", 0X0F);
+	c.X = 21;
+	c.Y = 24;
+	g_Console.writeToBuffer(c, " Complex: Steel", 0X0F);
+	c.X = 21;
+	c.Y = 25;
+	g_Console.writeToBuffer(c, " Exit the Game", 0X0F);
+	if (MenuItem == 0)
+	{
+		c.X = 20;
+		c.Y = 22;
+		g_Console.writeToBuffer(c, (char)4, 0X0F);
+	}
+	else if (MenuItem == 1)
+	{
+		c.X = 20;
+		c.Y = 23;
+		g_Console.writeToBuffer(c, (char)4, 0X0F);
+	}
+	else if (MenuItem == 2)
+	{
+		c.X = 20;
+		c.Y = 24;
+		g_Console.writeToBuffer(c, (char)4, 0X0F);
+	}
+	else if (MenuItem == 3)
+	{
+		c.X = 20;
+		c.Y = 25;
+		g_Console.writeToBuffer(c, (char)4, 0X0F);
+	}
 }
 
-void renderGame()
+void renderLevelOne()
 {
+
 	renderTutorialMap(); // renders the map to the buffer first
 	renderCharacter();   // renders the character into the buffer
+	characterInteraction();
+}
+
+void renderLevelTwo()
+{
+	renderBronzeMap(); // renders the map to the buffer first
+	renderCharacter();   // renders the character into the buffer
+	characterInteraction();
+}
+
+void renderLevelThree()
+{
+
 	characterInteraction();
 }
 
@@ -624,7 +833,7 @@ void renderBronzeMap()
 				}
 				if (line[col] == ' ')
 				{
-					level1[x][y] = 'x';
+					level2[x][y] = 'x';
 				}
 				g_Console.writeToBuffer(c, line[col], 0x03);
 				c.X++;

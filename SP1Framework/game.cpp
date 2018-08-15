@@ -9,15 +9,20 @@
 #include <string>
 #include <fstream>
 
-using namespace std;
+//using namespace std;
+bool contactcheck = true;
 
 double  g_dElapsedTime;
 double  g_dDeltaTime;
-double  g_dGuardTime = 0.0;
-
+double  g_dGuardTimeX = 0.0;
+double  g_dGuardTimeY = 0.0;
+double  g_dGameOver = 0.0;
 bool    g_abKeyPressed[K_COUNT];
 
 char level1[125][125];
+
+char    level1[125][125];
+double startgame = 1.0; //SPLASHSCREEN TIME
 char level2[125][125];
 char level3[125][125];
 double startgame = 5.0;
@@ -26,6 +31,11 @@ int level = 0;
 
 
 // Game specific variables here
+SGameChar   g_sChar; //Player character
+
+SGameChar   g_sLevel2Char; //Level 2 Characters
+
+SGameChar   g_sLevel1GuardCells; //Level 1 guards
 
  //Level 2 Characters
 SGameChar   g_sChar; //Player character
@@ -44,7 +54,7 @@ EGAMESTATES g_eGameState = S_SPLASHSCREEN;
 double  g_dBounceTime; // this is to prevent key bouncing, so we won't trigger keypresses more than once
 
 					   // Console object
-Console g_Console(500, 100, "Prison Break");
+Console g_Console(300, 300, "SP1 Framework");
 
 //--------------------------------------------------------------
 // Purpose  : Initialisation function
@@ -53,6 +63,7 @@ Console g_Console(500, 100, "Prison Break");
 // Input    : void
 // Output   : void
 //--------------------------------------------------------------
+
 void init(void)
 {
 	// Set precision for floating point output
@@ -90,6 +101,32 @@ void init(void)
 	g_sLevel1PrisonerShowers.m_cLocation.Y = 25;
 
 	g_sLevel1PrisonerCafe.m_cLocation.X = 45;  //Spawn Point of Prisoner near the Cafe area
+	g_sLevel1PrisonerCafe.m_cLocation.Y = 10;
+	g_sChar.m_cLocation.X = 6; //Player spawn point
+	g_sChar.m_cLocation.Y = 4;
+
+	g_sLevel2Char.m_cLocation.X = 46; //Level 2 Character spawn point
+	g_sLevel2Char.m_cLocation.Y = 3; 
+
+	g_sLevel1GuardCells.m_cLocation.X = 3; //Spawn Point of Guard near the Cells area
+	g_sLevel1GuardCells.m_cLocation.Y = 10; 
+
+	g_sLevel1GuardCafe.m_cLocation.X = 35; //CAFE GUARD POINTS
+	g_sLevel1GuardCafe.m_cLocation.Y = 13; 
+	
+	g_sLevel1GuardField1.m_cLocation.X = 105; //Spawn Point of Guard 1 near the Field area
+	g_sLevel1GuardField1.m_cLocation.Y = 15;
+	
+	g_sLevel1GuardField2.m_cLocation.X = 115;  //Spawn Point of Guard 2 near the Field area
+	g_sLevel1GuardField2.m_cLocation.Y = 5;
+
+	g_sLevel1PrisonerCells.m_cLocation.X = 15; //Spawn Point of Prisoner near the Cells area
+	g_sLevel1PrisonerCells.m_cLocation.Y = 4;
+
+	g_sLevel1PrisonerShowers.m_cLocation.X = 45;  //Spawn Point of Prisoner near the Showers area
+	g_sLevel1PrisonerShowers.m_cLocation.Y = 25;
+
+	g_sLevel1PrisonerCafe.m_cLocation.X = 40;  //Spawn Point of Prisoner near the Cafe area
 	g_sLevel1PrisonerCafe.m_cLocation.Y = 10;
 
 	// sets the width, height and the font name to use in the console
@@ -157,6 +194,9 @@ void update(double dt)
 	// get the delta time
 	g_dElapsedTime += dt;
 	g_dDeltaTime = dt;
+	g_dGuardTimeX += g_dDeltaTime;
+	g_dGuardTimeY += g_dDeltaTime;
+	g_dGameOver += dt;
 
 	switch (g_eGameState)
 	{
@@ -167,6 +207,8 @@ void update(double dt)
 	case S_GAMELEVEL2: gameplayLevel2();
 		break;
 	case S_GAMELEVEL3: gameplayLevel3();
+		break;
+	case S_GAMEOVER: gameoverwait();
 		break;
 	}
 }
@@ -192,6 +234,8 @@ void render()
 	case S_GAMELEVEL3: renderLevelThree();
 		break;
 	case S_GAMEEXIT: g_bQuitGame;
+		break;
+	case S_GAMEOVER: gameovercondition();
 		break;
 	}
 	renderFramerate();  // renders debug information, frame rate, elapsed time, etc
@@ -234,7 +278,24 @@ void splashScreenWait()    // waits for time to pass in splash screen
 		}
 	}
 }
+	if (g_dElapsedTime > startgame) // wait for 3 seconds to switch to game mode, else do nothing // THIS IS WHERE YOU CHANGE SPLASHSCREEN TIME
+		g_eGameState = S_GAME;
+}
 
+void gameoverwait()
+{
+	if (g_dGameOver >= 1.0)
+	{
+		g_eGameState = S_SPLASHSCREEN;
+	}
+}
+
+void gameovercondition()
+{
+	renderGameOver();
+}
+
+void gameplay()            // gameplay logic
 void gameplayLevel1()            // gameplay logic
 {
 	g_dGuardTime += g_dDeltaTime;
@@ -253,6 +314,18 @@ void gameplayLevel2()
 						// sound can be played here too.
 }
 
+struct AI {
+	int X;
+	int Y;
+};
+
+//Global Variables for AI
+
+int move = 0;
+int move1 = 0;
+
+void Level1AIMove()
+
 void gameplayLevel3()
 {
 	g_dGuardTime += g_dDeltaTime;
@@ -269,59 +342,150 @@ int direction = 1;
 
 void Level1AIMovement()
 {	
-	if (g_dGuardTime >= 0.20)
+	if (g_dGuardTimeX >= 0.20)
 	{
-		if (g_sLevel1GuardCells.m_cLocation.X < 13 && Steps != 10)
+		//FOR CELL GUARD
+		if (g_sLevel1GuardCells.m_cLocation.X < 13 && move != 10) //X starts at 3
 		{
 			g_sLevel1GuardCells.m_cLocation.X++;
-			g_dGuardTime = 0.0;
-			Steps++;
+			g_dGuardTimeX = 0.0;
+		
+		}
+		//FOR FIELD GUARDS
+		if (g_sLevel1GuardField1.m_cLocation.Y > 5 && move != 10) //Y starts at 15
+		{
+			g_sLevel1GuardField1.m_cLocation.Y--;
+			g_dGuardTimeX = 0.0;
+		
+		}
+		if (g_sLevel1GuardField2.m_cLocation.Y < 15 && move != 10) //Y starts at 5
+		{
+			g_sLevel1GuardField2.m_cLocation.Y++;
+			g_dGuardTimeX = 0.0;
+			move++;
 		}
 	}
-	if (g_dGuardTime >= 0.20 && Steps == 10)
+
+	if (g_dGuardTimeX >= 0.20 && move == 10)
 	{
+		//FOR CELL GUARD
 		if (g_sLevel1GuardCells.m_cLocation.X > 2)
 		{
 			g_sLevel1GuardCells.m_cLocation.X--;
-			g_dGuardTime = 0.0;
+			g_dGuardTimeX = 0.0;
+		}
+		//FOR FIELD GUARDS
+		if (g_sLevel1GuardField1.m_cLocation.Y < 15) //Y starts at 5
+		{
+			g_sLevel1GuardField1.m_cLocation.Y++;
+			g_dGuardTimeX = 0.0;
+		}
+		if (g_sLevel1GuardField2.m_cLocation.Y > 5) //Y starts at 5
+		{
+			g_sLevel1GuardField2.m_cLocation.Y--;
+			g_dGuardTimeX = 0.0;
 		}
 		
+		//TO RESET FOR LOOPING
+		if (g_sLevel1GuardCells.m_cLocation.X == 3)
+		{
+			move = 0;
+		}
+	}
+
+	if (g_dGuardTimeY >= 0.35)
+	{
+		//FOR CAFE GUARD
+		if (g_sLevel1GuardCafe.m_cLocation.Y > 3 && move1 != 6) //Y starts at 13
+		{
+			g_sLevel1GuardCafe.m_cLocation.Y--;
+			g_dGuardTimeY = 0.0;
+			move1++;
+		}
+	}
+
+	if (g_dGuardTimeY >= 0.35 && move1 == 6)
+	{
+		//FOR CAFE GUARD
+		if (g_sLevel1GuardCafe.m_cLocation.Y < 13)
+		{
+			g_sLevel1GuardCafe.m_cLocation.Y++;
+			g_dGuardTimeY = 0.0;
+		}
+		if (g_sLevel1GuardCafe.m_cLocation.Y == 13)
+		{
+			move1 = 0;
+		}
 	}
 }
 
-void moveCharacterLevel1()
+void moveCharacter()
 {
+	int CeX = g_sLevel1GuardCells.m_cLocation.X;
+	int CeY = g_sLevel1GuardCells.m_cLocation.Y;
+
+	int CaX = g_sLevel1GuardCafe.m_cLocation.X;
+	int CaY = g_sLevel1GuardCafe.m_cLocation.Y;
+
+	int F1X = g_sLevel1GuardField1.m_cLocation.X;
+	int F1Y = g_sLevel1GuardField1.m_cLocation.Y;
+
+	int F2X = g_sLevel1GuardField2.m_cLocation.X;
+	int F2Y = g_sLevel1GuardField2.m_cLocation.Y;
+
+	int Ch1X = g_sChar.m_cLocation.X;
+	int Ch1Y = g_sChar.m_cLocation.Y;
+
+
 	bool bSomethingHappened = false;
 	if (g_dBounceTime > g_dElapsedTime)
 		return;
-
 	// Updating the location of the character based on the key press
 	// providing a beep sound whenver we shift the character
 	//Level 1
-	if ((g_abKeyPressed[K_UP] || g_abKeyPressed[W]) && level1[g_sChar.m_cLocation.Y - 1][g_sChar.m_cLocation.X ] == 'x') //To move up checking
+	if ((g_abKeyPressed[K_UP] || g_abKeyPressed[W]) && level1[g_sChar.m_cLocation.Y - 1][g_sChar.m_cLocation.X] == 'x') //To move up checking
 	{
 		//Beep(1440, 30);
 		g_sChar.m_cLocation.Y--;
 		bSomethingHappened = true;
-
+		if (((Ch1X == CeX) && (Ch1Y == CeY + 1)) || ((Ch1X == CaX) && (Ch1Y == CaY + 1)) || ((Ch1X == F1X) && (Ch1Y == F1Y + 1)) || ((Ch1X == F2X) && (Ch1Y == F2Y + 1)))
+		{
+			/*Ch1Y = */g_sChar.m_cLocation.Y++;
+			g_eGameState = S_GAMEOVER;
+		}
 	}
 	if ((g_abKeyPressed[K_LEFT] || g_abKeyPressed[A]) && g_sChar.m_cLocation.X > 0 && level1[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X - 1] == 'x')
 	{
 		//Beep(1440, 30);
 		g_sChar.m_cLocation.X--;
 		bSomethingHappened = true;
+		if (((Ch1X == CeX + 1) && (Ch1Y == CeY)) || ((Ch1X == CaX+1) && (Ch1Y == CaY)) || ((Ch1X == F1X+1) && (Ch1Y == F1Y)) || ((Ch1X == F2X+1) && (Ch1Y == F2Y)))
+		{
+			g_sChar.m_cLocation.X++;
+			g_eGameState = S_GAMEOVER;
+		}
 	}
 	if ((g_abKeyPressed[K_DOWN] || g_abKeyPressed[S]) && g_sChar.m_cLocation.Y < g_Console.getConsoleSize().Y - 1 && g_sChar.m_cLocation.X > 0 && level1[g_sChar.m_cLocation.Y + 1][g_sChar.m_cLocation.X] == 'x')
 	{
-		//Beep(1440, 30);
 		g_sChar.m_cLocation.Y++;
 		bSomethingHappened = true;
+		if (((Ch1X == CeX) && (Ch1Y == CeY - 1)) || ((Ch1X == CaX) && (Ch1Y == CaY - 1)) || ((Ch1X == F1X) && (Ch1Y == F1Y - 1)) || ((Ch1X == F2X) && (Ch1Y == F2Y - 1)))
+		{
+			g_sChar.m_cLocation.Y--;
+			g_eGameState = S_GAMEOVER;
+		}
+		//Beep(1440, 30);
 	}
 	if ((g_abKeyPressed[K_RIGHT] || g_abKeyPressed[D]) && g_sChar.m_cLocation.X < g_Console.getConsoleSize().X - 1 && g_sChar.m_cLocation.X > 0 && level1[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X + 1] == 'x')
 	{
 		//Beep(1440, 30);
 		g_sChar.m_cLocation.X++;
 		bSomethingHappened = true;
+		if (((Ch1X == CeX - 1) && (Ch1Y == CeY)) || ((Ch1X == CaX - 1) && (Ch1Y == CaY)) || ((Ch1X == F1X - 1) && (Ch1Y == F1Y)) || ((Ch1X == F2X - 1) && (Ch1Y == F2Y)))
+		{
+			g_sChar.m_cLocation.X--;
+			g_eGameState = S_GAMEOVER;
+		}
 	}
 
 	
@@ -347,6 +511,9 @@ void moveCharacterLevel2()
 	// Updating the location of the character based on the key press
 	// providing a beep sound whenver we shift the character
 	//Level 2
+	///////////
+	//Level 2//
+	///////////
 	if ((g_abKeyPressed[K_UP] || g_abKeyPressed[W]) && level2[g_sLevel2Char.m_cLocation.Y - 1][g_sLevel2Char.m_cLocation.X] == 'x') //To move up checking
 	{
 		//Beep(1440, 30);
@@ -372,17 +539,14 @@ void moveCharacterLevel2()
 		g_sLevel2Char.m_cLocation.X++;
 		bSomethingHappened = true;
 	}
-
-
 	if (g_abKeyPressed[K_SPACE])
 	{
 		bSomethingHappened = true;
 	}
-
 	if (bSomethingHappened)
 	{
 		// set the bounce time to some time in the future to prevent accidental triggers
-		g_dBounceTime = g_dElapsedTime + 0.125; // 125ms should be enough
+		g_dBounceTime = g_dElapsedTime + 0.06; // 125ms should be enough
 	}
 }
 
@@ -419,6 +583,8 @@ void clearScreen()
 
 void renderSplashScreen()  // renders the splash screen
 {
+	using namespace std;
+
 	COORD c = g_Console.getConsoleSize();
 	string line;
 	ifstream myfile("titlescreen.txt");
@@ -506,10 +672,12 @@ void renderLevelTwo()
 void renderLevelThree()
 {
 
+	characterInteraction();
 }
 
 void renderTutorialMap()
 {
+	using namespace std;
 	string line;
 	COORD c;
 	ifstream myfile("map_tutorial.txt");
@@ -593,6 +761,7 @@ void renderTutorialMap()
 
 void renderBronzeMap()
 {
+	using namespace std;
 	string line;
 	COORD c;
 	ifstream myfile("map_bronze.txt");
@@ -678,6 +847,36 @@ void renderBronzeMap()
 	}
 }
 
+void renderGameOver()
+{
+	using namespace std;
+
+	COORD c = g_Console.getConsoleSize();
+	string line;
+	ifstream myfile("gameover.txt");
+
+	c.X = 1;
+	c.Y = 1;
+
+	if (myfile.is_open())
+	{
+		while (getline(myfile, line))
+		{
+			for (int col = 0; col < line.size(); col++)
+			{
+				if (line[col] == '#')
+				{
+					line[col] = 219;
+				}
+				g_Console.writeToBuffer(c, line[col], 0x03);
+				c.X++;
+			}
+			c.Y++;
+			c.X = 1;
+		}
+	}
+}
+
 void renderCharacter()
 {
 	// Draw the location of the character
@@ -698,7 +897,6 @@ void renderCharacter()
 	{
 		g_Console.writeToBuffer(g_sLevel2Char.m_cLocation, (char)1, 0x0C);
 	}
-
 }
 
 void characterInteraction()
@@ -727,4 +925,3 @@ void renderToScreen()
 	// Writes the buffer to the console, hence you will see what you have written
 	g_Console.flushBufferToConsole();
 }
-

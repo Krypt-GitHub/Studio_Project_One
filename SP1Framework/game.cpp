@@ -8,32 +8,17 @@
 #include <sstream>
 #include <string>
 #include <fstream>
+#include <ctime>
 
 using namespace std;
 
 double  g_dElapsedTime;
 double  g_dDeltaTime;
 bool    g_abKeyPressed[K_COUNT];
-<<<<<<< HEAD
 char level1[125][125];
 double startgame = 3.0;
 char level2[125][125];
 int level = 0;
-=======
-<<<<<<< HEAD
-char    level1[125][125];
-double startgame = 3.0;
-=======
-char level1[125][125];
-double startgame = 3.0;
-char level2[125][125];
-int level = 0;
-<<<<<<< HEAD
-=======
->>>>>>> 88b8bfa8ff8fe557a9557f2e972c87602561c595
->>>>>>> c95ba77e3f6760b79ba456f8623716325ddc82ca
->>>>>>> e704f22cbd1c2573f0227413a440e074ff7b3512
->>>>>>> f0df7c4527e5bf34328506b259e7bd4c4b2ff918
 
 // Game specific variables here
 SGameChar   g_sChar;
@@ -183,35 +168,44 @@ void gameplay()            // gameplay logic
 	processUserInput(); // checks if you should change states or do something else with the game, e.g. pause, exit
 	moveCharacter();    // moves the character, collision detection, physics, etc
 	Level1AIMovement(); //AI movement 
+	characterInteraction(); //AI Interaction
 	                   // sound can be played here too.
 }
+
 void Level1AIMovement()
-{	
-	bool Foward = true;
-	while (g_sLevel1GuardCells.m_cLocation.X < 15 && g_dElapsedTime > startgame && Foward == true)
+{
+	bool Forward = true;
+	long t = time(0);
+
+	while (g_sLevel1GuardCells.m_cLocation.X < 15)
 	{
-		g_sLevel1GuardCells.m_cLocation.X++;
-		startgame += 0.25;
+		if (time(0) > t && time(0) + 1 < t)
+		{
+			g_sLevel1GuardCells.m_cLocation.X++;
+		}
 	}
 
-	Foward = false;
+	//while (g_dElapsedTime > startgame && Foward == true)
+	//{
+	//	g_sLevel1GuardCells.m_cLocation.X++;
+	//	startgame += 0.25;
+	//}
 
-	while (g_sLevel1GuardCells.m_cLocation.X > 2 && g_dElapsedTime > startgame && Foward == false)
-	{
-		g_sLevel1GuardCells.m_cLocation.X--;
-		startgame += 0.25;
-	}
+	//Foward = false;
 
-	
+	//while (g_sLevel1GuardCells.m_cLocation.X > 2 && g_dElapsedTime > startgame && Foward == false)
+	//{
+	//	g_sLevel1GuardCells.m_cLocation.X--;
+	//	startgame += 0.25;
+	//}
 }
+
 void moveCharacter()
 {
 	bool bSomethingHappened = false;
 	if (g_dBounceTime > g_dElapsedTime)
 		return;
 
-	// Updating the location of the character based on the key press
-	// providing a beep sound whenver we shift the character
 	//Level 1
 	if ((g_abKeyPressed[K_UP] || g_abKeyPressed[W]) && level1[g_sChar.m_cLocation.Y - 1][g_sChar.m_cLocation.X ] == 'x') //To move up checking
 	{
@@ -325,7 +319,6 @@ void renderGame()
 {
 	renderTutorialMap(); // renders the map to the buffer first
 	renderCharacter();   // renders the character into the buffer
-	characterInteraction();
 }
 
 void renderTutorialMap()

@@ -16,6 +16,7 @@ double  g_dDeltaTime;
 double  g_dGuardTime = 0.0;
 
 bool    g_abKeyPressed[K_COUNT];
+<<<<<<< HEAD
 
 char    level1[125][125];
 
@@ -23,6 +24,28 @@ double startgame = 3.0;
 
 char level2[125][125];
 int level = 0;
+=======
+<<<<<<< HEAD
+char level1[125][125];
+double startgame = 3.0;
+char level2[125][125];
+int level = 0;
+=======
+<<<<<<< HEAD
+char    level1[125][125];
+double startgame = 3.0;
+=======
+char level1[125][125];
+double startgame = 3.0;
+char level2[125][125];
+int level = 0;
+<<<<<<< HEAD
+=======
+>>>>>>> 88b8bfa8ff8fe557a9557f2e972c87602561c595
+>>>>>>> c95ba77e3f6760b79ba456f8623716325ddc82ca
+>>>>>>> e704f22cbd1c2573f0227413a440e074ff7b3512
+>>>>>>> f0df7c4527e5bf34328506b259e7bd4c4b2ff918
+>>>>>>> 63be128b5247bf37528765a5f1de943d8d4b6cce
 
 // Game specific variables here
 SGameChar   g_sChar; //Player character
@@ -348,6 +371,7 @@ void renderGame()
 {
 	renderTutorialMap(); // renders the map to the buffer first
 	renderCharacter();   // renders the character into the buffer
+	characterInteraction();
 }
 
 void renderTutorialMap()
@@ -546,6 +570,11 @@ void renderCharacter()
 void characterInteraction()
 {
 	
+	if (g_sChar.m_cLocation.Y - 1 == g_sLevel1GuardCells.m_cLocation.X || g_sChar.m_cLocation.Y + 1 == g_sLevel1GuardCells.m_cLocation.X || g_sChar.m_cLocation.X - 1 == g_sLevel1GuardCells.m_cLocation.X || g_sChar.m_cLocation.X + 1 == g_sLevel1GuardCells.m_cLocation.X)
+	{
+		COORD c = g_Console.getConsoleSize();
+		g_Console.writeToBuffer(c, "Hello", 0x03);
+	}
 }
 
 void renderFramerate()

@@ -27,8 +27,7 @@ enum EGAMESTATES
 {
     S_SPLASHSCREEN,
     S_GAME,
-    S_COUNT,
-	S_GAMEOVER
+    S_COUNT
 };
 
 // struct for the game character
@@ -57,8 +56,5 @@ void renderCharacter();     // renders the character into the buffer
 void characterInteraction();
 void renderFramerate();     // renders debug information, frame rate, elapsed time, etc
 void renderToScreen();      // dump the contents of the buffer to the screen, one frame worth of game
-void Level1AIMove();
-void renderGameOver();//For AI to move forward
-void gameoverwait();
-void gameovercondition();//For AI to move back
+void Level1AIMovement();
 #endif // _GAME_H

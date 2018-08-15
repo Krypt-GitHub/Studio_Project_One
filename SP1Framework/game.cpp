@@ -569,7 +569,6 @@ void renderCharacter()
 
 void characterInteraction()
 {
-	
 	if (g_sChar.m_cLocation.Y - 1 == g_sLevel1GuardCells.m_cLocation.X || g_sChar.m_cLocation.Y + 1 == g_sLevel1GuardCells.m_cLocation.X || g_sChar.m_cLocation.X - 1 == g_sLevel1GuardCells.m_cLocation.X || g_sChar.m_cLocation.X + 1 == g_sLevel1GuardCells.m_cLocation.X)
 	{
 		COORD c = g_Console.getConsoleSize();

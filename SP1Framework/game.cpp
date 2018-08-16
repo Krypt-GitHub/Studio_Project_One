@@ -20,12 +20,9 @@ double  g_dGameOver = 0.0;
 bool    g_abKeyPressed[K_COUNT];
 
 char level1[125][125];
-
-char    level1[125][125];
 double startgame = 1.0; //SPLASHSCREEN TIME
 char level2[125][125];
 char level3[125][125];
-double startgame = 5.0;
 signed int MenuItem = 0;
 int level = 0;
 
@@ -34,12 +31,6 @@ int level = 0;
 SGameChar   g_sChar; //Player character
 
 SGameChar   g_sLevel2Char; //Level 2 Characters
-
-SGameChar   g_sLevel1GuardCells; //Level 1 guards
-
- //Level 2 Characters
-SGameChar   g_sChar; //Player character
-SGameChar   g_sLevel2Char;
 
 SGameChar   g_sLevel1GuardCells; //Level 1 guards
 SGameChar   g_sLevel1GuardCafe;
@@ -278,15 +269,13 @@ void splashScreenWait()    // waits for time to pass in splash screen
 		}
 	}
 }
-	if (g_dElapsedTime > startgame) // wait for 3 seconds to switch to game mode, else do nothing // THIS IS WHERE YOU CHANGE SPLASHSCREEN TIME
-		g_eGameState = S_GAME;
-}
 
 void gameoverwait()
 {
-	if (g_dGameOver >= 1.0)
+	if (g_dGameOver >= 5.0)
 	{
 		g_eGameState = S_SPLASHSCREEN;
+		g_dGameOver = 0; //To always reset the spawn
 	}
 }
 
@@ -295,10 +284,8 @@ void gameovercondition()
 	renderGameOver();
 }
 
-void gameplay()            // gameplay logic
 void gameplayLevel1()            // gameplay logic
 {
-	g_dGuardTime += g_dDeltaTime;
 	processUserInput(); // checks if you should change states or do something else with the game, e.g. pause, exit
 	moveCharacterLevel1();    // moves the character, collision detection, physics, etc
 	Level1AIMovement(); //AI movement 
@@ -307,38 +294,21 @@ void gameplayLevel1()            // gameplay logic
 
 void gameplayLevel2()
 {
-	g_dGuardTime += g_dDeltaTime;
 	processUserInput(); // checks if you should change states or do something else with the game, e.g. pause, exit
 	moveCharacterLevel2();    // moves the character, collision detection, physics, etc
 							  //AI movement 
 						// sound can be played here too.
 }
 
-struct AI {
-	int X;
-	int Y;
-};
+void gameplayLevel3()
+{
+
+}
 
 //Global Variables for AI
 
 int move = 0;
 int move1 = 0;
-
-void Level1AIMove()
-
-void gameplayLevel3()
-{
-	g_dGuardTime += g_dDeltaTime;
-	processUserInput(); // checks if you should change states or do something else with the game, e.g. pause, exit
-	moveCharacterLevel2();    // moves the character, collision detection, physics, etc
-							  //AI movement 
-}
-
-//Global Variables for AI
-int XPosGuardCell = g_sLevel1GuardCells.m_cLocation.X;
-int YPosGuardCell = g_sLevel1GuardCells.m_cLocation.Y;
-int Steps = 0;
-int direction = 1;
 
 void Level1AIMovement()
 {	
@@ -419,7 +389,7 @@ void Level1AIMovement()
 	}
 }
 
-void moveCharacter()
+void moveCharacterLevel1()
 {
 	int CeX = g_sLevel1GuardCells.m_cLocation.X;
 	int CeY = g_sLevel1GuardCells.m_cLocation.Y;
@@ -511,9 +481,6 @@ void moveCharacterLevel2()
 	// Updating the location of the character based on the key press
 	// providing a beep sound whenver we shift the character
 	//Level 2
-	///////////
-	//Level 2//
-	///////////
 	if ((g_abKeyPressed[K_UP] || g_abKeyPressed[W]) && level2[g_sLevel2Char.m_cLocation.Y - 1][g_sLevel2Char.m_cLocation.X] == 'x') //To move up checking
 	{
 		//Beep(1440, 30);
@@ -875,6 +842,9 @@ void renderGameOver()
 			c.X = 1;
 		}
 	}
+	c.X = 25;
+	c.Y = 25;
+	g_Console.writeToBuffer(c, "You lost, your mom gay", 0x0F);
 }
 
 void renderCharacter()

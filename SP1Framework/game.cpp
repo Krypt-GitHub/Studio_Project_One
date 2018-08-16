@@ -16,6 +16,7 @@ double  g_dElapsedTime;
 double  g_dDeltaTime;
 double  g_dGuardTimeX = 0.0;
 double  g_dGuardTimeY = 0.0;
+double  g_dGuardTimeZ = 0.0;
 double  g_dGameOver = 0.0;
 bool    g_abKeyPressed[K_COUNT];
 
@@ -67,64 +68,39 @@ void init(void)
 	// sets the initial state for the game
 	g_eGameState = S_SPLASHSCREEN;
 
+	loadTutorialMap();
+
 	//g_Console.getConsoleSize().X / 2;
 	//g_Console.getConsoleSize().Y / 2;
 
-	g_sChar.m_cLocation.X = 6; //Level 1 spawn point
-	g_sChar.m_cLocation.Y = 4;
-
-	g_sLevel2Char.m_cLocation.X = 46; //Level 2 Character spawn point
-	g_sLevel2Char.m_cLocation.Y = 3; 
-
-	g_sLevel1GuardCells.m_cLocation.X = 3; //Spawn Point of Guard near the Cells area
-	g_sLevel1GuardCells.m_cLocation.Y = 10; 
-
-	g_sLevel1GuardCafe.m_cLocation.X = 35; //Spawn Point of Guard near the Cafe area
-	g_sLevel1GuardCafe.m_cLocation.Y = 15; 
-	
-	g_sLevel1GuardField1.m_cLocation.X = 105; //Spawn Point of Guard 1 near the Field area
-	g_sLevel1GuardField1.m_cLocation.Y = 15;
-	
-	g_sLevel1GuardField2.m_cLocation.X = 115;  //Spawn Point of Guard 2 near the Field area
-	g_sLevel1GuardField2.m_cLocation.Y = 5;
-
-	g_sLevel1PrisonerCells.m_cLocation.X = 15; //Spawn Point of Prisoner near the Cells area
-	g_sLevel1PrisonerCells.m_cLocation.Y = 4;
-
-	g_sLevel1PrisonerShowers.m_cLocation.X = 45;  //Spawn Point of Prisoner near the Showers area
-	g_sLevel1PrisonerShowers.m_cLocation.Y = 25;
-
-	g_sLevel1PrisonerCafe.m_cLocation.X = 45;  //Spawn Point of Prisoner near the Cafe area
-	g_sLevel1PrisonerCafe.m_cLocation.Y = 10;
 	g_sChar.m_cLocation.X = 6; //Player spawn point
 	g_sChar.m_cLocation.Y = 4;
 
-	g_sLevel2Char.m_cLocation.X = 46; //Level 2 Character spawn point
-	g_sLevel2Char.m_cLocation.Y = 3; 
-
 	g_sLevel1GuardCells.m_cLocation.X = 3; //Spawn Point of Guard near the Cells area
-	g_sLevel1GuardCells.m_cLocation.Y = 10; 
+	g_sLevel1GuardCells.m_cLocation.Y = 8;
 
-	g_sLevel1GuardCafe.m_cLocation.X = 35; //CAFE GUARD POINTS
-	g_sLevel1GuardCafe.m_cLocation.Y = 13; 
-	
-	g_sLevel1GuardField1.m_cLocation.X = 105; //Spawn Point of Guard 1 near the Field area
-	g_sLevel1GuardField1.m_cLocation.Y = 15;
-	
-	g_sLevel1GuardField2.m_cLocation.X = 115;  //Spawn Point of Guard 2 near the Field area
-	g_sLevel1GuardField2.m_cLocation.Y = 5;
+	g_sLevel1GuardCafe.m_cLocation.X = 50; //Spawn Point of Guard near the Cafe area
+	g_sLevel1GuardCafe.m_cLocation.Y = 11;
+
+	g_sLevel1GuardField1.m_cLocation.X = 85; //Spawn Point of Guard 1 near the Field area
+	g_sLevel1GuardField1.m_cLocation.Y = 13;
+
+	g_sLevel1GuardField2.m_cLocation.X = 95;  //Spawn Point of Guard 2 near the Field area
+	g_sLevel1GuardField2.m_cLocation.Y = 3;
 
 	g_sLevel1PrisonerCells.m_cLocation.X = 15; //Spawn Point of Prisoner near the Cells area
 	g_sLevel1PrisonerCells.m_cLocation.Y = 4;
 
 	g_sLevel1PrisonerShowers.m_cLocation.X = 45;  //Spawn Point of Prisoner near the Showers area
-	g_sLevel1PrisonerShowers.m_cLocation.Y = 25;
+	g_sLevel1PrisonerShowers.m_cLocation.Y = 24;
 
-	g_sLevel1PrisonerCafe.m_cLocation.X = 40;  //Spawn Point of Prisoner near the Cafe area
+	g_sLevel1PrisonerCafe.m_cLocation.X = 45;  //Spawn Point of Prisoner near the Cafe area
 	g_sLevel1PrisonerCafe.m_cLocation.Y = 10;
 
+	g_sLevel2Char.m_cLocation.X = 46; //Level 2 Character spawn point
+	g_sLevel2Char.m_cLocation.Y = 3;
 	// sets the width, height and the font name to use in the console
-	g_Console.setConsoleFont(10, 10, L"Consolas");
+	g_Console.setConsoleFont(0, 16, L"Consolas");
 }
 
 //--------------------------------------------------------------
@@ -191,6 +167,7 @@ void update(double dt)
 	g_dDeltaTime = dt;
 	g_dGuardTimeX += g_dDeltaTime;
 	g_dGuardTimeY += g_dDeltaTime;
+	g_dGuardTimeZ += g_dDeltaTime;
 	g_dGameOver += dt;
 
 	switch (g_eGameState)
@@ -207,6 +184,7 @@ void update(double dt)
 		break;
 	}
 }
+
 //--------------------------------------------------------------
 // Purpose  : Render function is to update the console screen
 //            At this point, you should know exactly what to draw onto the screen.
@@ -280,6 +258,7 @@ void gameoverwait()
 	{
 		g_eGameState = S_SPLASHSCREEN;
 		g_dGameOver = 0; //To always reset the spawn
+		ShiveNumber = '0';
 	}
 }
 
@@ -288,8 +267,8 @@ void gameovercondition()
 	renderGameOver();
 }
 
-void gameplayLevel1()            // gameplay logic
-{
+void gameplayLevel1()          
+{// gameplay logic
 	processUserInput(); // checks if you should change states or do something else with the game, e.g. pause, exit
 	moveCharacterLevel1();    // moves the character, collision detection, physics, etc
 	Level1AIMovement(); //AI movement
@@ -315,6 +294,7 @@ void gameplayLevel3()
 
 int move = 0;
 int move1 = 0;
+int move2 = 0;
 
 void Level1AIMovement()
 {	
@@ -325,54 +305,70 @@ void Level1AIMovement()
 		{
 			g_sLevel1GuardCells.m_cLocation.X++;
 			g_dGuardTimeX = 0.0;
-		
-		}
-		//FOR FIELD GUARDS
-		if (g_sLevel1GuardField1.m_cLocation.Y > 5 && move != 10) //Y starts at 15
-		{
-			g_sLevel1GuardField1.m_cLocation.Y--;
-			g_dGuardTimeX = 0.0;
-		
-		}
-		if (g_sLevel1GuardField2.m_cLocation.Y < 15 && move != 10) //Y starts at 5
-		{
-			g_sLevel1GuardField2.m_cLocation.Y++;
-			g_dGuardTimeX = 0.0;
 			move++;
 		}
 	}
 
 	if (g_dGuardTimeX >= 0.20 && move == 10)
 	{
+		contactcheck = false;
 		//FOR CELL GUARD
 		if (g_sLevel1GuardCells.m_cLocation.X > 2)
 		{
 			g_sLevel1GuardCells.m_cLocation.X--;
 			g_dGuardTimeX = 0.0;
 		}
-		//FOR FIELD GUARDS
-		if (g_sLevel1GuardField1.m_cLocation.Y < 15) //Y starts at 5
-		{
-			g_sLevel1GuardField1.m_cLocation.Y++;
-			g_dGuardTimeX = 0.0;
-		}
-		if (g_sLevel1GuardField2.m_cLocation.Y > 5) //Y starts at 5
-		{
-			g_sLevel1GuardField2.m_cLocation.Y--;
-			g_dGuardTimeX = 0.0;
-		}
-		
+
 		//TO RESET FOR LOOPING
 		if (g_sLevel1GuardCells.m_cLocation.X == 3)
 		{
 			move = 0;
 		}
 	}
+	////////////////////
+	if (g_dGuardTimeZ >= 0.25)
+	{
+		//FOR FIELD GUARDS
+		if (g_sLevel1GuardField1.m_cLocation.Y > 3 && move2 != 8) //Y starts at 15
+		{
+			g_sLevel1GuardField1.m_cLocation.Y--;
+			g_dGuardTimeZ = 0.0;
+		}
+		if (g_sLevel1GuardField2.m_cLocation.Y < 13 && move2 != 8) //Y starts at 5
+		{
+			g_sLevel1GuardField2.m_cLocation.Y++;
+			g_dGuardTimeZ = 0.0;
+			move2++;
+		}
+	}
+
+	if (g_dGuardTimeZ >= 0.25 && move2 == 8)
+	{
+		contactcheck = false;
+		//FOR FIELD GUARDS
+		if (g_sLevel1GuardField1.m_cLocation.Y < 13) //Y starts at 5
+		{
+			g_sLevel1GuardField1.m_cLocation.Y++;
+			g_dGuardTimeZ = 0.0;
+		}
+		if (g_sLevel1GuardField2.m_cLocation.Y > 3) //Y starts at 5
+		{
+			g_sLevel1GuardField2.m_cLocation.Y--;
+			g_dGuardTimeZ = 0.0;
+		}
+
+		if (g_sLevel1GuardField1.m_cLocation.Y == 13)
+		{
+			move2 = 0;
+		}
+	}
+	//////////////////////
 
 	if (g_dGuardTimeY >= 0.35)
 	{
+		contactcheck = true;
 		//FOR CAFE GUARD
-		if (g_sLevel1GuardCafe.m_cLocation.Y > 3 && move1 != 6) //Y starts at 13
+		if (g_sLevel1GuardCafe.m_cLocation.Y > 6 && move1 != 5) //Y starts at 13
 		{
 			g_sLevel1GuardCafe.m_cLocation.Y--;
 			g_dGuardTimeY = 0.0;
@@ -380,15 +376,16 @@ void Level1AIMovement()
 		}
 	}
 
-	if (g_dGuardTimeY >= 0.35 && move1 == 6)
+	if (g_dGuardTimeY >= 0.35 && move1 == 5)
 	{
+		contactcheck = false;
 		//FOR CAFE GUARD
 		if (g_sLevel1GuardCafe.m_cLocation.Y < 13)
 		{
 			g_sLevel1GuardCafe.m_cLocation.Y++;
 			g_dGuardTimeY = 0.0;
 		}
-		if (g_sLevel1GuardCafe.m_cLocation.Y == 13)
+		if (g_sLevel1GuardCafe.m_cLocation.Y == 11)
 		{
 			move1 = 0;
 		}
@@ -419,7 +416,7 @@ void moveCharacterLevel1()
 	// Updating the location of the character based on the key press
 
 	//Level 1
-	if ((g_abKeyPressed[K_UP] || g_abKeyPressed[W]) && level1[g_sChar.m_cLocation.Y - 1][g_sChar.m_cLocation.X] == 'x') //To move up checking
+	if ((g_abKeyPressed[K_UP] || g_abKeyPressed[W]) && level1[g_sChar.m_cLocation.Y - 1][g_sChar.m_cLocation.X] == ' ') //To move up checking
 	{
 		g_sChar.m_cLocation.Y--;
 		bSomethingHappened = true;
@@ -429,17 +426,18 @@ void moveCharacterLevel1()
 			g_eGameState = S_GAMEOVER;
 		}
 	}
-	if ((g_abKeyPressed[K_LEFT] || g_abKeyPressed[A]) && g_sChar.m_cLocation.X > 0 && level1[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X - 1] == 'x')
+	if ((g_abKeyPressed[K_LEFT] || g_abKeyPressed[A]) && g_sChar.m_cLocation.X > 0 && level1[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X - 1] == ' ')
 	{
 		g_sChar.m_cLocation.X--;
 		bSomethingHappened = true;
-		if (((Ch1X == CeX + 1) && (Ch1Y == CeY)) || ((Ch1X == CaX+1) && (Ch1Y == CaY)) || ((Ch1X == F1X+1) && (Ch1Y == F1Y)) || ((Ch1X == F2X+1) && (Ch1Y == F2Y)))
-		{
-			g_sChar.m_cLocation.X++;
-			g_eGameState = S_GAMEOVER;
-		}
+	
+    if (((Ch1X == CeX + 1) && (Ch1Y == CeY)) || ((Ch1X == CaX + 1) && (Ch1Y == CaY)) || ((Ch1X == F1X + 1) && (Ch1Y == F1Y)) || ((Ch1X == F2X + 1) && (Ch1Y == F2Y)))
+{
+	g_sChar.m_cLocation.X++;
+	g_eGameState = S_GAMEOVER;
+}
 	}
-	if ((g_abKeyPressed[K_DOWN] || g_abKeyPressed[S]) && g_sChar.m_cLocation.Y < g_Console.getConsoleSize().Y - 1 && g_sChar.m_cLocation.X > 0 && level1[g_sChar.m_cLocation.Y + 1][g_sChar.m_cLocation.X] == 'x')
+	if ((g_abKeyPressed[K_DOWN] || g_abKeyPressed[S]) && g_sChar.m_cLocation.Y < g_Console.getConsoleSize().Y - 1 && g_sChar.m_cLocation.X > 0 && level1[g_sChar.m_cLocation.Y + 1][g_sChar.m_cLocation.X] == ' ')
 	{
 		g_sChar.m_cLocation.Y++;
 		bSomethingHappened = true;
@@ -449,7 +447,7 @@ void moveCharacterLevel1()
 			g_eGameState = S_GAMEOVER;
 		}
 	}
-	if ((g_abKeyPressed[K_RIGHT] || g_abKeyPressed[D]) && g_sChar.m_cLocation.X < g_Console.getConsoleSize().X - 1 && g_sChar.m_cLocation.X > 0 && level1[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X + 1] == 'x')
+	if ((g_abKeyPressed[K_RIGHT] || g_abKeyPressed[D]) && g_sChar.m_cLocation.X < g_Console.getConsoleSize().X - 1 && g_sChar.m_cLocation.X > 0 && level1[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X + 1] == ' ')
 	{
 		g_sChar.m_cLocation.X++;
 		bSomethingHappened = true;
@@ -481,23 +479,23 @@ void moveCharacterLevel2()
 	// Updating the location of the character based on the key press
 	// providing a beep sound whenver we shift the character
 	//Level 2
-	if ((g_abKeyPressed[K_UP] || g_abKeyPressed[W]) && level2[g_sLevel2Char.m_cLocation.Y - 1][g_sLevel2Char.m_cLocation.X] == 'x') //To move up checking
+	if ((g_abKeyPressed[K_UP] || g_abKeyPressed[W]) && level2[g_sLevel2Char.m_cLocation.Y - 1][g_sLevel2Char.m_cLocation.X] == ' ') //To move up checking
 	{
 		g_sLevel2Char.m_cLocation.Y--;
 		bSomethingHappened = true;
 
 	}
-	if ((g_abKeyPressed[K_LEFT] || g_abKeyPressed[A]) && level2[g_sLevel2Char.m_cLocation.Y][g_sLevel2Char.m_cLocation.X - 1] == 'x')
+	if ((g_abKeyPressed[K_LEFT] || g_abKeyPressed[A]) && level2[g_sLevel2Char.m_cLocation.Y][g_sLevel2Char.m_cLocation.X - 1] == ' ')
 	{
 		g_sLevel2Char.m_cLocation.X--;
 		bSomethingHappened = true;
 	}
-	if ((g_abKeyPressed[K_DOWN] || g_abKeyPressed[S]) && level2[g_sLevel2Char.m_cLocation.Y + 1][g_sLevel2Char.m_cLocation.X] == 'x')
+	if ((g_abKeyPressed[K_DOWN] || g_abKeyPressed[S]) && level2[g_sLevel2Char.m_cLocation.Y + 1][g_sLevel2Char.m_cLocation.X] == ' ')
 	{
 		g_sLevel2Char.m_cLocation.Y++;
 		bSomethingHappened = true;
 	}
-	if ((g_abKeyPressed[K_RIGHT] || g_abKeyPressed[D]) && level2[g_sLevel2Char.m_cLocation.Y][g_sLevel2Char.m_cLocation.X + 1] == 'x')
+	if ((g_abKeyPressed[K_RIGHT] || g_abKeyPressed[D]) && level2[g_sLevel2Char.m_cLocation.Y][g_sLevel2Char.m_cLocation.X + 1] == ' ')
 	{
 		g_sLevel2Char.m_cLocation.X++;
 		bSomethingHappened = true;
@@ -517,12 +515,38 @@ void Level1ItemInteractions()
 {
 	COORD c = g_Console.getConsoleSize();
 
-	if (g_abKeyPressed[K_INTERACT] && (level1[g_sChar.m_cLocation.Y + 1][g_sChar.m_cLocation.X] == 'S' || level1[g_sChar.m_cLocation.Y - 1][g_sChar.m_cLocation.X] == 'S' || level1[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X + 1] == 'S' || level1[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X - 1] == 'S')) //To move up checking
+	if (g_abKeyPressed[K_INTERACT] && level1[g_sChar.m_cLocation.Y + 1][g_sChar.m_cLocation.X] == 'S') //To move up checking
 	{
+		//separate it later
 		ShiveNumber += 1;
 		level1[g_sChar.m_cLocation.Y + 1][g_sChar.m_cLocation.X] = ' ';
+		renderTutorialMap();
+	}
+	else if (g_abKeyPressed[K_INTERACT] && level1[g_sChar.m_cLocation.Y - 1][g_sChar.m_cLocation.X] == 'S') //To move up checking
+	{
+		ShiveNumber += 1;
+		level1[g_sChar.m_cLocation.Y - 1][g_sChar.m_cLocation.X] = ' ';
+	}
+	else if (g_abKeyPressed[K_INTERACT] && level1[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X + 1] == 'S')
+	{
+		ShiveNumber += 1;
+		level1[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X + 1] = ' ';
+	}
+	else if (g_abKeyPressed[K_INTERACT] && level1[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X - 1] == 'S')
+	{
+		ShiveNumber += 1;
+		level1[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X - 1] = ' ';
+	}
+	if (g_abKeyPressed[K_INTERACT] && level1[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X + 1] == '~') //To move up checking
+	{
+		//separate it later
+		ShiveNumber = 0;
+		level1[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X + 1] = ' ';
+
 	}
 }
+
+int count = 0;
 
 void prisonerInteraction()
 {
@@ -532,16 +556,73 @@ void prisonerInteraction()
 	int PcX = g_sLevel1PrisonerCells.m_cLocation.X;
 	int PcY = g_sLevel1PrisonerCells.m_cLocation.Y;
 
+	bool bSomethingHappened = false;
+	if (g_dBounceTime > g_dElapsedTime)
+		return;
+
 	COORD c = g_Console.getConsoleSize();
+	c.X = 39;
+	c.Y = 34;
 
 	if (g_abKeyPressed[K_INTERACT])
 	{
+		bSomethingHappened = true;
 		if (((Ch1X - 1 == PcX) && (Ch1Y == PcY)) || ((Ch1X + 1 == PcX) && (Ch1Y == PcY)) || ((Ch1Y - 1 == PcY) && (Ch1X == PcX)) || ((Ch1Y + 1 == PcY) && (Ch1X == PcX)))
 		{
-			c.X = 30;
-			c.Y = 30;
-			g_Console.writeToBuffer(c, "Sup Nigger", 0x03);
+			count++;
 		}
+
+		if (bSomethingHappened)
+		{
+			// set the bounce time to some time in the future to prevent accidental triggers
+			g_dBounceTime = g_dElapsedTime + 0.1; // 125ms should be enough
+		}
+
+	}
+}
+
+void renderDialogue()
+{
+	COORD c = g_Console.getConsoleSize();
+	c.X = 39;
+	c.Y = 34;
+
+	if (count == 1)
+	{
+		g_Console.writeToBuffer(c, "Prisoner: What do you want?", 0x03);
+		c.Y = 35;
+		g_Console.writeToBuffer(c, "          Why are you in my cell?", 0x03);
+	}
+
+	if (count == 2)
+	{
+		c.Y = 34;
+		g_Console.writeToBuffer(c, "Faizal: Do you know anything about the secret", 0x03);
+		c.Y = 35;
+		g_Console.writeToBuffer(c, "        passage to get out of this shithole?", 0x03);
+	}
+	if (count == 3)
+	{
+		c.Y = 34;
+		g_Console.writeToBuffer(c, "Prisoner: How the hell do you know about that", 0x03);
+		c.Y = 35;
+		g_Console.writeToBuffer(c, "          Who the hell are you?", 0x03);
+	}
+	if (count == 4)
+	{
+		c.Y = 34;
+		g_Console.writeToBuffer(c, "Faizal: Just shut up and tell me", 0x03);
+		c.Y = 35;
+		g_Console.writeToBuffer(c, "        what I want to know", 0x03);
+	}
+	if (count == 5)
+	{
+		c.Y = 34;
+		g_Console.writeToBuffer(c, "Prisoner: Alright chill out dude, I don't", 0x03);
+		c.Y = 35;
+		g_Console.writeToBuffer(c, "          know much, but I do know someone who", 0x03);
+		c.Y = 36;
+		g_Console.writeToBuffer(c, "          might just have the info you need", 0x03);
 	}
 }
 
@@ -551,22 +632,6 @@ void processUserInput()
 	if (g_abKeyPressed[K_ESCAPE])
 	{
 		g_bQuitGame = true;
-	}
-	if (g_abKeyPressed[K_RETURN])
-	{
-		g_eGameState = S_SPLASHSCREEN;
-		if (level = 1)
-		{
-			level = 0;
-			g_sChar.m_cLocation.X = 6; //Player spawn point
-			g_sChar.m_cLocation.Y = 4;
-		}
-		else if (level = 2)
-		{
-			level = 0;
-			g_sLevel2Char.m_cLocation.X = 46; //Level 2 Character spawn point
-			g_sLevel2Char.m_cLocation.Y = 3;
-		}
 	}
 }
 
@@ -651,12 +716,10 @@ void renderSplashScreen()  // renders the splash screen
 
 void renderLevelOne()
 {
-
-	renderTutorialMap(); // renders the map to the buffer first
+	renderTutorialMap();  // renders the map to the buffer first
 	renderCharacter();   // renders the character into the buffer
-	prisonerInteraction();
+	renderDialogue();
 	renderInventory(); //Renders the inventory
-	Level1ItemInteractions();
 }
 
 void renderLevelTwo()
@@ -670,6 +733,8 @@ void renderLevelThree()
 
 }
 
+char lives = 50; //50 is read as '2'
+
 void renderInventory()
 {
 	COORD c = g_Console.getConsoleSize();
@@ -679,12 +744,18 @@ void renderInventory()
 	c.X = 125;
 	c.Y = 5;
 	g_Console.writeToBuffer(c, "Items On Hand:", 0x0F);
+	c.X = 125;
+	c.Y = 8;
+	g_Console.writeToBuffer(c, "Lives:", 0x0F);
+	c.X = 135;
+	c.Y = 8;
+	g_Console.writeToBuffer(c, lives, 0x0F);
 	if (ShiveNumber > '0')
 	{
-		c.X = 125;
+		c.X = 127;
 		c.Y = 6;
-		g_Console.writeToBuffer(c, "Shive", 0x0F);
-		c.X = 123;
+		g_Console.writeToBuffer(c, "Shive(s)", 0x0F);
+		c.X = 125;
 		c.Y = 6;
 		g_Console.writeToBuffer(c, ShiveNumber, 0x0F);
 	}
@@ -692,9 +763,26 @@ void renderInventory()
 
 void renderTutorialMap()
 {
-	using namespace std;
-	string line;
 	COORD c;
+	c.X = 0;
+	c.Y = 0;
+	for (int y = 0; y < 125; y++)
+	{
+		c.X = y;
+		for (int x = 0; x < 125; x++)
+		{
+			c.Y = x;
+			g_Console.writeToBuffer(c, level1[x][y], 0x03);
+		}
+	}
+}
+
+void loadTutorialMap()
+{
+	//Read the array instead of file
+	using namespace std;
+	COORD c;
+	string line;
 	ifstream myfile("map_tutorial.txt");
 
 	c.X = 1;
@@ -710,67 +798,64 @@ void renderTutorialMap()
 		{
 			for (int col = 0; col < line.size(); col++)
 			{
+				level1[x][y] = line[col]; // Prevent the overwriting of characters that do not appear in this loop
 				if (line[col] == '#')
 				{
-					line[col] = 205;
+					level1[x][y] = 205;
 				}
 				if (line[col] == '*')
 				{
-					line[col] = 186;
+					level1[x][y] = 186;
 				}
 				if (line[col] == 'H')
 				{
-					line[col] = 219;
+					level1[x][y] = 219;
 				}
 				if (line[col] == 'A')
 				{
-					line[col] = 185;
+					level1[x][y] = 185;
 				}
 				if (line[col] == 'B')
 				{
-					line[col] = 204;
+					level1[x][y] = 204;
 				}
 				if (line[col] == 'C')
 				{
-					line[col] = 201;
+					level1[x][y] = 201;
 				}
 				if (line[col] == 'D')
 				{
-					line[col] = 187;
+					level1[x][y] = 187;
 				}
 				if (line[col] == 'E')
 				{
-					line[col] = 203;
+					level1[x][y] = 203;
 				}
 				if (line[col] == 'F')
 				{
-					line[col] = 202;
+					level1[x][y] = 202;
 				}
 				if (line[col] == 'G')
 				{
-					line[col] = 200;
+					level1[x][y] = 200;
+				}
+				if (line[col] == '+')
+				{
+					level1[x][y] = 206;
 				}
 				if (line[col] == 'I')
 				{
-					line[col] = 188;
+					level1[x][y] = 188;
 				}
 				if (line[col] == '!')
 				{
-					line[col] = 176;
-				}
-				if (line[col] == ' ')
-				{
-					level1[x][y] = 'x';
-				}
-				if (line[col] == '3')
-				{
-					level1[x][y] = 219;
+					level1[x][y] = 176;
 				}
 				if (line[col] == 'S')
 				{
 					level1[x][y] = 'S';
 				}
-				g_Console.writeToBuffer(c, line[col], 0x03);
+				
 				c.X++;
 				y++;
 			}
@@ -779,7 +864,9 @@ void renderTutorialMap()
 			c.Y++;
 			c.X = 1;
 		}
+		myfile.close();
 	}
+
 }
 
 void renderBronzeMap()
@@ -856,7 +943,7 @@ void renderBronzeMap()
 				}
 				if (line[col] == ' ')
 				{
-					level2[x][y] = 'x';
+					level2[x][y] = ' ';
 				}
 				g_Console.writeToBuffer(c, line[col], 0x03);
 				c.X++;
@@ -897,10 +984,18 @@ void renderGameOver()
 			c.Y++;
 			c.X = 1;
 		}
+		myfile.close();
 	}
 	c.X = 20;
 	c.Y = 25;
 	g_Console.writeToBuffer(c, "You got caught...You will get sent back to the title screen by pressing R", 0x0F);
+	if (level = 1)
+	{
+    	g_sChar.m_cLocation.X = 6; // To reset the spawn point of the player
+	    g_sChar.m_cLocation.Y = 4;
+		loadTutorialMap();
+	}
+	//reset future stuff to be placed in here
 }
 
 void renderCharacter()
@@ -967,36 +1062,108 @@ void levelonelose()
 	{
 		////THIS IS DETECTION WHEN ALL GUARDS ARE MOVING FORWARD////
 		//FOR IF PLAYER NORTH OF GUARD//
-		if (((Ch1X == CeX) && (Ch1Y == CeY - 1)) || ((Ch1X == CaX) && (Ch1Y == CaY - 1)) || ((Ch1X == F1X) && (Ch1Y == F1Y - 1)))
-			g_eGameState = S_GAMEOVER;
+		if (((Ch1X == CeX) && (Ch1Y == CeY - 1)) || ((Ch1X == CaX) && (Ch1Y == CaY - 1)) || ((Ch1X == F1X) && (Ch1Y == F1Y - 1))) {
+			lives = lives - 1;
+			if (lives != '0') {
+				g_sChar.m_cLocation.X = 6;
+				g_sChar.m_cLocation.Y = 4;
+			}
+			else {
+				g_eGameState = S_GAMEOVER;
+				lives = 50;
+			}
+		}
 
 		//FOR IF PLAYER DIAGONALLY RIGHT TO GUARD//
-		if (((Ch1X == CeX + 1) && (Ch1Y == CeY - 1)) || ((Ch1X == CaX + 1) && (Ch1Y == CaY - 1)) || ((Ch1X == F1X + 1) && (Ch1Y == F1Y - 1)))
-			g_eGameState = S_GAMEOVER;
+		if (((Ch1X == CeX + 1) && (Ch1Y == CeY - 1)) || ((Ch1X == CaX + 1) && (Ch1Y == CaY - 1)) || ((Ch1X == F1X + 1) && (Ch1Y == F1Y - 1))) {
+			lives = lives - 1;
+			if (lives != '0') {
+				g_sChar.m_cLocation.X = 6;
+				g_sChar.m_cLocation.Y = 4;
+			}
+			else {
+				g_eGameState = S_GAMEOVER;
+				lives = 50;
+			}
+		}
 
 		//FOR IF PLAYER DIAGONALLY LEFT TO GUARD//
-		if (((Ch1X == CaX - 1) && (Ch1Y == CaY - 1)) || ((Ch1X == F1X - 1) && (Ch1Y == F1Y - 1)))
-			g_eGameState = S_GAMEOVER;
+		if (((Ch1X == CaX - 1) && (Ch1Y == CaY - 1)) || ((Ch1X == F1X - 1) && (Ch1Y == F1Y - 1))) {
+			lives = lives - 1;
+			if (lives != '0') {
+				g_sChar.m_cLocation.X = 6;
+				g_sChar.m_cLocation.Y = 4;
+			}
+			else {
+				g_eGameState = S_GAMEOVER;
+				lives = 50;
+			}
+		}
 
 		//FOR IF THE PLAYER IS EAST OF GUARD//
-		if (((Ch1X == CeX + 1) && (Ch1Y == CeY)) || ((Ch1X == CaX + 1) && (Ch1Y == CaY)) || ((Ch1X == F1X + 1) && (Ch1Y == F1Y)) || ((Ch1X == F2X + 1) && (Ch1Y == F2Y)))
-			g_eGameState = S_GAMEOVER;
+		if (((Ch1X == CeX + 1) && (Ch1Y == CeY)) || ((Ch1X == CaX + 1) && (Ch1Y == CaY)) || ((Ch1X == F1X + 1) && (Ch1Y == F1Y)) || ((Ch1X == F2X + 1) && (Ch1Y == F2Y))) {
+			lives = lives - 1;
+			if (lives != '0') {
+				g_sChar.m_cLocation.X = 6;
+				g_sChar.m_cLocation.Y = 4;
+			}
+			else {
+				g_eGameState = S_GAMEOVER;
+				lives = 50;
+			}
+		}
 
 		//FOR IF THE PLAYER IS WEST OF GUARD//
-		if (((Ch1X == CaX - 1) && (Ch1Y == CaY)) || ((Ch1X == F1X - 1) && (Ch1Y == F1Y)) || ((Ch1X == F2X - 1) && (Ch1Y == F2Y)))
-			g_eGameState = S_GAMEOVER;
+		if (((Ch1X == CaX - 1) && (Ch1Y == CaY)) || ((Ch1X == F1X - 1) && (Ch1Y == F1Y)) || ((Ch1X == F2X - 1) && (Ch1Y == F2Y))) {
+			lives = lives - 1;
+			if (lives != '0') {
+				g_sChar.m_cLocation.X = 6;
+				g_sChar.m_cLocation.Y = 4;
+			}
+			else {
+				g_eGameState = S_GAMEOVER;
+				lives = 50;
+			}
+		}
 
 		//FOR IF THE PLAYER IS SOUTH OF GUARD//
-		if (((Ch1X == CeX) && (Ch1Y == CeY + 1)) || ((Ch1X == F2X) && (Ch1Y == F2Y + 1)))
-			g_eGameState = S_GAMEOVER;
+		if (((Ch1X == CeX) && (Ch1Y == CeY + 1)) || ((Ch1X == F2X) && (Ch1Y == F2Y + 1))) {
+			lives = lives - 1;
+			if (lives != '0') {
+				g_sChar.m_cLocation.X = 6;
+				g_sChar.m_cLocation.Y = 4;
+			}
+			else {
+				g_eGameState = S_GAMEOVER;
+				lives = 50;
+			}
+		}
 
 		//FOR IF THE PLAYER IS DIAGONALLY RIGHT BELOW//
-		if (((Ch1X == CeX + 1) && (Ch1Y == CeY + 1)) || ((Ch1X == F2X + 1) && (Ch1Y == F2Y + 1)))
-			g_eGameState = S_GAMEOVER;
+		if (((Ch1X == CeX + 1) && (Ch1Y == CeY + 1)) || ((Ch1X == F2X + 1) && (Ch1Y == F2Y + 1))) {
+			lives = lives - 1;
+			if (lives != '0') {
+				g_sChar.m_cLocation.X = 6;
+				g_sChar.m_cLocation.Y = 4;
+			}
+			else {
+				g_eGameState = S_GAMEOVER;
+				lives = 50;
+			}
+		}
 
 		//FOR IF THE PLAYER IS DIAGONALLY LEFT BELOW//
-		if ((Ch1X == F2X - 1) && (Ch1Y == F2Y + 1))
-			g_eGameState = S_GAMEOVER;
+		if ((Ch1X == F2X - 1) && (Ch1Y == F2Y + 1)) {
+			lives = lives - 1;
+			if (lives != '0') {
+				g_sChar.m_cLocation.X = 6;
+				g_sChar.m_cLocation.Y = 4;
+			}
+			else {
+				g_eGameState = S_GAMEOVER;
+				lives = 50;
+			}
+		}
 	}
 
 
@@ -1004,35 +1171,108 @@ void levelonelose()
 	if (contactcheck == false)
 	{
 		//FOR IF PLAYER IS NORTH OF GUARD//
-		if (((Ch1X == CeX) && (Ch1Y == CeY - 1)) || ((Ch1X == F2X) && (Ch1Y == F2Y - 1)))
-			g_eGameState = S_GAMEOVER;
+		if (((Ch1X == CeX) && (Ch1Y == CeY - 1)) || ((Ch1X == F2X) && (Ch1Y == F2Y - 1))) {
+			lives = lives - 1;
+			if (lives != '0') {
+				g_sChar.m_cLocation.X = 6;
+				g_sChar.m_cLocation.Y = 4;
+			}
+			else {
+				g_eGameState = S_GAMEOVER;
+				lives = 50;
+			}
+		}
 
 		//FOR IF PLAYER DIAGONALLY RIGHT TO GUARD//
-		if ((Ch1X == F2X + 1) && (Ch1Y == F2Y - 1))
-			g_eGameState = S_GAMEOVER;
+		if ((Ch1X == F2X + 1) && (Ch1Y == F2Y - 1)) {
+			lives = lives - 1;
+			if (lives != '0') {
+				g_sChar.m_cLocation.X = 6;
+				g_sChar.m_cLocation.Y = 4;
+			}
+			else {
+				g_eGameState = S_GAMEOVER;
+				lives = 50;
+			}
+		}
 
 		//FOR IF PLAYER DIAGONALLY FRONT LEFT TO GUARD//
-		if (((Ch1X == CeX - 1) && (Ch1Y == CeY - 1)) || ((Ch1X == F2X - 1) && (Ch1Y == F2Y - 1)))
-			g_eGameState = S_GAMEOVER;
+		if (((Ch1X == CeX - 1) && (Ch1Y == CeY - 1)) || ((Ch1X == F2X - 1) && (Ch1Y == F2Y - 1))) {
+			lives = lives - 1;
+			if (lives != '0') {
+				g_sChar.m_cLocation.X = 6;
+				g_sChar.m_cLocation.Y = 4;
+			}
+			else {
+				g_eGameState = S_GAMEOVER;
+				lives = 50;
+			}
+		}
 
 		//FOR IF PLAYER IS EAST OF GUARD//
 		if (((Ch1X == CaX + 1) && (Ch1Y == CaY)) || ((Ch1X == F1X + 1) && (Ch1Y == F1Y)) || ((Ch1X == F2X + 1) && (Ch1Y == F2Y)))
-			g_eGameState = S_GAMEOVER;
+		{
+			lives = lives - 1;
+			if (lives != '0') {
+				g_sChar.m_cLocation.X = 6;
+				g_sChar.m_cLocation.Y = 4;
+			}
+			else {
+				g_eGameState = S_GAMEOVER;
+				lives = 50;
+			}
+		}
 
 		//FOR IF PLAYER IS WEST OF GUARD//
 		if (((Ch1X == CeX - 1) && (Ch1Y == CeY)) || ((Ch1X == CaX - 1) && (Ch1Y == CaY)) || ((Ch1X == F1X - 1) && (Ch1Y == F1Y)) || ((Ch1X == F2X - 1) && (Ch1Y == F2Y)))
-			g_eGameState = S_GAMEOVER;
-
+		{
+			lives = lives - 1;
+			if (lives != '0') {
+				g_sChar.m_cLocation.X = 6;
+				g_sChar.m_cLocation.Y = 4;
+			}
+			else {
+				g_eGameState = S_GAMEOVER;
+				lives = 50;
+			}
+		}
 		//FOR IF PLAYER SOUTH OF GUARD//
 		if (((Ch1X == CeX) && (Ch1Y == CeY + 1)) || ((Ch1X == CaX) && (Ch1Y == CaY + 1)) || ((Ch1X == F1X) && (Ch1Y == F1Y + 1)))
-			g_eGameState = S_GAMEOVER;
-
+		{
+			lives = lives - 1;
+			if (lives != '0') {
+				g_sChar.m_cLocation.X = 6;
+				g_sChar.m_cLocation.Y = 4;
+			}
+			else {
+				g_eGameState = S_GAMEOVER;
+				lives = 50;
+			}
+		}
 		//FOR IF PLAYER SOUTH RIGHT BELOW//
 		if (((Ch1X == CaX + 1) && (Ch1Y == CaY + 1)) || ((Ch1X == F1X + 1) && (Ch1Y == F1Y + 1)))
-			g_eGameState = S_GAMEOVER;
-
+		{
+			lives = lives - 1;
+			if (lives != '0') {
+				g_sChar.m_cLocation.X = 6;
+				g_sChar.m_cLocation.Y = 4;
+			}
+			else {
+				g_eGameState = S_GAMEOVER;
+			}
+		}
 		//FOR IF PLAYER SOUTH LEFT BELOW//
 		if (((Ch1X == F1X - 1) && (Ch1Y == F1Y + 1)) || ((Ch1X == CeX - 1) && (Ch1Y == CeY + 1)) || ((Ch1X == CaX - 1) && (Ch1Y == CaY + 1)))
-			g_eGameState = S_GAMEOVER;
+		{
+			lives = lives - 1;
+			if (lives != '0') {
+				g_sChar.m_cLocation.X = 6;
+				g_sChar.m_cLocation.Y = 4;
+			}
+			else {
+				g_eGameState = S_GAMEOVER;
+				lives = 50;
+			}
+		}
 	}
 }

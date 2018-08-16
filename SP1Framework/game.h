@@ -72,6 +72,7 @@ void renderLevelTwo();
 void renderLevelThree();
 void renderInventory();
 void levelonelose();
+void renderDialogue();
 
 void prisonerInteraction();
 
@@ -80,5 +81,8 @@ void renderToScreen();      // dump the contents of the buffer to the screen, on
 
 void renderGameOver();//For AI to move forward
 void gameoverwait();
-void gameovercondition();//For AI to move back
+void gameovercondition();//For AI to move 
+
+void loadTutorialMap();
+
 #endif // _GAME_H

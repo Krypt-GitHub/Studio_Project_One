@@ -29,7 +29,6 @@ int level = 0;
 char ShiveNumber = '0';
 char KeyNumber = '0';
 
-int ShiveLocation[2][2];
 
 // Game specific variables here
 SGameChar   g_sChar; //Player character

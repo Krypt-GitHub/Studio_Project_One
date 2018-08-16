@@ -73,6 +73,7 @@ void renderLevelThree();
 void renderInventory();
 void levelonelose();
 void renderSteelMap();
+void renderDialogue();
 
 void prisonerInteraction();
 

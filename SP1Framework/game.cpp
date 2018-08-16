@@ -524,6 +524,8 @@ void Level1ItemInteractions()
 	}
 }
 
+int test = 0;
+
 void prisonerInteraction()
 {
 	int Ch1X = g_sChar.m_cLocation.X;
@@ -532,16 +534,24 @@ void prisonerInteraction()
 	int PcX = g_sLevel1PrisonerCells.m_cLocation.X;
 	int PcY = g_sLevel1PrisonerCells.m_cLocation.Y;
 
-	COORD c = g_Console.getConsoleSize();
 
 	if (g_abKeyPressed[K_INTERACT])
 	{
 		if (((Ch1X - 1 == PcX) && (Ch1Y == PcY)) || ((Ch1X + 1 == PcX) && (Ch1Y == PcY)) || ((Ch1Y - 1 == PcY) && (Ch1X == PcX)) || ((Ch1Y + 1 == PcY) && (Ch1X == PcX)))
 		{
-			c.X = 30;
-			c.Y = 30;
-			g_Console.writeToBuffer(c, "Sup Nigger", 0x03);
+			test = 1;
 		}
+	}
+}
+
+void renderDialogue()
+{
+	COORD c = g_Console.getConsoleSize();
+	if (test == 1)
+	{
+		c.X = 30;
+		c.Y = 30;
+		g_Console.writeToBuffer(c, "Sup Nigger", 0x03);
 	}
 }
 
@@ -654,9 +664,10 @@ void renderLevelOne()
 
 	renderTutorialMap(); // renders the map to the buffer first
 	renderCharacter();   // renders the character into the buffer
-	prisonerInteraction();
+	renderDialogue();
 	renderInventory(); //Renders the inventory
 	Level1ItemInteractions();
+	prisonerInteraction();
 }
 
 void renderLevelTwo()
@@ -765,7 +776,7 @@ void renderTutorialMap()
 				}
 				if (line[col] == '3')
 				{
-					level1[x][y] = 219;
+					line[col] = 219;
 				}
 				if (line[col] == 'S')
 				{

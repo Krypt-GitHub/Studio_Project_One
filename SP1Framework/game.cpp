@@ -293,9 +293,17 @@ void gameplayLevel1()            // gameplay logic
 {
 	processUserInput(); // checks if you should change states or do something else with the game, e.g. pause, exit
 	moveCharacterLevel1();    // moves the character, collision detection, physics, etc
+<<<<<<< HEAD
 	Level1AIMovement(); //AI movement
+=======
+	Level1AIMovement(); //AI movement 
+<<<<<<< HEAD
+	Level1ItemInteractions();         // sound can be played here too.
+=======
 	prisonerInteraction();
+>>>>>>> 390632dd7e60947f85e0c4365dfb164bd9af5a61
 	                   // sound can be played here too.
+>>>>>>> 2836e34659607c18ca6c414bf7180bbe77fa58a1
 }
 
 void gameplayLevel2()
@@ -468,7 +476,11 @@ void moveCharacterLevel1()
 	if (bSomethingHappened)
 	{
 		// set the bounce time to some time in the future to prevent accidental triggers
+<<<<<<< HEAD
+		g_dBounceTime = g_dElapsedTime + 0.08; // 125ms should be enough
+=======
 		g_dBounceTime = g_dElapsedTime + 0.06; // 125ms should be enough
+>>>>>>> 2836e34659607c18ca6c414bf7180bbe77fa58a1
 	}
 }
 

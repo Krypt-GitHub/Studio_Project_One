@@ -26,6 +26,9 @@ char level3[125][125];
 signed int MenuItem = 0;
 int level = 0;
 
+char ShiveNumber = '0';
+char KeyNumber = '0';
+
 
 // Game specific variables here
 SGameChar   g_sChar; //Player character
@@ -163,6 +166,7 @@ void getInput(void)
 	g_abKeyPressed[K_SPACE] = isKeyPressed(VK_SPACE);
 	g_abKeyPressed[K_RETURN] = isKeyPressed(0x52);
 	g_abKeyPressed[K_ESCAPE] = isKeyPressed(VK_ESCAPE);
+	g_abKeyPressed[K_INTERACT] = isKeyPressed(0x45);
 	g_abKeyPressed[K_ENTER] = isKeyPressed(VK_RETURN);
 	g_abKeyPressed[I] = isKeyPressed(0x49);
 }
@@ -290,6 +294,7 @@ void gameplayLevel1()            // gameplay logic
 	processUserInput(); // checks if you should change states or do something else with the game, e.g. pause, exit
 	moveCharacterLevel1();    // moves the character, collision detection, physics, etc
 	Level1AIMovement(); //AI movement
+	prisonerInteraction();
 	                   // sound can be played here too.
 }
 
@@ -508,6 +513,16 @@ void moveCharacterLevel2()
 	}
 }
 
+<<<<<<< HEAD
+void Level1ItemInteractions()
+{
+	COORD c = g_Console.getConsoleSize();
+
+	if (g_abKeyPressed[K_INTERACT] && (level1[g_sChar.m_cLocation.Y + 1][g_sChar.m_cLocation.X] == 'S' || level1[g_sChar.m_cLocation.Y - 1][g_sChar.m_cLocation.X] == 'S' || level1[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X + 1] == 'S' || level1[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X - 1] == 'S')) //To move up checking
+	{
+		ShiveNumber += 1;
+		level1[g_sChar.m_cLocation.Y + 1][g_sChar.m_cLocation.X] = ' ';
+=======
 void prisonerInteraction()
 {
 	int Ch1X = g_sChar.m_cLocation.X;
@@ -526,6 +541,7 @@ void prisonerInteraction()
 			c.Y = 30;
 			g_Console.writeToBuffer(c, "Sup Nigger", 0x03);
 		}
+>>>>>>> 2836e34659607c18ca6c414bf7180bbe77fa58a1
 	}
 }
 
@@ -639,7 +655,16 @@ void renderLevelOne()
 
 	renderTutorialMap(); // renders the map to the buffer first
 	renderCharacter();   // renders the character into the buffer
+<<<<<<< HEAD
 	prisonerInteraction();
+=======
+<<<<<<< HEAD
+	renderInventory(); //Renders the inventory
+	characterInteraction();
+	Level1ItemInteractions();
+=======
+>>>>>>> 2836e34659607c18ca6c414bf7180bbe77fa58a1
+>>>>>>> 390632dd7e60947f85e0c4365dfb164bd9af5a61
 }
 
 void renderLevelTwo()
@@ -651,6 +676,26 @@ void renderLevelTwo()
 void renderLevelThree()
 {
 
+}
+
+void renderInventory()
+{
+	COORD c = g_Console.getConsoleSize();
+	c.X = 125;
+	c.Y = 2;
+	g_Console.writeToBuffer(c, "Intel:", 0x0F);
+	c.X = 125;
+	c.Y = 5;
+	g_Console.writeToBuffer(c, "Items On Hand:", 0x0F);
+	if (ShiveNumber > '0')
+	{
+		c.X = 125;
+		c.Y = 6;
+		g_Console.writeToBuffer(c, "Shive", 0x0F);
+		c.X = 123;
+		c.Y = 6;
+		g_Console.writeToBuffer(c, ShiveNumber, 0x0F);
+	}
 }
 
 void renderTutorialMap()
@@ -725,9 +770,16 @@ void renderTutorialMap()
 				{
 					level1[x][y] = 'x';
 				}
+<<<<<<< HEAD
 				if (line[col] == '3')
 				{
 					level1[x][y] = 219;
+=======
+				if (line[col] == 'S')
+				{
+					level1[x][y] = 'S';
+					
+>>>>>>> 390632dd7e60947f85e0c4365dfb164bd9af5a61
 				}
 				g_Console.writeToBuffer(c, line[col], 0x03);
 				c.X++;
@@ -859,7 +911,7 @@ void renderGameOver()
 	}
 	c.X = 25;
 	c.Y = 25;
-	g_Console.writeToBuffer(c, "You lost, your mom gay", 0x0F);
+	g_Console.writeToBuffer(c, "You got caught...You will get sent back to the title screen", 0x0F);
 }
 
 void renderCharacter()

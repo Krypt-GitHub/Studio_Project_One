@@ -21,8 +21,13 @@ enum EKEYS
     K_SPACE,
 	K_RETURN,
 	K_ENTER,
+<<<<<<< HEAD
+	K_INTERACT,
+    K_COUNT
+=======
     K_COUNT,
 	I
+>>>>>>> 2836e34659607c18ca6c414bf7180bbe77fa58a1
 };
 
 // Enumeration for the different screen states
@@ -57,6 +62,7 @@ void gameplayLevel3();     // gameplay logic
 void Level1AIMovement();
 void moveCharacterLevel1();       // moves the character, collision detection, physics, etc
 void moveCharacterLevel2();       // moves the character, collision detection, physics, etc
+void Level1ItemInteractions();
 
 void processUserInput();    // checks if you should change states or do something else with the game, e.g. pause, exit
 void clearScreen();         // clears the current screen and draw from scratch 
@@ -68,6 +74,7 @@ void renderCharacter();     // renders the character into the buffer
 void renderLevelOne();
 void renderLevelTwo();
 void renderLevelThree();
+void renderInventory();
 
 void prisonerInteraction();
 

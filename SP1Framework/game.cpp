@@ -667,7 +667,8 @@ void renderLevelTwo()
 
 void renderLevelThree()
 {
-
+	renderSteelMap();
+	renderCharacter();
 }
 
 void renderInventory()
@@ -788,6 +789,94 @@ void renderBronzeMap()
 	string line;
 	COORD c;
 	ifstream myfile("map_bronze.txt");
+
+	c.X = 1;
+	c.Y = 1;
+
+	int x = 1;
+	int y = 1;
+	level = 2;
+
+	if (myfile.is_open())
+	{
+		while (getline(myfile, line))
+		{
+			for (int col = 0; col < line.size(); col++)
+			{
+				if (line[col] == '#')
+				{
+					line[col] = 205;
+				}
+				if (line[col] == '*')
+				{
+					line[col] = 186;
+				}
+				if (line[col] == 'H')
+				{
+					line[col] = 219;
+				}
+				if (line[col] == 'A')
+				{
+					line[col] = 185;
+				}
+				if (line[col] == 'B')
+				{
+					line[col] = 204;
+				}
+				if (line[col] == 'C')
+				{
+					line[col] = 201;
+				}
+				if (line[col] == 'D')
+				{
+					line[col] = 187;
+				}
+				if (line[col] == 'E')
+				{
+					line[col] = 203;
+				}
+				if (line[col] == 'F')
+				{
+					line[col] = 202;
+				}
+				if (line[col] == 'G')
+				{
+					line[col] = 200;
+				}
+				if (line[col] == 'I')
+				{
+					line[col] = 188;
+				}
+				if (line[col] == '!')
+				{
+					line[col] = 176;
+				}
+				if (line[col] == '+')
+				{
+					line[col] = 206;
+				}
+				if (line[col] == ' ')
+				{
+					level2[x][y] = 'x';
+				}
+				g_Console.writeToBuffer(c, line[col], 0x03);
+				c.X++;
+				y++;
+			}
+			x++;
+			y = 1;
+			c.Y++;
+			c.X = 1;
+		}
+	}
+}
+
+void renderSteelMap()
+{
+	using namespace std;
+	string line;
+	COORD c;
+	ifstream myfile("map_steel.txt");
 
 	c.X = 1;
 	c.Y = 1;

@@ -164,6 +164,7 @@ void getInput(void)
 	g_abKeyPressed[K_RETURN] = isKeyPressed(0x52);
 	g_abKeyPressed[K_ESCAPE] = isKeyPressed(VK_ESCAPE);
 	g_abKeyPressed[K_ENTER] = isKeyPressed(VK_RETURN);
+	g_abKeyPressed[I] = isKeyPressed(0x49);
 }
 
 //--------------------------------------------------------------
@@ -289,6 +290,7 @@ void gameplayLevel1()            // gameplay logic
 	processUserInput(); // checks if you should change states or do something else with the game, e.g. pause, exit
 	moveCharacterLevel1();    // moves the character, collision detection, physics, etc
 	Level1AIMovement(); //AI movement 
+	prisonerInteraction();
 	                   // sound can be played here too.
 }
 
@@ -454,8 +456,6 @@ void moveCharacterLevel1()
 		}
 	}
 
-	
-
 	if (g_abKeyPressed[K_SPACE])
 	{
 		bSomethingHappened = true;
@@ -464,7 +464,7 @@ void moveCharacterLevel1()
 	if (bSomethingHappened)
 	{
 		// set the bounce time to some time in the future to prevent accidental triggers
-		g_dBounceTime = g_dElapsedTime + 0.125; // 125ms should be enough
+		g_dBounceTime = g_dElapsedTime + 0.06; // 125ms should be enough
 	}
 }
 
@@ -506,6 +506,25 @@ void moveCharacterLevel2()
 	{
 		// set the bounce time to some time in the future to prevent accidental triggers
 		g_dBounceTime = g_dElapsedTime + 0.06; // 125ms should be enough
+	}
+}
+
+void prisonerInteraction()
+{
+	int Ch1X = g_sChar.m_cLocation.X;
+	int Ch1Y = g_sChar.m_cLocation.Y;
+
+	int PcX = g_sLevel1PrisonerCells.m_cLocation.X;
+	int PcY = g_sLevel1PrisonerCells.m_cLocation.Y;
+
+	COORD c = g_Console.getConsoleSize();
+
+	if (g_abKeyPressed[I])
+	{
+		if ((Ch1X - 1 == PcX) || (Ch1X + 1 == PcX) || (Ch1Y - 1 == PcY) || (Ch1Y + 1 == PcY))
+		{
+			g_sChar.m_cLocation.X++;
+		}
 	}
 }
 
@@ -618,20 +637,17 @@ void renderLevelOne()
 
 	renderTutorialMap(); // renders the map to the buffer first
 	renderCharacter();   // renders the character into the buffer
-	characterInteraction();
 }
 
 void renderLevelTwo()
 {
 	renderBronzeMap(); // renders the map to the buffer first
 	renderCharacter();   // renders the character into the buffer
-	characterInteraction();
 }
 
 void renderLevelThree()
 {
 
-	characterInteraction();
 }
 
 void renderTutorialMap()
@@ -858,15 +874,6 @@ void renderCharacter()
 	if (level == 2)
 	{
 		g_Console.writeToBuffer(g_sLevel2Char.m_cLocation, (char)1, 0x0C);
-	}
-}
-
-void characterInteraction()
-{
-	if (g_sChar.m_cLocation.Y - 1 == g_sLevel1GuardCells.m_cLocation.X || g_sChar.m_cLocation.Y + 1 == g_sLevel1GuardCells.m_cLocation.X || g_sChar.m_cLocation.X - 1 == g_sLevel1GuardCells.m_cLocation.X || g_sChar.m_cLocation.X + 1 == g_sLevel1GuardCells.m_cLocation.X)
-	{
-		COORD c = g_Console.getConsoleSize();
-		g_Console.writeToBuffer(c, "Hello", 0x03);
 	}
 }
 

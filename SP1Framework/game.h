@@ -21,7 +21,8 @@ enum EKEYS
     K_SPACE,
 	K_RETURN,
 	K_ENTER,
-    K_COUNT
+    K_COUNT,
+	I
 };
 
 // Enumeration for the different screen states
@@ -68,8 +69,7 @@ void renderLevelOne();
 void renderLevelTwo();
 void renderLevelThree();
 
-
-void characterInteraction();
+void prisonerInteraction();
 
 void renderFramerate();     // renders debug information, frame rate, elapsed time, etc
 void renderToScreen();      // dump the contents of the buffer to the screen, one frame worth of game

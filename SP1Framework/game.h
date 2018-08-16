@@ -21,13 +21,9 @@ enum EKEYS
     K_SPACE,
 	K_RETURN,
 	K_ENTER,
-<<<<<<< HEAD
 	K_INTERACT,
     K_COUNT
-=======
-    K_COUNT,
-	I
->>>>>>> 2836e34659607c18ca6c414bf7180bbe77fa58a1
+
 };
 
 // Enumeration for the different screen states

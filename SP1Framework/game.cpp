@@ -292,10 +292,19 @@ void gameplayLevel1()            // gameplay logic
 {
 	processUserInput(); // checks if you should change states or do something else with the game, e.g. pause, exit
 	moveCharacterLevel1();    // moves the character, collision detection, physics, etc
+<<<<<<< HEAD
+	Level1AIMovement(); //AI movement
+=======
 	Level1AIMovement(); //AI movement 
 	Level1ItemInteractions();         // sound can be played here too.
 	prisonerInteraction();
+<<<<<<< HEAD
 
+=======
+>>>>>>> 390632dd7e60947f85e0c4365dfb164bd9af5a61
+	                   // sound can be played here too.
+>>>>>>> 2836e34659607c18ca6c414bf7180bbe77fa58a1
+>>>>>>> f7384d0da160322322c3cb6280fec5501691acff
 }
 
 void gameplayLevel2()
@@ -545,6 +554,7 @@ void prisonerInteraction()
 	}
 }
 
+
 void processUserInput()
 {
 	// quits the game if player hits the escape key
@@ -654,10 +664,23 @@ void renderLevelOne()
 
 	renderTutorialMap(); // renders the map to the buffer first
 	renderCharacter();   // renders the character into the buffer
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+	prisonerInteraction();
+=======
+<<<<<<< HEAD
+>>>>>>> f7384d0da160322322c3cb6280fec5501691acff
 	renderInventory(); //Renders the inventory
 	Level1ItemInteractions();
+<<<<<<< HEAD
 	prisonerInteraction();
 
+=======
+=======
+>>>>>>> 2836e34659607c18ca6c414bf7180bbe77fa58a1
+>>>>>>> 390632dd7e60947f85e0c4365dfb164bd9af5a61
+>>>>>>> f7384d0da160322322c3cb6280fec5501691acff
 }
 
 void renderLevelTwo()
@@ -763,10 +786,16 @@ void renderTutorialMap()
 				{
 					level1[x][y] = 'x';
 				}
+<<<<<<< HEAD
+				if (line[col] == '3')
+				{
+					level1[x][y] = 219;
+=======
 				if (line[col] == 'S')
 				{
 					level1[x][y] = 'S';
 					
+>>>>>>> 390632dd7e60947f85e0c4365dfb164bd9af5a61
 				}
 				g_Console.writeToBuffer(c, line[col], 0x03);
 				c.X++;

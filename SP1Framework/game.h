@@ -19,8 +19,11 @@ enum EKEYS
 	D,
     K_ESCAPE,
     K_SPACE,
+<<<<<<< HEAD
 	K_RETURN,
 	K_ENTER,
+=======
+>>>>>>> 6c18b54970db8011df040eec063fa38a661d2271
     K_COUNT
 };
 
@@ -28,12 +31,17 @@ enum EKEYS
 enum EGAMESTATES
 {
     S_SPLASHSCREEN,
+<<<<<<< HEAD
     S_GAMELEVEL1,
 	S_GAMELEVEL2,
 	S_GAMELEVEL3,
 	S_GAMEEXIT,
     S_COUNT,
 	S_GAMEOVER
+=======
+    S_GAME,
+    S_COUNT
+>>>>>>> 6c18b54970db8011df040eec063fa38a661d2271
 };
 
 // struct for the game character
@@ -50,6 +58,7 @@ void render      ( void );      // renders the current state of the game to the 
 void shutdown    ( void );      // do clean up, free memory
 
 void splashScreenWait();    // waits for time to pass in splash screen
+<<<<<<< HEAD
 void gameplayLevel1();     // gameplay logic
 void gameplayLevel2();     // gameplay logic
 void gameplayLevel3();     // gameplay logic
@@ -57,10 +66,14 @@ void Level1AIMovement();
 void moveCharacterLevel1();       // moves the character, collision detection, physics, etc
 void moveCharacterLevel2();       // moves the character, collision detection, physics, etc
 
+=======
+void gameplay();            // gameplay logic
+void moveCharacter();       // moves the character, collision detection, physics, etc
+>>>>>>> 6c18b54970db8011df040eec063fa38a661d2271
 void processUserInput();    // checks if you should change states or do something else with the game, e.g. pause, exit
 void clearScreen();         // clears the current screen and draw from scratch 
-
 void renderSplashScreen();  // renders the splash screen
+<<<<<<< HEAD
 void renderTutorialMap();   // renders the map to the buffer first
 void renderBronzeMap();   // renders the map to the buffer first
 void renderCharacter();     // renders the character into the buffer
@@ -77,4 +90,14 @@ void renderToScreen();      // dump the contents of the buffer to the screen, on
 void renderGameOver();//For AI to move forward
 void gameoverwait();
 void gameovercondition();//For AI to move back
+=======
+void renderGame();          // renders the game stuff
+void renderTutorialMap();   // renders the map to the buffer first
+void renderBronzeMap();   // renders the map to the buffer first
+void renderCharacter();     // renders the character into the buffer
+void characterInteraction();
+void renderFramerate();     // renders debug information, frame rate, elapsed time, etc
+void renderToScreen();      // dump the contents of the buffer to the screen, one frame worth of game
+void Level1AIMovement();
+>>>>>>> 6c18b54970db8011df040eec063fa38a661d2271
 #endif // _GAME_H

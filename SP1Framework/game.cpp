@@ -14,38 +14,74 @@ bool contactcheck = true;
 
 double  g_dElapsedTime;
 double  g_dDeltaTime;
+<<<<<<< HEAD
 double  g_dGuardTimeX = 0.0;
 double  g_dGuardTimeY = 0.0;
 double  g_dGameOver = 0.0;
+=======
+>>>>>>> 6c18b54970db8011df040eec063fa38a661d2271
 bool    g_abKeyPressed[K_COUNT];
-
+<<<<<<< HEAD
+<<<<<<< HEAD
 char level1[125][125];
+<<<<<<< HEAD
 double startgame = 1.0; //SPLASHSCREEN TIME
 char level2[125][125];
 char level3[125][125];
 signed int MenuItem = 0;
+=======
+double startgame = 3.0;
+char level2[125][125];
+>>>>>>> 6c18b54970db8011df040eec063fa38a661d2271
 int level = 0;
+=======
+<<<<<<< HEAD
+=======
 
+>>>>>>> parent of ce7b1b5... Merge branch 'master' of https://github.com/Krypt-GitHub/Studio_Project_One.git
+char    level1[125][125];
+double startgame = 3.0;
+=======
+char level1[125][125];
+double startgame = 3.0;
+char level2[125][125];
+int level = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 88b8bfa8ff8fe557a9557f2e972c87602561c595
+>>>>>>> c95ba77e3f6760b79ba456f8623716325ddc82ca
+>>>>>>> e704f22cbd1c2573f0227413a440e074ff7b3512
+>>>>>>> f0df7c4527e5bf34328506b259e7bd4c4b2ff918
 
 // Game specific variables here
+<<<<<<< HEAD
+=======
+SGameChar   g_sChar;
+SGameChar   g_sLevel2Char;
+SGameChar   g_sLevel1GuardCells;
+=======
+
+// Game specific variables here
+>>>>>>> 6c18b54970db8011df040eec063fa38a661d2271
 SGameChar   g_sChar; //Player character
 
 SGameChar   g_sLevel2Char; //Level 2 Characters
 
 SGameChar   g_sLevel1GuardCells; //Level 1 guards
+>>>>>>> parent of ce7b1b5... Merge branch 'master' of https://github.com/Krypt-GitHub/Studio_Project_One.git
 SGameChar   g_sLevel1GuardCafe;
 SGameChar   g_sLevel1GuardField1;
 SGameChar   g_sLevel1GuardField2;
-
-SGameChar   g_sLevel1PrisonerCells; //Level 1 Prisoners
-SGameChar   g_sLevel1PrisonerShowers;
-SGameChar   g_sLevel1PrisonerCafe;
-
 EGAMESTATES g_eGameState = S_SPLASHSCREEN;
 double  g_dBounceTime; // this is to prevent key bouncing, so we won't trigger keypresses more than once
 
 					   // Console object
+<<<<<<< HEAD
 Console g_Console(300, 300, "SP1 Framework");
+=======
+Console g_Console(300, 75, "SP1 Framework");
+>>>>>>> 6c18b54970db8011df040eec063fa38a661d2271
 
 //--------------------------------------------------------------
 // Purpose  : Initialisation function
@@ -64,6 +100,20 @@ void init(void)
 	// sets the initial state for the game
 	g_eGameState = S_SPLASHSCREEN;
 
+<<<<<<< HEAD
+	g_sChar.m_cLocation.X = 6; //g_Console.getConsoleSize().X / 2;
+	g_sChar.m_cLocation.Y = 4; //g_Console.getConsoleSize().Y / 2;
+	g_sLevel2Char.m_cLocation.X = 46; //g_Console.getConsoleSize().X / 2;
+	g_sLevel2Char.m_cLocation.Y = 3; //g_Console.getConsoleSize().Y / 2;
+	g_sLevel1GuardCells.m_cLocation.X = 3; //g_Console.getConsoleSize().X / 2;
+	g_sLevel1GuardCells.m_cLocation.Y = 12; //g_Console.getConsoleSize().Y / 2;
+	g_sLevel1GuardCafe.m_cLocation.X = 40; //g_Console.getConsoleSize().X / 2;
+	g_sLevel1GuardCafe.m_cLocation.Y = 12; //g_Console.getConsoleSize().Y / 2;
+	g_sLevel1GuardField1.m_cLocation.X = 105; //g_Console.getConsoleSize().X / 2;
+	g_sLevel1GuardField1.m_cLocation.Y = 15; //g_Console.getConsoleSize().Y / 2;
+	g_sLevel1GuardField2.m_cLocation.X = 115; //g_Console.getConsoleSize().X / 2;
+	g_sLevel1GuardField2.m_cLocation.Y = 5; //g_Console.getConsoleSize().Y / 2;
+=======
 	//g_Console.getConsoleSize().X / 2;
 	//g_Console.getConsoleSize().Y / 2;
 
@@ -76,8 +126,8 @@ void init(void)
 	g_sLevel1GuardCells.m_cLocation.X = 3; //Spawn Point of Guard near the Cells area
 	g_sLevel1GuardCells.m_cLocation.Y = 10; 
 
-	g_sLevel1GuardCafe.m_cLocation.X = 35; //Spawn Point of Guard near the Cafe area
-	g_sLevel1GuardCafe.m_cLocation.Y = 15; 
+	g_sLevel1GuardCafe.m_cLocation.X = 35; //CAFE GUARD POINTS
+	g_sLevel1GuardCafe.m_cLocation.Y = 13; 
 	
 	g_sLevel1GuardField1.m_cLocation.X = 105; //Spawn Point of Guard 1 near the Field area
 	g_sLevel1GuardField1.m_cLocation.Y = 15;
@@ -87,7 +137,9 @@ void init(void)
 
 	g_sLevel1PrisonerCells.m_cLocation.X = 15; //Spawn Point of Prisoner near the Cells area
 	g_sLevel1PrisonerCells.m_cLocation.Y = 4;
+>>>>>>> parent of ce7b1b5... Merge branch 'master' of https://github.com/Krypt-GitHub/Studio_Project_One.git
 
+<<<<<<< HEAD
 	g_sLevel1PrisonerShowers.m_cLocation.X = 45;  //Spawn Point of Prisoner near the Showers area
 	g_sLevel1PrisonerShowers.m_cLocation.Y = 25;
 
@@ -119,6 +171,8 @@ void init(void)
 
 	g_sLevel1PrisonerCafe.m_cLocation.X = 40;  //Spawn Point of Prisoner near the Cafe area
 	g_sLevel1PrisonerCafe.m_cLocation.Y = 10;
+=======
+>>>>>>> 6c18b54970db8011df040eec063fa38a661d2271
 
 	// sets the width, height and the font name to use in the console
 	g_Console.setConsoleFont(0, 16, L"Consolas");
@@ -161,9 +215,7 @@ void getInput(void)
 	g_abKeyPressed[K_RIGHT] = isKeyPressed(VK_RIGHT);
 	g_abKeyPressed[D] = isKeyPressed(0x44);
 	g_abKeyPressed[K_SPACE] = isKeyPressed(VK_SPACE);
-	g_abKeyPressed[K_RETURN] = isKeyPressed(0x52);
 	g_abKeyPressed[K_ESCAPE] = isKeyPressed(VK_ESCAPE);
-	g_abKeyPressed[K_ENTER] = isKeyPressed(VK_RETURN);
 }
 
 //--------------------------------------------------------------
@@ -193,11 +245,12 @@ void update(double dt)
 	{
 	case S_SPLASHSCREEN: splashScreenWait(); // game logic for the splash screen
 		break;
-	case S_GAMELEVEL1: gameplayLevel1(); // gameplay logic when we are in the Level 1
+	case S_GAME: gameplay(); // gameplay logic when we are in the game
+<<<<<<< HEAD
+=======
 		break;
-	case S_GAMELEVEL2: gameplayLevel2();
-		break;
-	case S_GAMELEVEL3: gameplayLevel3();
+	case S_GAMEOVER: gameoverwait();
+>>>>>>> parent of ce7b1b5... Merge branch 'master' of https://github.com/Krypt-GitHub/Studio_Project_One.git
 		break;
 	case S_GAMEOVER: gameoverwait();
 		break;
@@ -218,13 +271,12 @@ void render()
 	{
 	case S_SPLASHSCREEN: renderSplashScreen();
 		break;
-	case S_GAMELEVEL1: renderLevelOne();
+	case S_GAME: renderGame();
+<<<<<<< HEAD
+=======
 		break;
-	case S_GAMELEVEL2: renderLevelTwo();
-		break;
-	case S_GAMELEVEL3: renderLevelThree();
-		break;
-	case S_GAMEEXIT: g_bQuitGame;
+	case S_GAMEOVER: gameovercondition();
+>>>>>>> parent of ce7b1b5... Merge branch 'master' of https://github.com/Krypt-GitHub/Studio_Project_One.git
 		break;
 	case S_GAMEOVER: gameovercondition();
 		break;
@@ -235,41 +287,15 @@ void render()
 
 void splashScreenWait()    // waits for time to pass in splash screen
 {
-	if (g_dElapsedTime > g_dBounceTime && (g_abKeyPressed[K_DOWN] || g_abKeyPressed[S]))
-	{
-		MenuItem = (MenuItem + 1) % 4;
-		g_dBounceTime = g_dElapsedTime + 0.125;
-	}
-	if (g_dElapsedTime > g_dBounceTime && (g_abKeyPressed[K_UP] || g_abKeyPressed[W]))
-	{
-		MenuItem = (MenuItem - 1) % 4;
-		g_dBounceTime = g_dElapsedTime + 0.125;
-		if (MenuItem == -1)
-		{
-			MenuItem = 3;
-		}
-	}
-	if (g_abKeyPressed[K_ENTER])
-	{
-		if (MenuItem == 0)
-		{
-			g_eGameState = S_GAMELEVEL1;
-		}
-		if (MenuItem == 1)
-		{
-			g_eGameState = S_GAMELEVEL2;
-		}
-		if (MenuItem == 2)
-		{
-			g_eGameState = S_GAMELEVEL3;
-		}
-		if(MenuItem == 3)
-		{
-			g_bQuitGame = true;
-		}
-	}
+<<<<<<< HEAD
+	if (g_dElapsedTime > startgame) // wait for 3 seconds to switch to game mode, else do nothing
+=======
+	if (g_dElapsedTime > startgame) // wait for 3 seconds to switch to game mode, else do nothing // THIS IS WHERE YOU CHANGE SPLASHSCREEN TIME
+>>>>>>> parent of ce7b1b5... Merge branch 'master' of https://github.com/Krypt-GitHub/Studio_Project_One.git
+		g_eGameState = S_GAME;
 }
 
+<<<<<<< HEAD
 void gameoverwait()
 {
 	if (g_dGameOver >= 5.0)
@@ -285,12 +311,17 @@ void gameovercondition()
 }
 
 void gameplayLevel1()            // gameplay logic
+=======
+void gameplay()            // gameplay logic
+>>>>>>> 6c18b54970db8011df040eec063fa38a661d2271
 {
 	processUserInput(); // checks if you should change states or do something else with the game, e.g. pause, exit
-	moveCharacterLevel1();    // moves the character, collision detection, physics, etc
+	moveCharacter();    // moves the character, collision detection, physics, etc
+<<<<<<< HEAD
 	Level1AIMovement(); //AI movement 
 	                   // sound can be played here too.
 }
+<<<<<<< HEAD
 
 void gameplayLevel2()
 {
@@ -309,9 +340,27 @@ void gameplayLevel3()
 
 int move = 0;
 int move1 = 0;
-
+=======
 void Level1AIMovement()
+=======
+	Level1AIMove(); //AI movement                   // sound can be played here too.
+}
+
+struct AI {
+	int X;
+	int Y;
+};
+
+//Global Variables for AI
+>>>>>>> 6c18b54970db8011df040eec063fa38a661d2271
+
+int move = 0;
+int move1 = 0;
+
+void Level1AIMove()
+>>>>>>> parent of ce7b1b5... Merge branch 'master' of https://github.com/Krypt-GitHub/Studio_Project_One.git
 {	
+<<<<<<< HEAD
 	if (g_dGuardTimeX >= 0.20)
 	{
 		//FOR CELL GUARD
@@ -386,10 +435,26 @@ void Level1AIMovement()
 		{
 			move1 = 0;
 		}
+=======
+	bool Foward = true;
+	while (g_sLevel1GuardCells.m_cLocation.X < 15 && g_dElapsedTime > startgame && Foward == true)
+	{
+		g_sLevel1GuardCells.m_cLocation.X++;
+		startgame += 0.25;
 	}
-}
 
-void moveCharacterLevel1()
+	Foward = false;
+
+	while (g_sLevel1GuardCells.m_cLocation.X > 2 && g_dElapsedTime > startgame && Foward == false)
+	{
+		g_sLevel1GuardCells.m_cLocation.X--;
+		startgame += 0.25;
+>>>>>>> 6c18b54970db8011df040eec063fa38a661d2271
+	}
+
+	
+}
+void moveCharacter()
 {
 	int CeX = g_sLevel1GuardCells.m_cLocation.X;
 	int CeY = g_sLevel1GuardCells.m_cLocation.Y;
@@ -451,6 +516,19 @@ void moveCharacterLevel1()
 		//Beep(1440, 30);
 		g_sChar.m_cLocation.X++;
 		bSomethingHappened = true;
+<<<<<<< HEAD
+		if (((Ch1X == CeX - 1) && (Ch1Y == CeY)) || ((Ch1X == CaX - 1) && (Ch1Y == CaY)) || ((Ch1X == F1X - 1) && (Ch1Y == F1Y)) || ((Ch1X == F2X - 1) && (Ch1Y == F2Y)))
+		{
+			g_sChar.m_cLocation.X--;
+			g_eGameState = S_GAMEOVER;
+		}
+=======
+<<<<<<< HEAD
+>>>>>>> 6c18b54970db8011df040eec063fa38a661d2271
+	}
+
+	//Level 2
+=======
 		if (((Ch1X == CeX - 1) && (Ch1Y == CeY)) || ((Ch1X == CaX - 1) && (Ch1Y == CaY)) || ((Ch1X == F1X - 1) && (Ch1Y == F1Y)) || ((Ch1X == F2X - 1) && (Ch1Y == F2Y)))
 		{
 			g_sChar.m_cLocation.X--;
@@ -458,49 +536,31 @@ void moveCharacterLevel1()
 		}
 	}
 
-	
+	///////////
+	//Level 2//
+	///////////
+>>>>>>> parent of ce7b1b5... Merge branch 'master' of https://github.com/Krypt-GitHub/Studio_Project_One.git
 
-	if (g_abKeyPressed[K_SPACE])
-	{
-		bSomethingHappened = true;
-	}
-
-	if (bSomethingHappened)
-	{
-		// set the bounce time to some time in the future to prevent accidental triggers
-		g_dBounceTime = g_dElapsedTime + 0.125; // 125ms should be enough
-	}
-}
-
-void moveCharacterLevel2()
-{
-	bool bSomethingHappened = false;
-	if (g_dBounceTime > g_dElapsedTime)
-		return;
-
-	// Updating the location of the character based on the key press
-	// providing a beep sound whenver we shift the character
-	//Level 2
-	if ((g_abKeyPressed[K_UP] || g_abKeyPressed[W]) && level2[g_sLevel2Char.m_cLocation.Y - 1][g_sLevel2Char.m_cLocation.X] == 'x') //To move up checking
+	if ((g_abKeyPressed[K_UP] || g_abKeyPressed[W]) && level1[g_sLevel2Char.m_cLocation.Y - 1][g_sLevel2Char.m_cLocation.X] == 'x') //To move up checking
 	{
 		//Beep(1440, 30);
 		g_sLevel2Char.m_cLocation.Y--;
 		bSomethingHappened = true;
 
 	}
-	if ((g_abKeyPressed[K_LEFT] || g_abKeyPressed[A]) && level2[g_sLevel2Char.m_cLocation.Y][g_sLevel2Char.m_cLocation.X - 1] == 'x')
+	if ((g_abKeyPressed[K_LEFT] || g_abKeyPressed[A]) && level1[g_sLevel2Char.m_cLocation.Y][g_sLevel2Char.m_cLocation.X - 1] == 'x')
 	{
 		//Beep(1440, 30);
 		g_sLevel2Char.m_cLocation.X--;
 		bSomethingHappened = true;
 	}
-	if ((g_abKeyPressed[K_DOWN] || g_abKeyPressed[S]) && level2[g_sLevel2Char.m_cLocation.Y + 1][g_sLevel2Char.m_cLocation.X] == 'x')
+	if ((g_abKeyPressed[K_DOWN] || g_abKeyPressed[S]) && level1[g_sLevel2Char.m_cLocation.Y + 1][g_sLevel2Char.m_cLocation.X] == 'x')
 	{
 		//Beep(1440, 30);
 		g_sLevel2Char.m_cLocation.Y++;
 		bSomethingHappened = true;
 	}
-	if ((g_abKeyPressed[K_RIGHT] || g_abKeyPressed[D]) && level2[g_sLevel2Char.m_cLocation.Y][g_sLevel2Char.m_cLocation.X + 1] == 'x')
+	if ((g_abKeyPressed[K_RIGHT] || g_abKeyPressed[D]) && level1[g_sLevel2Char.m_cLocation.Y][g_sLevel2Char.m_cLocation.X + 1] == 'x')
 	{
 		//Beep(1440, 30);
 		g_sLevel2Char.m_cLocation.X++;
@@ -521,25 +581,7 @@ void processUserInput()
 {
 	// quits the game if player hits the escape key
 	if (g_abKeyPressed[K_ESCAPE])
-	{
 		g_bQuitGame = true;
-	}
-	if (g_abKeyPressed[K_RETURN])
-	{
-		g_eGameState = S_SPLASHSCREEN;
-		if (level = 1)
-		{
-			level = 0;
-			g_sChar.m_cLocation.X = 6; //Player spawn point
-			g_sChar.m_cLocation.Y = 4;
-		}
-		else if (level = 2)
-		{
-			level = 0;
-			g_sLevel2Char.m_cLocation.X = 46; //Level 2 Character spawn point
-			g_sLevel2Char.m_cLocation.Y = 3;
-		}
-	}
 }
 
 void clearScreen()
@@ -576,59 +618,16 @@ void renderSplashScreen()  // renders the splash screen
 			c.X = 1;
 		}
 	}
-
-	c.X = 21;
-	c.Y = 20;
-	g_Console.writeToBuffer(c, "Welcome to the BlackStone Prison Complex, do your best to escape", 0X0F);
-	c.X = 21;
-	c.Y = 21;
-	g_Console.writeToBuffer(c, "----------------------------------------------------------------", 0X0F);
-	c.X = 21;
-	c.Y = 22;
-	g_Console.writeToBuffer(c, " Complex: Stone", 0X0F);
-	c.X = 21;
-	c.Y = 23;
-	g_Console.writeToBuffer(c, " Complex: Bronze", 0X0F);
-	c.X = 21;
-	c.Y = 24;
-	g_Console.writeToBuffer(c, " Complex: Steel", 0X0F);
-	c.X = 21;
-	c.Y = 25;
-	g_Console.writeToBuffer(c, " Exit the Game", 0X0F);
-	if (MenuItem == 0)
-	{
-		c.X = 20;
-		c.Y = 22;
-		g_Console.writeToBuffer(c, (char)4, 0X0F);
-	}
-	else if (MenuItem == 1)
-	{
-		c.X = 20;
-		c.Y = 23;
-		g_Console.writeToBuffer(c, (char)4, 0X0F);
-	}
-	else if (MenuItem == 2)
-	{
-		c.X = 20;
-		c.Y = 24;
-		g_Console.writeToBuffer(c, (char)4, 0X0F);
-	}
-	else if (MenuItem == 3)
-	{
-		c.X = 20;
-		c.Y = 25;
-		g_Console.writeToBuffer(c, (char)4, 0X0F);
-	}
 }
 
-void renderLevelOne()
+void renderGame()
 {
-
 	renderTutorialMap(); // renders the map to the buffer first
 	renderCharacter();   // renders the character into the buffer
 	characterInteraction();
 }
 
+<<<<<<< HEAD
 void renderLevelTwo()
 {
 	renderBronzeMap(); // renders the map to the buffer first
@@ -642,6 +641,8 @@ void renderLevelThree()
 	characterInteraction();
 }
 
+=======
+>>>>>>> 6c18b54970db8011df040eec063fa38a661d2271
 void renderTutorialMap()
 {
 	using namespace std;
@@ -800,7 +801,7 @@ void renderBronzeMap()
 				}
 				if (line[col] == ' ')
 				{
-					level2[x][y] = 'x';
+					level1[x][y] = 'x';
 				}
 				g_Console.writeToBuffer(c, line[col], 0x03);
 				c.X++;
@@ -852,16 +853,11 @@ void renderCharacter()
 	// Draw the location of the character
 	if (level == 1)
 	{
-		g_Console.writeToBuffer(g_sChar.m_cLocation, (char)1, 0x0C); //Player Character rendering
-
-		g_Console.writeToBuffer(g_sLevel1GuardCells.m_cLocation, (char)2, 0X0F); //Rendering of Guard near the cells area
-		g_Console.writeToBuffer(g_sLevel1GuardCafe.m_cLocation, (char)2, 0X0F); //Rendering of Guard near the Cafe area
-		g_Console.writeToBuffer(g_sLevel1GuardField1.m_cLocation, (char)2, 0X0F); //Rendering of Guard near the Field area
-		g_Console.writeToBuffer(g_sLevel1GuardField2.m_cLocation, (char)2, 0X0F); //Rendering of Guard near the Field area
-
-		g_Console.writeToBuffer(g_sLevel1PrisonerCells.m_cLocation, (char)2, 0X0B); //Rendering of Guard near the cells area
-		g_Console.writeToBuffer(g_sLevel1PrisonerCafe.m_cLocation, (char)2, 0X0B); //Rendering of Guard near the cafe area
-		g_Console.writeToBuffer(g_sLevel1PrisonerShowers.m_cLocation, (char)2, 0X0B); //Rendering of Guard near the showers area
+		g_Console.writeToBuffer(g_sChar.m_cLocation, (char)1, 0x0C);
+		g_Console.writeToBuffer(g_sLevel1GuardCells.m_cLocation, (char)2, 0X0F);
+		g_Console.writeToBuffer(g_sLevel1GuardCafe.m_cLocation, (char)2, 0X0F);
+		g_Console.writeToBuffer(g_sLevel1GuardField1.m_cLocation, (char)2, 0X0F);
+		g_Console.writeToBuffer(g_sLevel1GuardField2.m_cLocation, (char)2, 0X0F);
 	}
 	if (level == 2)
 	{

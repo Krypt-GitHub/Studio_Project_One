@@ -168,6 +168,7 @@ void getInput(void)
 	g_abKeyPressed[K_ESCAPE] = isKeyPressed(VK_ESCAPE);
 	g_abKeyPressed[K_INTERACT] = isKeyPressed(0x45);
 	g_abKeyPressed[K_ENTER] = isKeyPressed(VK_RETURN);
+	g_abKeyPressed[I] = isKeyPressed(0x49);
 }
 
 //--------------------------------------------------------------
@@ -293,7 +294,12 @@ void gameplayLevel1()            // gameplay logic
 	processUserInput(); // checks if you should change states or do something else with the game, e.g. pause, exit
 	moveCharacterLevel1();    // moves the character, collision detection, physics, etc
 	Level1AIMovement(); //AI movement 
+<<<<<<< HEAD
 	Level1ItemInteractions();         // sound can be played here too.
+=======
+	prisonerInteraction();
+	                   // sound can be played here too.
+>>>>>>> 2836e34659607c18ca6c414bf7180bbe77fa58a1
 }
 
 void gameplayLevel2()
@@ -415,11 +421,10 @@ void moveCharacterLevel1()
 	if (g_dBounceTime > g_dElapsedTime)
 		return;
 	// Updating the location of the character based on the key press
-	// providing a beep sound whenver we shift the character
+
 	//Level 1
 	if ((g_abKeyPressed[K_UP] || g_abKeyPressed[W]) && level1[g_sChar.m_cLocation.Y - 1][g_sChar.m_cLocation.X] == 'x') //To move up checking
 	{
-		//Beep(1440, 30);
 		g_sChar.m_cLocation.Y--;
 		bSomethingHappened = true;
 		if (((Ch1X == CeX) && (Ch1Y == CeY + 1)) || ((Ch1X == CaX) && (Ch1Y == CaY + 1)) || ((Ch1X == F1X) && (Ch1Y == F1Y + 1)) || ((Ch1X == F2X) && (Ch1Y == F2Y + 1)))
@@ -430,7 +435,6 @@ void moveCharacterLevel1()
 	}
 	if ((g_abKeyPressed[K_LEFT] || g_abKeyPressed[A]) && g_sChar.m_cLocation.X > 0 && level1[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X - 1] == 'x')
 	{
-		//Beep(1440, 30);
 		g_sChar.m_cLocation.X--;
 		bSomethingHappened = true;
 		if (((Ch1X == CeX + 1) && (Ch1Y == CeY)) || ((Ch1X == CaX+1) && (Ch1Y == CaY)) || ((Ch1X == F1X+1) && (Ch1Y == F1Y)) || ((Ch1X == F2X+1) && (Ch1Y == F2Y)))
@@ -448,11 +452,9 @@ void moveCharacterLevel1()
 			g_sChar.m_cLocation.Y--;
 			g_eGameState = S_GAMEOVER;
 		}
-		//Beep(1440, 30);
 	}
 	if ((g_abKeyPressed[K_RIGHT] || g_abKeyPressed[D]) && g_sChar.m_cLocation.X < g_Console.getConsoleSize().X - 1 && g_sChar.m_cLocation.X > 0 && level1[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X + 1] == 'x')
 	{
-		//Beep(1440, 30);
 		g_sChar.m_cLocation.X++;
 		bSomethingHappened = true;
 		if (((Ch1X == CeX - 1) && (Ch1Y == CeY)) || ((Ch1X == CaX - 1) && (Ch1Y == CaY)) || ((Ch1X == F1X - 1) && (Ch1Y == F1Y)) || ((Ch1X == F2X - 1) && (Ch1Y == F2Y)))
@@ -462,8 +464,6 @@ void moveCharacterLevel1()
 		}
 	}
 
-	
-
 	if (g_abKeyPressed[K_SPACE])
 	{
 		bSomethingHappened = true;
@@ -472,7 +472,11 @@ void moveCharacterLevel1()
 	if (bSomethingHappened)
 	{
 		// set the bounce time to some time in the future to prevent accidental triggers
+<<<<<<< HEAD
 		g_dBounceTime = g_dElapsedTime + 0.08; // 125ms should be enough
+=======
+		g_dBounceTime = g_dElapsedTime + 0.06; // 125ms should be enough
+>>>>>>> 2836e34659607c18ca6c414bf7180bbe77fa58a1
 	}
 }
 
@@ -487,26 +491,22 @@ void moveCharacterLevel2()
 	//Level 2
 	if ((g_abKeyPressed[K_UP] || g_abKeyPressed[W]) && level2[g_sLevel2Char.m_cLocation.Y - 1][g_sLevel2Char.m_cLocation.X] == 'x') //To move up checking
 	{
-		//Beep(1440, 30);
 		g_sLevel2Char.m_cLocation.Y--;
 		bSomethingHappened = true;
 
 	}
 	if ((g_abKeyPressed[K_LEFT] || g_abKeyPressed[A]) && level2[g_sLevel2Char.m_cLocation.Y][g_sLevel2Char.m_cLocation.X - 1] == 'x')
 	{
-		//Beep(1440, 30);
 		g_sLevel2Char.m_cLocation.X--;
 		bSomethingHappened = true;
 	}
 	if ((g_abKeyPressed[K_DOWN] || g_abKeyPressed[S]) && level2[g_sLevel2Char.m_cLocation.Y + 1][g_sLevel2Char.m_cLocation.X] == 'x')
 	{
-		//Beep(1440, 30);
 		g_sLevel2Char.m_cLocation.Y++;
 		bSomethingHappened = true;
 	}
 	if ((g_abKeyPressed[K_RIGHT] || g_abKeyPressed[D]) && level2[g_sLevel2Char.m_cLocation.Y][g_sLevel2Char.m_cLocation.X + 1] == 'x')
 	{
-		//Beep(1440, 30);
 		g_sLevel2Char.m_cLocation.X++;
 		bSomethingHappened = true;
 	}
@@ -521,6 +521,7 @@ void moveCharacterLevel2()
 	}
 }
 
+<<<<<<< HEAD
 void Level1ItemInteractions()
 {
 	COORD c = g_Console.getConsoleSize();
@@ -529,6 +530,24 @@ void Level1ItemInteractions()
 	{
 		ShiveNumber += 1;
 		level1[g_sChar.m_cLocation.Y + 1][g_sChar.m_cLocation.X] = ' ';
+=======
+void prisonerInteraction()
+{
+	int Ch1X = g_sChar.m_cLocation.X;
+	int Ch1Y = g_sChar.m_cLocation.Y;
+
+	int PcX = g_sLevel1PrisonerCells.m_cLocation.X;
+	int PcY = g_sLevel1PrisonerCells.m_cLocation.Y;
+
+	COORD c = g_Console.getConsoleSize();
+
+	if (g_abKeyPressed[I])
+	{
+		if ((Ch1X - 1 == PcX) || (Ch1X + 1 == PcX) || (Ch1Y - 1 == PcY) || (Ch1Y + 1 == PcY))
+		{
+			g_sChar.m_cLocation.X++;
+		}
+>>>>>>> 2836e34659607c18ca6c414bf7180bbe77fa58a1
 	}
 }
 
@@ -641,22 +660,23 @@ void renderLevelOne()
 
 	renderTutorialMap(); // renders the map to the buffer first
 	renderCharacter();   // renders the character into the buffer
+<<<<<<< HEAD
 	renderInventory(); //Renders the inventory
 	characterInteraction();
 	Level1ItemInteractions();
+=======
+>>>>>>> 2836e34659607c18ca6c414bf7180bbe77fa58a1
 }
 
 void renderLevelTwo()
 {
 	renderBronzeMap(); // renders the map to the buffer first
 	renderCharacter();   // renders the character into the buffer
-	characterInteraction();
 }
 
 void renderLevelThree()
 {
 
-	characterInteraction();
 }
 
 void renderInventory()
@@ -908,15 +928,6 @@ void renderCharacter()
 	if (level == 2)
 	{
 		g_Console.writeToBuffer(g_sLevel2Char.m_cLocation, (char)1, 0x0C);
-	}
-}
-
-void characterInteraction()
-{
-	if (g_sChar.m_cLocation.Y - 1 == g_sLevel1GuardCells.m_cLocation.X || g_sChar.m_cLocation.Y + 1 == g_sLevel1GuardCells.m_cLocation.X || g_sChar.m_cLocation.X - 1 == g_sLevel1GuardCells.m_cLocation.X || g_sChar.m_cLocation.X + 1 == g_sLevel1GuardCells.m_cLocation.X)
-	{
-		COORD c = g_Console.getConsoleSize();
-		g_Console.writeToBuffer(c, "Hello", 0x03);
 	}
 }
 

@@ -70,7 +70,7 @@ void init(void)
 	//g_Console.getConsoleSize().X / 2;
 	//g_Console.getConsoleSize().Y / 2;
 
-	g_sChar.m_cLocation.X = 6; //Player spawn point
+	g_sChar.m_cLocation.X = 6; //Level 1 spawn point
 	g_sChar.m_cLocation.Y = 4;
 
 	g_sLevel2Char.m_cLocation.X = 46; //Level 2 Character spawn point
@@ -124,7 +124,7 @@ void init(void)
 	g_sLevel1PrisonerCafe.m_cLocation.Y = 10;
 
 	// sets the width, height and the font name to use in the console
-	g_Console.setConsoleFont(0, 16, L"Consolas");
+	g_Console.setConsoleFont(10, 10, L"Consolas");
 }
 
 //--------------------------------------------------------------
@@ -276,7 +276,7 @@ void splashScreenWait()    // waits for time to pass in splash screen
 
 void gameoverwait()
 {
-	if (g_dGameOver >= 5.0)
+	if (g_eGameState == S_GAMEOVER && g_abKeyPressed[K_RETURN])
 	{
 		g_eGameState = S_SPLASHSCREEN;
 		g_dGameOver = 0; //To always reset the spawn
@@ -292,19 +292,10 @@ void gameplayLevel1()            // gameplay logic
 {
 	processUserInput(); // checks if you should change states or do something else with the game, e.g. pause, exit
 	moveCharacterLevel1();    // moves the character, collision detection, physics, etc
-<<<<<<< HEAD
 	Level1AIMovement(); //AI movement
-=======
-	Level1AIMovement(); //AI movement 
 	Level1ItemInteractions();         // sound can be played here too.
 	prisonerInteraction();
-<<<<<<< HEAD
-
-=======
->>>>>>> 390632dd7e60947f85e0c4365dfb164bd9af5a61
-	                   // sound can be played here too.
->>>>>>> 2836e34659607c18ca6c414bf7180bbe77fa58a1
->>>>>>> f7384d0da160322322c3cb6280fec5501691acff
+	levelonelose();
 }
 
 void gameplayLevel2()
@@ -554,7 +545,6 @@ void prisonerInteraction()
 	}
 }
 
-
 void processUserInput()
 {
 	// quits the game if player hits the escape key
@@ -664,23 +654,9 @@ void renderLevelOne()
 
 	renderTutorialMap(); // renders the map to the buffer first
 	renderCharacter();   // renders the character into the buffer
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
 	prisonerInteraction();
-=======
-<<<<<<< HEAD
->>>>>>> f7384d0da160322322c3cb6280fec5501691acff
 	renderInventory(); //Renders the inventory
 	Level1ItemInteractions();
-<<<<<<< HEAD
-	prisonerInteraction();
-
-=======
-=======
->>>>>>> 2836e34659607c18ca6c414bf7180bbe77fa58a1
->>>>>>> 390632dd7e60947f85e0c4365dfb164bd9af5a61
->>>>>>> f7384d0da160322322c3cb6280fec5501691acff
 }
 
 void renderLevelTwo()
@@ -786,16 +762,13 @@ void renderTutorialMap()
 				{
 					level1[x][y] = 'x';
 				}
-<<<<<<< HEAD
 				if (line[col] == '3')
 				{
 					level1[x][y] = 219;
-=======
+				}
 				if (line[col] == 'S')
 				{
 					level1[x][y] = 'S';
-					
->>>>>>> 390632dd7e60947f85e0c4365dfb164bd9af5a61
 				}
 				g_Console.writeToBuffer(c, line[col], 0x03);
 				c.X++;
@@ -925,9 +898,9 @@ void renderGameOver()
 			c.X = 1;
 		}
 	}
-	c.X = 25;
+	c.X = 20;
 	c.Y = 25;
-	g_Console.writeToBuffer(c, "You got caught...You will get sent back to the title screen", 0x0F);
+	g_Console.writeToBuffer(c, "You got caught...You will get sent back to the title screen by pressing R", 0x0F);
 }
 
 void renderCharacter()
@@ -968,4 +941,98 @@ void renderToScreen()
 {
 	// Writes the buffer to the console, hence you will see what you have written
 	g_Console.flushBufferToConsole();
+}
+
+void levelonelose()
+{
+	int CeX = g_sLevel1GuardCells.m_cLocation.X;
+	int CeY = g_sLevel1GuardCells.m_cLocation.Y;
+
+	int CaX = g_sLevel1GuardCafe.m_cLocation.X;
+	int CaY = g_sLevel1GuardCafe.m_cLocation.Y;
+
+	int F1X = g_sLevel1GuardField1.m_cLocation.X;
+	int F1Y = g_sLevel1GuardField1.m_cLocation.Y;
+
+	int F2X = g_sLevel1GuardField2.m_cLocation.X;
+	int F2Y = g_sLevel1GuardField2.m_cLocation.Y;
+
+	int Ch1X = g_sChar.m_cLocation.X;
+	int Ch1Y = g_sChar.m_cLocation.Y;
+
+	if (((Ch1X == CeX) && (Ch1Y == CeY)) || ((Ch1X == CaX) && (Ch1Y == CaY)) || ((Ch1X == F1X) && (Ch1Y == F1Y)) || ((Ch1X == F2X) && (Ch1Y == F2Y)))
+		g_eGameState = S_GAMEOVER;
+
+	if (contactcheck == true)
+	{
+		////THIS IS DETECTION WHEN ALL GUARDS ARE MOVING FORWARD////
+		//FOR IF PLAYER NORTH OF GUARD//
+		if (((Ch1X == CeX) && (Ch1Y == CeY - 1)) || ((Ch1X == CaX) && (Ch1Y == CaY - 1)) || ((Ch1X == F1X) && (Ch1Y == F1Y - 1)))
+			g_eGameState = S_GAMEOVER;
+
+		//FOR IF PLAYER DIAGONALLY RIGHT TO GUARD//
+		if (((Ch1X == CeX + 1) && (Ch1Y == CeY - 1)) || ((Ch1X == CaX + 1) && (Ch1Y == CaY - 1)) || ((Ch1X == F1X + 1) && (Ch1Y == F1Y - 1)))
+			g_eGameState = S_GAMEOVER;
+
+		//FOR IF PLAYER DIAGONALLY LEFT TO GUARD//
+		if (((Ch1X == CaX - 1) && (Ch1Y == CaY - 1)) || ((Ch1X == F1X - 1) && (Ch1Y == F1Y - 1)))
+			g_eGameState = S_GAMEOVER;
+
+		//FOR IF THE PLAYER IS EAST OF GUARD//
+		if (((Ch1X == CeX + 1) && (Ch1Y == CeY)) || ((Ch1X == CaX + 1) && (Ch1Y == CaY)) || ((Ch1X == F1X + 1) && (Ch1Y == F1Y)) || ((Ch1X == F2X + 1) && (Ch1Y == F2Y)))
+			g_eGameState = S_GAMEOVER;
+
+		//FOR IF THE PLAYER IS WEST OF GUARD//
+		if (((Ch1X == CaX - 1) && (Ch1Y == CaY)) || ((Ch1X == F1X - 1) && (Ch1Y == F1Y)) || ((Ch1X == F2X - 1) && (Ch1Y == F2Y)))
+			g_eGameState = S_GAMEOVER;
+
+		//FOR IF THE PLAYER IS SOUTH OF GUARD//
+		if (((Ch1X == CeX) && (Ch1Y == CeY + 1)) || ((Ch1X == F2X) && (Ch1Y == F2Y + 1)))
+			g_eGameState = S_GAMEOVER;
+
+		//FOR IF THE PLAYER IS DIAGONALLY RIGHT BELOW//
+		if (((Ch1X == CeX + 1) && (Ch1Y == CeY + 1)) || ((Ch1X == F2X + 1) && (Ch1Y == F2Y + 1)))
+			g_eGameState = S_GAMEOVER;
+
+		//FOR IF THE PLAYER IS DIAGONALLY LEFT BELOW//
+		if ((Ch1X == F2X - 1) && (Ch1Y == F2Y + 1))
+			g_eGameState = S_GAMEOVER;
+	}
+
+
+	////IF ALL GUARDS ARE MOVING BACKWARDS////
+	if (contactcheck == false)
+	{
+		//FOR IF PLAYER IS NORTH OF GUARD//
+		if (((Ch1X == CeX) && (Ch1Y == CeY - 1)) || ((Ch1X == F2X) && (Ch1Y == F2Y - 1)))
+			g_eGameState = S_GAMEOVER;
+
+		//FOR IF PLAYER DIAGONALLY RIGHT TO GUARD//
+		if ((Ch1X == F2X + 1) && (Ch1Y == F2Y - 1))
+			g_eGameState = S_GAMEOVER;
+
+		//FOR IF PLAYER DIAGONALLY FRONT LEFT TO GUARD//
+		if (((Ch1X == CeX - 1) && (Ch1Y == CeY - 1)) || ((Ch1X == F2X - 1) && (Ch1Y == F2Y - 1)))
+			g_eGameState = S_GAMEOVER;
+
+		//FOR IF PLAYER IS EAST OF GUARD//
+		if (((Ch1X == CaX + 1) && (Ch1Y == CaY)) || ((Ch1X == F1X + 1) && (Ch1Y == F1Y)) || ((Ch1X == F2X + 1) && (Ch1Y == F2Y)))
+			g_eGameState = S_GAMEOVER;
+
+		//FOR IF PLAYER IS WEST OF GUARD//
+		if (((Ch1X == CeX - 1) && (Ch1Y == CeY)) || ((Ch1X == CaX - 1) && (Ch1Y == CaY)) || ((Ch1X == F1X - 1) && (Ch1Y == F1Y)) || ((Ch1X == F2X - 1) && (Ch1Y == F2Y)))
+			g_eGameState = S_GAMEOVER;
+
+		//FOR IF PLAYER SOUTH OF GUARD//
+		if (((Ch1X == CeX) && (Ch1Y == CeY + 1)) || ((Ch1X == CaX) && (Ch1Y == CaY + 1)) || ((Ch1X == F1X) && (Ch1Y == F1Y + 1)))
+			g_eGameState = S_GAMEOVER;
+
+		//FOR IF PLAYER SOUTH RIGHT BELOW//
+		if (((Ch1X == CaX + 1) && (Ch1Y == CaY + 1)) || ((Ch1X == F1X + 1) && (Ch1Y == F1Y + 1)))
+			g_eGameState = S_GAMEOVER;
+
+		//FOR IF PLAYER SOUTH LEFT BELOW//
+		if (((Ch1X == F1X - 1) && (Ch1Y == F1Y + 1)) || ((Ch1X == CeX - 1) && (Ch1Y == CeY + 1)) || ((Ch1X == CaX - 1) && (Ch1Y == CaY + 1)))
+			g_eGameState = S_GAMEOVER;
+	}
 }

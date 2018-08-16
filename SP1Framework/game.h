@@ -71,6 +71,7 @@ void renderLevelOne();
 void renderLevelTwo();
 void renderLevelThree();
 void renderInventory();
+void levelonelose();
 
 void prisonerInteraction();
 

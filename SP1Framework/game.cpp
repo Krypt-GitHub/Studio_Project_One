@@ -289,8 +289,7 @@ void gameplayLevel1()            // gameplay logic
 {
 	processUserInput(); // checks if you should change states or do something else with the game, e.g. pause, exit
 	moveCharacterLevel1();    // moves the character, collision detection, physics, etc
-	Level1AIMovement(); //AI movement 
-	prisonerInteraction();
+	Level1AIMovement(); //AI movement
 	                   // sound can be played here too.
 }
 
@@ -521,12 +520,15 @@ void prisonerInteraction()
 
 	if (g_abKeyPressed[I])
 	{
-		if ((Ch1X - 1 == PcX) || (Ch1X + 1 == PcX) || (Ch1Y - 1 == PcY) || (Ch1Y + 1 == PcY))
+		if (((Ch1X - 1 == PcX) && (Ch1Y == PcY)) || ((Ch1X + 1 == PcX) && (Ch1Y == PcY)) || ((Ch1Y - 1 == PcY) && (Ch1X == PcX)) || ((Ch1Y + 1 == PcY) && (Ch1X == PcX)))
 		{
-			g_sChar.m_cLocation.X++;
+			c.X = 30;
+			c.Y = 30;
+			g_Console.writeToBuffer(c, "Sup Nigger", 0x03);
 		}
 	}
 }
+
 
 void processUserInput()
 {
@@ -637,6 +639,7 @@ void renderLevelOne()
 
 	renderTutorialMap(); // renders the map to the buffer first
 	renderCharacter();   // renders the character into the buffer
+	prisonerInteraction();
 }
 
 void renderLevelTwo()
@@ -721,6 +724,10 @@ void renderTutorialMap()
 				if (line[col] == ' ')
 				{
 					level1[x][y] = 'x';
+				}
+				if (line[col] == '3')
+				{
+					level1[x][y] = 219;
 				}
 				g_Console.writeToBuffer(c, line[col], 0x03);
 				c.X++;

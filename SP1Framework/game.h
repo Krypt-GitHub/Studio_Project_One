@@ -72,6 +72,10 @@ void renderLevelTwo();
 void renderLevelThree();
 void renderInventory();
 void levelonelose();
+<<<<<<< HEAD
+=======
+void renderSteelMap();
+>>>>>>> 2da7bf15c72fc279a0dc226747a7a10422f2a783
 void renderDialogue();
 
 void prisonerInteraction();

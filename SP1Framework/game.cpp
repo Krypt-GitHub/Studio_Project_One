@@ -546,7 +546,11 @@ void Level1ItemInteractions()
 	}
 }
 
+<<<<<<< HEAD
 int count = 0;
+=======
+int test = 0;
+>>>>>>> 2da7bf15c72fc279a0dc226747a7a10422f2a783
 
 void prisonerInteraction()
 {
@@ -556,6 +560,7 @@ void prisonerInteraction()
 	int PcX = g_sLevel1PrisonerCells.m_cLocation.X;
 	int PcY = g_sLevel1PrisonerCells.m_cLocation.Y;
 
+<<<<<<< HEAD
 	bool bSomethingHappened = false;
 	if (g_dBounceTime > g_dElapsedTime)
 		return;
@@ -563,12 +568,15 @@ void prisonerInteraction()
 	COORD c = g_Console.getConsoleSize();
 	c.X = 39;
 	c.Y = 34;
+=======
+>>>>>>> 2da7bf15c72fc279a0dc226747a7a10422f2a783
 
 	if (g_abKeyPressed[K_INTERACT])
 	{
 		bSomethingHappened = true;
 		if (((Ch1X - 1 == PcX) && (Ch1Y == PcY)) || ((Ch1X + 1 == PcX) && (Ch1Y == PcY)) || ((Ch1Y - 1 == PcY) && (Ch1X == PcX)) || ((Ch1Y + 1 == PcY) && (Ch1X == PcX)))
 		{
+<<<<<<< HEAD
 			count++;
 		}
 
@@ -576,6 +584,9 @@ void prisonerInteraction()
 		{
 			// set the bounce time to some time in the future to prevent accidental triggers
 			g_dBounceTime = g_dElapsedTime + 0.1; // 125ms should be enough
+=======
+			test = 1;
+>>>>>>> 2da7bf15c72fc279a0dc226747a7a10422f2a783
 		}
 
 	}
@@ -623,6 +634,17 @@ void renderDialogue()
 		g_Console.writeToBuffer(c, "          know much, but I do know someone who", 0x03);
 		c.Y = 36;
 		g_Console.writeToBuffer(c, "          might just have the info you need", 0x03);
+	}
+}
+
+void renderDialogue()
+{
+	COORD c = g_Console.getConsoleSize();
+	if (test == 1)
+	{
+		c.X = 30;
+		c.Y = 30;
+		g_Console.writeToBuffer(c, "Sup Nigger", 0x03);
 	}
 }
 
@@ -720,6 +742,11 @@ void renderLevelOne()
 	renderCharacter();   // renders the character into the buffer
 	renderDialogue();
 	renderInventory(); //Renders the inventory
+<<<<<<< HEAD
+=======
+	Level1ItemInteractions();
+	prisonerInteraction();
+>>>>>>> 2da7bf15c72fc279a0dc226747a7a10422f2a783
 }
 
 void renderLevelTwo()
@@ -730,7 +757,8 @@ void renderLevelTwo()
 
 void renderLevelThree()
 {
-
+	renderSteelMap();
+	renderCharacter();
 }
 
 char lives = 50; //50 is read as '2'
@@ -849,7 +877,11 @@ void loadTutorialMap()
 				}
 				if (line[col] == '!')
 				{
+<<<<<<< HEAD
 					level1[x][y] = 176;
+=======
+					line[col] = 219;
+>>>>>>> 2da7bf15c72fc279a0dc226747a7a10422f2a783
 				}
 				if (line[col] == 'S')
 				{
@@ -944,6 +976,94 @@ void renderBronzeMap()
 				if (line[col] == ' ')
 				{
 					level2[x][y] = ' ';
+				}
+				g_Console.writeToBuffer(c, line[col], 0x03);
+				c.X++;
+				y++;
+			}
+			x++;
+			y = 1;
+			c.Y++;
+			c.X = 1;
+		}
+	}
+}
+
+void renderSteelMap()
+{
+	using namespace std;
+	string line;
+	COORD c;
+	ifstream myfile("map_steel.txt");
+
+	c.X = 1;
+	c.Y = 1;
+
+	int x = 1;
+	int y = 1;
+	level = 2;
+
+	if (myfile.is_open())
+	{
+		while (getline(myfile, line))
+		{
+			for (int col = 0; col < line.size(); col++)
+			{
+				if (line[col] == '#')
+				{
+					line[col] = 205;
+				}
+				if (line[col] == '*')
+				{
+					line[col] = 186;
+				}
+				if (line[col] == 'H')
+				{
+					line[col] = 219;
+				}
+				if (line[col] == 'A')
+				{
+					line[col] = 185;
+				}
+				if (line[col] == 'B')
+				{
+					line[col] = 204;
+				}
+				if (line[col] == 'C')
+				{
+					line[col] = 201;
+				}
+				if (line[col] == 'D')
+				{
+					line[col] = 187;
+				}
+				if (line[col] == 'E')
+				{
+					line[col] = 203;
+				}
+				if (line[col] == 'F')
+				{
+					line[col] = 202;
+				}
+				if (line[col] == 'G')
+				{
+					line[col] = 200;
+				}
+				if (line[col] == 'I')
+				{
+					line[col] = 188;
+				}
+				if (line[col] == '!')
+				{
+					line[col] = 176;
+				}
+				if (line[col] == '+')
+				{
+					line[col] = 206;
+				}
+				if (line[col] == ' ')
+				{
+					level2[x][y] = 'x';
 				}
 				g_Console.writeToBuffer(c, line[col], 0x03);
 				c.X++;

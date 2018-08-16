@@ -411,11 +411,10 @@ void moveCharacterLevel1()
 	if (g_dBounceTime > g_dElapsedTime)
 		return;
 	// Updating the location of the character based on the key press
-	// providing a beep sound whenver we shift the character
+
 	//Level 1
 	if ((g_abKeyPressed[K_UP] || g_abKeyPressed[W]) && level1[g_sChar.m_cLocation.Y - 1][g_sChar.m_cLocation.X] == 'x') //To move up checking
 	{
-		//Beep(1440, 30);
 		g_sChar.m_cLocation.Y--;
 		bSomethingHappened = true;
 		if (((Ch1X == CeX) && (Ch1Y == CeY + 1)) || ((Ch1X == CaX) && (Ch1Y == CaY + 1)) || ((Ch1X == F1X) && (Ch1Y == F1Y + 1)) || ((Ch1X == F2X) && (Ch1Y == F2Y + 1)))
@@ -426,7 +425,6 @@ void moveCharacterLevel1()
 	}
 	if ((g_abKeyPressed[K_LEFT] || g_abKeyPressed[A]) && g_sChar.m_cLocation.X > 0 && level1[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X - 1] == 'x')
 	{
-		//Beep(1440, 30);
 		g_sChar.m_cLocation.X--;
 		bSomethingHappened = true;
 		if (((Ch1X == CeX + 1) && (Ch1Y == CeY)) || ((Ch1X == CaX+1) && (Ch1Y == CaY)) || ((Ch1X == F1X+1) && (Ch1Y == F1Y)) || ((Ch1X == F2X+1) && (Ch1Y == F2Y)))
@@ -444,11 +442,9 @@ void moveCharacterLevel1()
 			g_sChar.m_cLocation.Y--;
 			g_eGameState = S_GAMEOVER;
 		}
-		//Beep(1440, 30);
 	}
 	if ((g_abKeyPressed[K_RIGHT] || g_abKeyPressed[D]) && g_sChar.m_cLocation.X < g_Console.getConsoleSize().X - 1 && g_sChar.m_cLocation.X > 0 && level1[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X + 1] == 'x')
 	{
-		//Beep(1440, 30);
 		g_sChar.m_cLocation.X++;
 		bSomethingHappened = true;
 		if (((Ch1X == CeX - 1) && (Ch1Y == CeY)) || ((Ch1X == CaX - 1) && (Ch1Y == CaY)) || ((Ch1X == F1X - 1) && (Ch1Y == F1Y)) || ((Ch1X == F2X - 1) && (Ch1Y == F2Y)))
@@ -483,26 +479,22 @@ void moveCharacterLevel2()
 	//Level 2
 	if ((g_abKeyPressed[K_UP] || g_abKeyPressed[W]) && level2[g_sLevel2Char.m_cLocation.Y - 1][g_sLevel2Char.m_cLocation.X] == 'x') //To move up checking
 	{
-		//Beep(1440, 30);
 		g_sLevel2Char.m_cLocation.Y--;
 		bSomethingHappened = true;
 
 	}
 	if ((g_abKeyPressed[K_LEFT] || g_abKeyPressed[A]) && level2[g_sLevel2Char.m_cLocation.Y][g_sLevel2Char.m_cLocation.X - 1] == 'x')
 	{
-		//Beep(1440, 30);
 		g_sLevel2Char.m_cLocation.X--;
 		bSomethingHappened = true;
 	}
 	if ((g_abKeyPressed[K_DOWN] || g_abKeyPressed[S]) && level2[g_sLevel2Char.m_cLocation.Y + 1][g_sLevel2Char.m_cLocation.X] == 'x')
 	{
-		//Beep(1440, 30);
 		g_sLevel2Char.m_cLocation.Y++;
 		bSomethingHappened = true;
 	}
 	if ((g_abKeyPressed[K_RIGHT] || g_abKeyPressed[D]) && level2[g_sLevel2Char.m_cLocation.Y][g_sLevel2Char.m_cLocation.X + 1] == 'x')
 	{
-		//Beep(1440, 30);
 		g_sLevel2Char.m_cLocation.X++;
 		bSomethingHappened = true;
 	}

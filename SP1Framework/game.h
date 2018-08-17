@@ -22,6 +22,7 @@ enum EKEYS
 	K_RETURN,
 	K_ENTER,
 	K_INTERACT,
+	k_TITLE,
     K_COUNT
 
 };
@@ -35,7 +36,8 @@ enum EGAMESTATES
 	S_GAMELEVEL3,
 	S_GAMEEXIT,
     S_COUNT,
-	S_GAMEOVER
+	S_GAMEOVER,
+	S_CLEAR
 };
 
 // struct for the game character
@@ -59,6 +61,7 @@ void Level1AIMovement();
 void moveCharacterLevel1();       // moves the character, collision detection, physics, etc
 void moveCharacterLevel2();       // moves the character, collision detection, physics, etc
 void Level1ItemInteractions();
+void Level2ItemInteractions();
 
 void processUserInput();    // checks if you should change states or do something else with the game, e.g. pause, exit
 void clearScreen();         // clears the current screen and draw from scratch 
@@ -72,11 +75,10 @@ void renderLevelTwo();
 void renderLevelThree();
 void renderInventory();
 void levelonelose();
-<<<<<<< HEAD
-=======
+void loadSteelMap();
 void renderSteelMap();
->>>>>>> 2da7bf15c72fc279a0dc226747a7a10422f2a783
 void renderDialogue();
+void renderClear();
 
 void prisonerInteraction();
 
@@ -88,5 +90,7 @@ void gameoverwait();
 void gameovercondition();//For AI to move 
 
 void loadTutorialMap();
+void loadBronzeMap();
+void loadSteelMap();
 
 #endif // _GAME_H

@@ -17,6 +17,9 @@ double  g_dDeltaTime;
 double  g_dGuardTimeX = 0.0;
 double  g_dGuardTimeY = 0.0;
 double  g_dGuardTimeZ = 0.0;
+double  g_dGuardTimeXLevel2 = 0.0;
+double  g_dGuardTimeYLevel2 = 0.0;
+double  g_dGuardTimeZLevel2 = 0.0;
 double  g_dRotationTime = 0.0;
 double  g_dGameOver = 0.0;
 bool    g_abKeyPressed[K_COUNT];
@@ -52,7 +55,7 @@ SGameChar   g_sLevel1PrisonerCells; //Level 1 Prisoners
 SGameChar   g_sLevel1PrisonerShowers;
 SGameChar   g_sLevel1PrisonerCafe;
 
-SGameChar   g_sLevel2RotatingGuard;
+SGameChar   g_sLevel2RotatingGuard; //Level 2 Guards
 SGameChar   g_sLevel2UpGuard;
 SGameChar   g_sLevel2DownGuard;
 SGameChar   g_sLevel2LeftGuard;
@@ -73,12 +76,15 @@ SGameChar   g_sRightRotatingArr;
 SGameChar   g_sDownRotatingArr;
 SGameChar   g_sLeftRotatingArr;
 
+SGameChar   g_sCafeUpArr;
+SGameChar   g_sCafeRightArr;
+
 EGAMESTATES g_eGameState = S_SPLASHSCREEN;
 
 double  g_dBounceTime; // this is to prevent key bouncing, so we won't trigger keypresses more than once
 
 					   
-Console g_Console(300, 300, "SP1 Framework"); // Console object
+Console g_Console(120, 300, "SP1 Framework"); // Console object
 
 //--------------------------------------------------------------
 // Purpose  : Initialisation function
@@ -169,21 +175,27 @@ void init(void)
 	g_sLevel2RightGuard.m_cLocation.X = 2;
 	g_sLevel2RightGuard.m_cLocation.Y = 20;
 	
-	g_sLevel2CafeGuard.m_cLocation.X = 36;
-	g_sLevel2CafeGuard.m_cLocation.Y = 36;
+	g_sLevel2CafeGuard.m_cLocation.X = 2;
+	g_sLevel2CafeGuard.m_cLocation.Y = 28;
 
 	//LEVEL 2 ARROWS
 	g_sUpRotatingArr.m_cLocation.X = 36;
-	g_sUpRotatingArr.m_cLocation.Y = 19;
+	g_sUpRotatingArr.m_cLocation.Y = 17;
 
-    g_sRightRotatingArr.m_cLocation.X = 37;
+    g_sRightRotatingArr.m_cLocation.X = 41;
 	g_sRightRotatingArr.m_cLocation.Y = 20;
 
     g_sDownRotatingArr.m_cLocation.X = 36;
-	g_sDownRotatingArr.m_cLocation.Y = 21;
+	g_sDownRotatingArr.m_cLocation.Y = 23;
 
-    g_sLeftRotatingArr.m_cLocation.X = 35;
+    g_sLeftRotatingArr.m_cLocation.X = 31;
 	g_sLeftRotatingArr.m_cLocation.Y = 20;
+
+	g_sCafeUpArr.m_cLocation.X = 2;
+	g_sCafeUpArr.m_cLocation.Y = 27;
+
+	g_sCafeRightArr.m_cLocation.X = 3;
+    g_sCafeRightArr.m_cLocation.Y = 28;
 
 	// sets the width, height and the font name to use in the console
 	g_Console.setConsoleFont(0, 16, L"Consolas");
@@ -223,6 +235,9 @@ void update(double dt)
 	g_dGuardTimeX += g_dDeltaTime;
 	g_dGuardTimeY += g_dDeltaTime;
 	g_dGuardTimeZ += g_dDeltaTime;
+	g_dGuardTimeXLevel2 += g_dDeltaTime;
+    g_dGuardTimeYLevel2 += g_dDeltaTime;
+	g_dGuardTimeZLevel2 += g_dDeltaTime;
 	g_dRotationTime += g_dDeltaTime;
 	g_dGameOver += dt;
 
@@ -315,6 +330,10 @@ void gameoverwait()
 	{
 		g_eGameState = S_SPLASHSCREEN;
 		g_dGameOver = 0; //To always reset the spawn
+		RemoveHidden();
+		Hidden1Stage2 = false;
+		Hidden2Stage2 = false;
+		Hidden3Stage2 = false;
 		ShiveNumber = '0';
 	}
 }
@@ -356,6 +375,8 @@ int count2 = 0;
 
 //LEVEL 2
 int TurnCount = 0;
+int moveLevel2 = 0;
+int move1Level2 = 0;
 
 //AI MOVEMENT
 void Level1AIMovement()
@@ -377,7 +398,6 @@ void Level1AIMovement()
 
 	if (g_dGuardTimeX >= 0.20 && move == 10)
 	{
-
 		count = 2;
 
 		contactcheck = false;
@@ -515,11 +535,45 @@ void Level2AIMovement()
 	}
 	
 	//For the Up and down guards (Total 14, 6 down first)
-	if (g_dGuardTimeY >= 0.30 && move != 14)
+	if (g_dGuardTimeYLevel2 >= 0.05 && moveLevel2 != 14)
 	{
 		g_sLevel2UpGuard.m_cLocation.Y++;
-		g_dGuardTimeY = 0;
-		++move;
+		g_sLevel2DownGuard.m_cLocation.Y--;
+
+		g_dGuardTimeYLevel2 = 0;
+		++moveLevel2;
+	}
+	if (g_dGuardTimeYLevel2 >= 0.05 && moveLevel2 == 14)
+	{
+		g_sLevel2UpGuard.m_cLocation.Y--;
+		g_sLevel2DownGuard.m_cLocation.Y++;
+
+		g_dGuardTimeYLevel2 = 0;
+		if (g_sLevel2UpGuard.m_cLocation.Y == 2)
+		{
+			moveLevel2 = 0;
+		}
+	}
+
+	//For the Right and Left guards (Total 14, 6 down first)
+	if (g_dGuardTimeXLevel2 >= 0.05 && move1Level2 != 27)
+	{
+		g_sLevel2RightGuard.m_cLocation.X++;
+		g_sLevel2LeftGuard.m_cLocation.X--;
+
+		g_dGuardTimeXLevel2 = 0;
+		++move1Level2;
+	}
+	if (g_dGuardTimeXLevel2 >= 0.05 && move1Level2 == 27)
+	{
+		g_sLevel2RightGuard.m_cLocation.X--;
+		g_sLevel2LeftGuard.m_cLocation.X++;
+
+		g_dGuardTimeXLevel2 = 0;
+		if (g_sLevel2RightGuard.m_cLocation.X == 2)
+		{
+			move1Level2 = 0;
+		}
 	}
 }
 
@@ -1030,9 +1084,11 @@ void levelonelose()
 }
 void leveltwolose()
 {
-	RemoveHidden();
 	int RtX = g_sLevel2RotatingGuard.m_cLocation.X;
 	int RtY = g_sLevel2RotatingGuard.m_cLocation.Y;
+
+	int CRtX = g_sLevel2CafeGuard.m_cLocation.X;
+	int CRtY = g_sLevel2CafeGuard.m_cLocation.Y;
 
 
 	if (TurnCount == 1)
@@ -1721,15 +1777,19 @@ void renderArrowLevel2()
 	{
 	case 1:
 		g_Console.writeToBuffer(g_sUpRotatingArr.m_cLocation, (char)30, 0X0F);
+		g_Console.writeToBuffer(g_sCafeUpArr.m_cLocation, (char)30, 0X0F);
 		break;
 	case 2:
 		g_Console.writeToBuffer(g_sRightRotatingArr.m_cLocation, (char)16, 0X0F);
+		g_Console.writeToBuffer(g_sCafeRightArr.m_cLocation, (char)16, 0X0F);
 		break;
 	case 3:
 		g_Console.writeToBuffer(g_sDownRotatingArr.m_cLocation, (char)31, 0X0F);
+		g_Console.writeToBuffer(g_sCafeUpArr.m_cLocation, (char)30, 0X0F);
 		break;
 	case 4:
 		g_Console.writeToBuffer(g_sLeftRotatingArr.m_cLocation, (char)17, 0X0F);
+		g_Console.writeToBuffer(g_sCafeRightArr.m_cLocation, (char)16, 0X0F);
 		break;
 	}
 }
@@ -1825,33 +1885,33 @@ void HiddenEntranceThree()
 }
 void RemoveHidden()
 {
-	COORD c;
-	c.X = 0; //x = 51 + 15
-	c.Y = 0; // y = 2 + 11
-	for (int y = 0; y < 250; y++) // A forward loop to assign new values to the text on the map
-	{
-		c.X = y;
-		for (int x = 0; x < 250; x++)
+		COORD c;
+		c.X = 0; //x = 51 + 15
+		c.Y = 0; // y = 2 + 11
+		for (int y = 0; y < 250; y++) // A forward loop to assign new values to the text on the map
 		{
-			c.Y = x;
-			if (Level2Hidden[x][y] == '-')
+			c.X = y;
+			for (int x = 0; x < 250; x++)
 			{
-				level2[x][y] = ' ';
-			}
-			if (Level2Hidden[x][y] == '|')
-			{
-				level2[x][y] = ' ';
-			}
-			if (Level2Hidden[x][y] == 92)
-			{
-				level2[x][y] = ' ';
-			}
-			if (Level2Hidden[x][y] == '-')
-			{
-				level2[x][y] = ' ';
+				c.Y = x;
+				if (Level2Hidden[x][y] == '-')
+				{
+					level2[x][y] = ' ';
+				}
+				if (Level2Hidden[x][y] == '|')
+				{
+					level2[x][y] = ' ';
+				}
+				if (Level2Hidden[x][y] == 92)
+				{
+					level2[x][y] = ' ';
+				}
+				if (Level2Hidden[x][y] == '-')
+				{
+					level2[x][y] = ' ';
+				}
 			}
 		}
-	}
 }
 
 //void renderLevelThree()
@@ -1982,7 +2042,7 @@ void renderInventory()
 
 	c.X = 108;
 	c.Y = 5;
-	g_Console.writeToBuffer(c, "Items On Hand:", 0x03);
+	g_Console.writeToBuffer(c, "Items:", 0x03);
 	c.X = 108;
 	c.Y = 8;
 	g_Console.writeToBuffer(c, "Lives:", 0x03);
@@ -2040,6 +2100,7 @@ void renderGameOver()
 	c.X = 20;
 	c.Y = 25;
 	g_Console.writeToBuffer(c, "You got caught...You will get sent back to the title screen by pressing R", 0x0F);
+
 	lives = '2';
 	ShiveNumber = '0';
 	KeyNumber = '0';
@@ -2080,6 +2141,7 @@ void renderCharacter()
 		g_Console.writeToBuffer(g_sLevel2LeftGuard.m_cLocation, (char)1, 0X0F);
 		g_Console.writeToBuffer(g_sLevel2RightGuard.m_cLocation, (char)1, 0X0F);
 		g_Console.writeToBuffer(g_sLevel2UpGuard.m_cLocation, (char)1, 0X0F);
+		g_Console.writeToBuffer(g_sLevel2CafeGuard.m_cLocation, (char)1, 0X0A);
 		
 
 	}

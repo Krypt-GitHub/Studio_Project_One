@@ -22,7 +22,7 @@ enum EKEYS
 	K_RETURN,
 	K_ENTER,
 	K_INTERACT,
-	k_TITLE,
+	K_TITLE,
     K_COUNT
 
 };
@@ -81,7 +81,8 @@ void loadSteelMap();
 void renderSteelMap();
 void renderDialogue();
 void renderClear();
-void renderArr();
+void renderArrowLevel1();
+void renderArrowLevel2();
 
 void prisonerInteraction();
 
@@ -101,4 +102,5 @@ void HiddenEntranceOne();
 void HiddenEntranceTwo();
 void HiddenEntranceThree();
 
+void RemoveHidden();
 #endif // _GAME_H

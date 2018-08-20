@@ -27,6 +27,7 @@ void gameplayLevel2()
 	moveCharacterLevel2();    // moves the character, collision detection, physics, etc
 	Level2ItemInteractions();
 	Level2AIMovement(); //AI movement 
+	leveltwolose();
 													  // sound can be played here too.
 }
 
@@ -39,7 +40,7 @@ void renderLevelOne()
 {
 	renderTutorialMap();  // renders the map to the buffer first
 	renderCharacter();   // renders the character into the buffer
-	renderArr();
+	renderArrowLevel1();
 	renderDialogue();
 	renderInventory(); //Renders the inventory
 	prisonerInteraction();
@@ -50,6 +51,7 @@ void renderLevelTwo()
 	renderBronzeMap(); // renders the map to the buffer first
 	renderCharacter();   // renders the character into the buffer
 	renderInventory();
+	renderArrowLevel2();
 }
 
 void renderLevelThree()

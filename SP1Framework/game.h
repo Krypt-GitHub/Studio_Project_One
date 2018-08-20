@@ -58,6 +58,7 @@ void gameplayLevel1();     // gameplay logic
 void gameplayLevel2();     // gameplay logic
 void gameplayLevel3();     // gameplay logic
 void Level1AIMovement();
+void Level2AIMovement();
 void moveCharacterLevel1();       // moves the character, collision detection, physics, etc
 void moveCharacterLevel2();       // moves the character, collision detection, physics, etc
 void Level1ItemInteractions();
@@ -75,10 +76,12 @@ void renderLevelTwo();
 void renderLevelThree();
 void renderInventory();
 void levelonelose();
+void leveltwolose();
 void loadSteelMap();
 void renderSteelMap();
 void renderDialogue();
 void renderClear();
+void renderArr();
 
 void prisonerInteraction();
 
@@ -92,5 +95,10 @@ void gameovercondition();//For AI to move
 void loadTutorialMap();
 void loadBronzeMap();
 void loadSteelMap();
+
+
+void HiddenEntranceOne();
+void HiddenEntranceTwo();
+void HiddenEntranceThree();
 
 #endif // _GAME_H

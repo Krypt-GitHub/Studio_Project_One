@@ -22,7 +22,7 @@ enum EKEYS
 	K_RETURN,
 	K_ENTER,
 	K_INTERACT,
-	K_TITLE,
+	K_NEXTLEVEL,
     K_COUNT
 
 };
@@ -74,7 +74,7 @@ void renderCharacter();     // renders the character into the buffer
 void renderLevelOne();
 void renderLevelTwo();
 void renderLevelThree();
-void renderInventory();
+void renderUserInterface();
 void levelonelose();
 void leveltwolose();
 void loadSteelMap();

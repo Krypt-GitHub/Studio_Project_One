@@ -12,7 +12,7 @@ void gameovercondition()
 }
 
 void gameplayLevel1()
-{// gameplay logic
+{                               // gameplay logic
 	processUserInput(); // checks if you should change states or do something else with the game, e.g. pause, exit
 	moveCharacterLevel1();    // moves the character, collision detection, physics, etc
 	Level1AIMovement(); //AI movement
@@ -42,7 +42,7 @@ void renderLevelOne()
 	renderCharacter();   // renders the character into the buffer
 	renderArrowLevel1();
 	renderDialogue();
-	renderInventory(); //Renders the inventory
+	renderUserInterface(); //Renders the inventory
 	prisonerInteraction();
 }
 
@@ -50,7 +50,7 @@ void renderLevelTwo()
 {
 	renderBronzeMap(); // renders the map to the buffer first
 	renderCharacter();   // renders the character into the buffer
-	renderInventory();
+	/*renderUserInterface();*/
 	renderArrowLevel2();
 }
 

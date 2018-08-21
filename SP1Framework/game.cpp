@@ -11,9 +11,12 @@
 
 //using namespace std;
 bool contactcheck = true;
+bool contactcheckLevel2 = true;
+bool movementLock = false;
 
 double  g_dElapsedTime;
 double  g_dDeltaTime;
+double  g_dLevel2Timer;
 double  g_dGuardTimeX = 0.0;
 double  g_dGuardTimeY = 0.0;
 double  g_dGuardTimeZ = 0.0;
@@ -29,7 +32,7 @@ bool Hidden2Stage2 = false;
 bool Hidden3Stage2 = false;
 
 double startgame = 1.0; //SPLASHSCREEN TIME
-char level1[125][125]; //To store level 1 map into a 2D array 
+char level1[250][250]; //To store level 1 map into a 2D array 
 char level2[250][250]; //To store level 2 map into a 2D array 
 char Level2Hidden[250][250]; //To store the hidden passages of Level 2 into a 2D array
 char level3[125][125]; //To store level 3 map into a 2D array 
@@ -75,6 +78,10 @@ SGameChar   g_sUpRotatingArr;
 SGameChar   g_sRightRotatingArr;
 SGameChar   g_sDownRotatingArr;
 SGameChar   g_sLeftRotatingArr;
+SGameChar   g_sUpRotatingArr2;
+SGameChar   g_sRightRotatingArr2;
+SGameChar   g_sDownRotatingArr2;
+SGameChar   g_sLeftRotatingArr2;
 
 SGameChar   g_sCafeUpArr;
 SGameChar   g_sCafeRightArr;
@@ -84,7 +91,7 @@ EGAMESTATES g_eGameState = S_SPLASHSCREEN;
 double  g_dBounceTime; // this is to prevent key bouncing, so we won't trigger keypresses more than once
 
 					   
-Console g_Console(120, 300, "SP1 Framework"); // Console object
+Console g_Console(300, 300, "SP1 Framework"); // Console object
 
 //--------------------------------------------------------------
 // Purpose  : Initialisation function
@@ -99,6 +106,7 @@ void init(void)
 	// Set precision for floating point output
 	g_dElapsedTime = 0.0;
 	g_dBounceTime = 0.0;
+	g_dLevel2Timer = 120.0;
 
 	// sets the initial state for the game
 	g_eGameState = S_SPLASHSCREEN;
@@ -180,16 +188,28 @@ void init(void)
 
 	//LEVEL 2 ARROWS
 	g_sUpRotatingArr.m_cLocation.X = 36;
-	g_sUpRotatingArr.m_cLocation.Y = 17;
+	g_sUpRotatingArr.m_cLocation.Y = 16;
 
-    g_sRightRotatingArr.m_cLocation.X = 41;
+    g_sRightRotatingArr.m_cLocation.X = 43;
 	g_sRightRotatingArr.m_cLocation.Y = 20;
 
     g_sDownRotatingArr.m_cLocation.X = 36;
-	g_sDownRotatingArr.m_cLocation.Y = 23;
+	g_sDownRotatingArr.m_cLocation.Y = 24;
 
-    g_sLeftRotatingArr.m_cLocation.X = 31;
+    g_sLeftRotatingArr.m_cLocation.X = 29;
 	g_sLeftRotatingArr.m_cLocation.Y = 20;
+
+	g_sUpRotatingArr2.m_cLocation.X = 36;
+	g_sUpRotatingArr2.m_cLocation.Y = 7;
+
+	g_sRightRotatingArr2.m_cLocation.X = 61;
+	g_sRightRotatingArr2.m_cLocation.Y = 20;
+
+	g_sDownRotatingArr2.m_cLocation.X = 36;
+	g_sDownRotatingArr2.m_cLocation.Y = 33;
+
+	g_sLeftRotatingArr2.m_cLocation.X = 11;
+	g_sLeftRotatingArr2.m_cLocation.Y = 20;
 
 	g_sCafeUpArr.m_cLocation.X = 2;
 	g_sCafeUpArr.m_cLocation.Y = 27;
@@ -223,7 +243,7 @@ void getInput(void)
 	g_abKeyPressed[K_RETURN] = isKeyPressed(0x52);
 	g_abKeyPressed[K_ESCAPE] = isKeyPressed(VK_ESCAPE);
 	g_abKeyPressed[K_INTERACT] = isKeyPressed(0x45);
-	g_abKeyPressed[K_TITLE] = isKeyPressed(0x54);
+	g_abKeyPressed[K_NEXTLEVEL] = isKeyPressed(0x54);
 	g_abKeyPressed[K_ENTER] = isKeyPressed(VK_RETURN);
 }
 
@@ -232,6 +252,7 @@ void update(double dt)
 	// update the delta time
 	g_dElapsedTime += dt;
 	g_dDeltaTime = dt;
+	g_dLevel2Timer -= dt;
 	g_dGuardTimeX += g_dDeltaTime;
 	g_dGuardTimeY += g_dDeltaTime;
 	g_dGuardTimeZ += g_dDeltaTime;
@@ -334,32 +355,11 @@ void gameoverwait()
 		Hidden1Stage2 = false;
 		Hidden2Stage2 = false;
 		Hidden3Stage2 = false;
+		g_dLevel2Timer = 120.0;
 		ShiveNumber = '0';
 	}
 }
 
-//void gameovercondition()
-//{
-//	renderGameOver();
-//}
-
-//void gameplayLevel1()          
-//{// gameplay logic
-//	processUserInput(); // checks if you should change states or do something else with the game, e.g. pause, exit
-//	moveCharacterLevel1();    // moves the character, collision detection, physics, etc
-//	Level1AIMovement(); //AI movement
-//	Level1ItemInteractions();         // sound can be played here too.
-//	prisonerInteraction();
-//	levelonelose();
-//}
-
-//void gameplayLevel2()
-//{
-//	processUserInput(); // checks if you should change states or do something else with the game, e.g. pause, exit
-//	moveCharacterLevel2();    // moves the character, collision detection, physics, etc
-//	Level2ItemInteractions();						  //AI movement 
-//						// sound can be played here too.
-//}
 
 
 //Global Variables for AI
@@ -414,6 +414,7 @@ void Level1AIMovement()
 		if (g_sLevel1GuardCells.m_cLocation.X == 3)
 		{
 			move = 0;
+			contactcheck = true;
 		}
 	}
 	////////////////////
@@ -535,7 +536,7 @@ void Level2AIMovement()
 	}
 	
 	//For the Up and down guards (Total 14, 6 down first)
-	if (g_dGuardTimeYLevel2 >= 0.05 && moveLevel2 != 14)
+	if (g_dGuardTimeYLevel2 >= 0.25 && moveLevel2 != 14) //MOVING FORWARD
 	{
 		g_sLevel2UpGuard.m_cLocation.Y++;
 		g_sLevel2DownGuard.m_cLocation.Y--;
@@ -543,8 +544,10 @@ void Level2AIMovement()
 		g_dGuardTimeYLevel2 = 0;
 		++moveLevel2;
 	}
-	if (g_dGuardTimeYLevel2 >= 0.05 && moveLevel2 == 14)
+	if (g_dGuardTimeYLevel2 >= 0.25 && moveLevel2 == 14)
 	{
+		contactcheckLevel2 = false; // MOVING BACKWARD
+
 		g_sLevel2UpGuard.m_cLocation.Y--;
 		g_sLevel2DownGuard.m_cLocation.Y++;
 
@@ -556,16 +559,20 @@ void Level2AIMovement()
 	}
 
 	//For the Right and Left guards (Total 14, 6 down first)
-	if (g_dGuardTimeXLevel2 >= 0.05 && move1Level2 != 27)
+	if (g_dGuardTimeXLevel2 >= 0.25 && move1Level2 != 27) //Moving "FOWARD"
 	{
+		contactcheckLevel2 = true;
+
 		g_sLevel2RightGuard.m_cLocation.X++;
 		g_sLevel2LeftGuard.m_cLocation.X--;
 
 		g_dGuardTimeXLevel2 = 0;
 		++move1Level2;
 	}
-	if (g_dGuardTimeXLevel2 >= 0.05 && move1Level2 == 27)
+	if (g_dGuardTimeXLevel2 >= 0.25 && move1Level2 == 27)
 	{
+		contactcheckLevel2 = false;
+
 		g_sLevel2RightGuard.m_cLocation.X--;
 		g_sLevel2LeftGuard.m_cLocation.X++;
 
@@ -697,7 +704,7 @@ void moveCharacterLevel2()
 	if (bSomethingHappened)
 	{
 		// set the bounce time to some time in the future to prevent accidental triggers
-		g_dBounceTime = g_dElapsedTime + 0.08; // 125ms should be enough
+		g_dBounceTime = g_dElapsedTime + 0.125; // 125ms should be enough
 	}
 }
 
@@ -837,6 +844,7 @@ void Level2ItemInteractions()
 		ShiveNumber = '0';
 		KeyNumber = '0';
 		level2[g_sLevel2Char.m_cLocation.Y][g_sLevel2Char.m_cLocation.X + 1] = ' ';
+		g_eGameState = S_CLEAR;
 	}
 
 	//----------------------------------------------------------------------------------------------------------------------------------
@@ -895,7 +903,8 @@ void levelonelose()
 		}
 
 		//FOR IF PLAYER DIAGONALLY RIGHT TO GUARD//
-		if (((Ch1X == CeX + 1) && (Ch1Y == CeY - 1)) || ((Ch1X == CaX + 1) && (Ch1Y == CaY - 1)) || ((Ch1X == F1X + 1) && (Ch1Y == F1Y - 1))) {
+		if (((Ch1X == CeX + 1) && (Ch1Y == CeY - 1)) || ((Ch1X == CaX + 1) && (Ch1Y == CaY - 1)) || ((Ch1X == F1X + 1) && (Ch1Y == F1Y - 1)))
+		{
 			lives = lives - 1;
 			if (lives != '0') {
 				g_sChar.m_cLocation.X = 6;
@@ -1084,16 +1093,30 @@ void levelonelose()
 }
 void leveltwolose()
 {
+	int CH2X = g_sLevel2Char.m_cLocation.X;
+	int CH2Y = g_sLevel2Char.m_cLocation.Y;
+
 	int RtX = g_sLevel2RotatingGuard.m_cLocation.X;
 	int RtY = g_sLevel2RotatingGuard.m_cLocation.Y;
 
 	int CRtX = g_sLevel2CafeGuard.m_cLocation.X;
 	int CRtY = g_sLevel2CafeGuard.m_cLocation.Y;
 
+	int UX = g_sLevel2UpGuard.m_cLocation.X;
+	int UY = g_sLevel2UpGuard.m_cLocation.Y;
+
+	int DX = g_sLevel2DownGuard.m_cLocation.X;
+	int DY = g_sLevel2DownGuard.m_cLocation.Y;
+
+	int RX = g_sLevel2RightGuard.m_cLocation.X;
+	int RY = g_sLevel2RightGuard.m_cLocation.Y;
+
+	int LX = g_sLevel2LeftGuard.m_cLocation.X;
+	int LY = g_sLevel2LeftGuard.m_cLocation.Y;
 
 	if (TurnCount == 1)
 	{
-		if (RtX == g_sLevel2Char.m_cLocation.X && (RtY - g_sLevel2Char.m_cLocation.Y >= 0))
+		if ((RtX == g_sLevel2Char.m_cLocation.X && (RtY - g_sLevel2Char.m_cLocation.Y >= 0)) || (CRtX == g_sLevel2Char.m_cLocation.X && (g_sLevel2Char.m_cLocation.Y - CRtY <= 3)))
 		{
 			lives -= 1;
 			g_sLevel2Char.m_cLocation.X = 46;
@@ -1107,7 +1130,7 @@ void leveltwolose()
 	}
 	if (TurnCount == 2)
 	{
-		if (RtY == g_sLevel2Char.m_cLocation.Y && (g_sLevel2Char.m_cLocation.X - RtX <= 35))
+		if (RtY == g_sLevel2Char.m_cLocation.Y && (g_sLevel2Char.m_cLocation.X - RtX <= 35) || (CRtY == g_sLevel2Char.m_cLocation.Y && (g_sLevel2Char.m_cLocation.X - CRtX <= 20)))
 		{
 			lives -= 1;
 			g_sLevel2Char.m_cLocation.X = 46;
@@ -1121,7 +1144,7 @@ void leveltwolose()
 	}
 	if (TurnCount == 3)
 	{
-		if (RtX == g_sLevel2Char.m_cLocation.X && (g_sLevel2Char.m_cLocation.Y - RtY >= 0))
+		if (RtX == g_sLevel2Char.m_cLocation.X && (g_sLevel2Char.m_cLocation.Y - RtY >= 0) || (CRtX == g_sLevel2Char.m_cLocation.X && (g_sLevel2Char.m_cLocation.Y - CRtY <= 3)))
 		{
 			lives -= 1;
 			g_sLevel2Char.m_cLocation.X = 46;
@@ -1135,7 +1158,7 @@ void leveltwolose()
 	}
 	if (TurnCount == 4)
 	{
-		if (RtY == g_sLevel2Char.m_cLocation.Y && (RtX - g_sLevel2Char.m_cLocation.X >= 0))
+		if (RtY == g_sLevel2Char.m_cLocation.Y && (RtX - g_sLevel2Char.m_cLocation.X >= 0) || (CRtY == g_sLevel2Char.m_cLocation.Y && (g_sLevel2Char.m_cLocation.X - CRtX <= 20)))
 		{
 			lives -= 1;
 			g_sLevel2Char.m_cLocation.X = 46;
@@ -1147,7 +1170,109 @@ void leveltwolose()
 			}
 		}
 	}
-}
+
+	
+		//IF IN FRONT OF THE GUARD
+		if ((UY + 2 == CH2Y && UX == CH2X) || (DY - 2 == CH2Y && DX == CH2X) || (RY == CH2Y && RX - 2 == CH2X) || (LY == CH2Y && LX + 2 == CH2X))
+		{
+			lives = lives - 1;
+			if (lives != '0') {
+				g_sLevel2Char.m_cLocation.X = 46;
+				g_sLevel2Char.m_cLocation.Y = 3;
+			}
+			else {
+				g_eGameState = S_GAMEOVER;
+			}
+		}
+		//TO YOUR BOTTOM RIGHT (REFERENCE TO UP GUARD)
+		if ((UX + 1 == CH2X && UY + 1 == CH2Y) || (DX + 1 == CH2X && DY - 1 == CH2Y) || (RX - 1 == CH2X && RY - 1 == CH2Y) || (LX + 1 == CH2X && LY + 1 == CH2Y))
+		{
+			lives = lives - 1;
+			if (lives != '0') {
+				g_sLevel2Char.m_cLocation.X = 46;
+				g_sLevel2Char.m_cLocation.Y = 3;
+			}
+			else {
+				g_eGameState = S_GAMEOVER;
+			}
+		}
+		//TO YOUR BOTTOM LEFT (REFERENCE TO UP GUARD)
+		if ((UX - 1 == CH2X && UY + 1 == CH2Y) || (DX - 1 == CH2X && DY - 1 == CH2Y) || (RX - 1 == CH2X && RY + 1 == CH2Y) || (LX + 1 == CH2X && LY - 1 == CH2Y))
+		{
+			lives = lives - 1;
+			if (lives != '0') {
+				g_sLevel2Char.m_cLocation.X = 46;
+				g_sLevel2Char.m_cLocation.Y = 3;
+			}
+			else {
+				g_eGameState = S_GAMEOVER;
+			}
+		}
+		//TO THE RIGHT
+		if ((UX + 2 == CH2X && UY == CH2Y) || (DX + 2 == CH2X && DY == CH2Y) || (RX == CH2X && RY - 2 == CH2Y) || (LX == CH2X && LY + 2 == CH2Y))
+		{
+			lives = lives - 1;
+			if (lives != '0') {
+				g_sLevel2Char.m_cLocation.X = 46;
+				g_sLevel2Char.m_cLocation.Y = 3;
+			}
+			else {
+				g_eGameState = S_GAMEOVER;
+			}
+		}
+		//TO THE LEFT
+		if ((UX - 2 == CH2X && UY == CH2Y) || (DX - 2 == CH2X && DY == CH2Y) || (RX == CH2X && RY + 2 == CH2Y) || (LX == CH2X && LY - 2 == CH2Y))
+		{
+			lives = lives - 1;
+			if (lives != '0') {
+				g_sLevel2Char.m_cLocation.X = 46;
+				g_sLevel2Char.m_cLocation.Y = 3;
+			}
+			else {
+				g_eGameState = S_GAMEOVER;
+			}
+		}
+		//TOP RIGHT
+		if ((UX + 1 == CH2X && UY - 1 == CH2Y) || (DX + 1 == CH2X && DY + 1 == CH2Y) || (RX + 1 == CH2X && RY - 1 == CH2Y) || (LX - 1 == CH2X && LY + 1 == CH2Y))
+		{
+			lives = lives - 1;
+			if (lives != '0') {
+				g_sLevel2Char.m_cLocation.X = 46;
+				g_sLevel2Char.m_cLocation.Y = 3;
+			}
+			else {
+				g_eGameState = S_GAMEOVER;
+			}
+		}
+		//TOP LEFT
+		if ((UX - 1 == CH2X && UY - 1 == CH2Y) || (DX - 1 == CH2X && DY + 1 == CH2Y) || (RX + 1 == CH2X && RY + 1 == CH2Y) || (LX - 1 == CH2X && LY - 1 == CH2Y))
+		{
+			lives = lives - 1;
+			if (lives != '0') {
+				g_sLevel2Char.m_cLocation.X = 46;
+				g_sLevel2Char.m_cLocation.Y = 3;
+			}
+			else {
+				g_eGameState = S_GAMEOVER;
+			}
+		}
+		//IF BEHIND
+		if ((UY - 2 == CH2Y && UX == CH2X) || (DY + 2 == CH2Y && DX == CH2X) || (RY == CH2Y && RX + 2 == CH2X) || (LY == CH2Y && LX - 2 == CH2X))
+		{
+			lives = lives - 1;
+			if (lives != '0') {
+				g_sLevel2Char.m_cLocation.X = 46;
+				g_sLevel2Char.m_cLocation.Y = 3;
+			}
+			else {
+				g_eGameState = S_GAMEOVER;
+			}
+		}
+
+	
+	
+	}
+
 
 int PcDial = 0;
 int PcafeDial = 0;
@@ -1217,7 +1342,7 @@ void renderDialogue()
 	COORD c = g_Console.getConsoleSize();
 
 	c.X = 28;
-	c.Y = 29;
+	c.Y = 27;
 
 	g_Console.writeToBuffer(c, "Dialogue:", 0x03);
 
@@ -1229,6 +1354,7 @@ void renderDialogue()
 	switch (PcDial)
 	{
 	case 1:
+		movementLock = true;
 		g_Console.writeToBuffer(c, "Prisoner: What do you want?", 0x03);
 		c.Y = 32;
 		g_Console.writeToBuffer(c, "          Why are you in my cell?", 0x03);
@@ -1264,6 +1390,7 @@ void renderDialogue()
 		g_Console.writeToBuffer(c, "Prisoner: Well, that guy in the cafe.", 0x03);
 		c.Y = 32;
 		g_Console.writeToBuffer(c, "          He probably can tell you more.", 0x03);
+		movementLock = false;
 		break;
 	case 7:
 		c.Y = 31;
@@ -1280,6 +1407,7 @@ void renderDialogue()
 	switch (PcafeDial)
 	{
 	case 1:
+		movementLock = true;
 		g_Console.writeToBuffer(c, "Faizal: Hey nigger! You know anything", 0x03);
 		c.Y = 32;
 		g_Console.writeToBuffer(c, "        bout that secret passage", 0x03);
@@ -1294,15 +1422,22 @@ void renderDialogue()
 		break;
 	case 3:
 		c.Y = 31;
-		g_Console.writeToBuffer(c, "Faizal: What do you mean you can't tell me", 0x03);
+		g_Console.writeToBuffer(c, "Faizal: What do you mean by isn't much?", 0x03);
 		c.Y = 32;
-		g_Console.writeToBuffer(c, "        much, there momfucker in the cell told me you know lots", 0x03);
+		g_Console.writeToBuffer(c, "        That dude in the cell told me", 0x03);
+		c.Y = 33;
+		g_Console.writeToBuffer(c, "        you knew everything.", 0x03);
 		break;
 	case 4:
 		c.Y = 31;
-		g_Console.writeToBuffer(c, "Prisoner: Mans not hot my lad", 0x03);
+		g_Console.writeToBuffer(c, "Prisoner: Your great friend Ryan is", 0x03);
 		c.Y = 32;
-		g_Console.writeToBuffer(c, "*Faizal proceeds to penetrate him in the ass*", 0x03);
+		g_Console.writeToBuffer(c, "          the one who actually planned", 0x03);
+		c.Y = 33;
+		g_Console.writeToBuffer(c, "          this entire thing, go ask him", 0x03);
+		c.Y = 34;
+		g_Console.writeToBuffer(c, "          He should be in the toilet.", 0x03);
+		movementLock = false;
 		break;
 	case 5:
 		c.Y = 31;
@@ -1319,6 +1454,7 @@ void renderDialogue()
 	switch (PshowerDial)
 	{
 	case 1:
+		movementLock = true;
 		g_Console.writeToBuffer(c, "Faizal: Well, I haven't thought that you are the", 0x03);
 		c.Y = 32;
 		g_Console.writeToBuffer(c, "        one who knows about the secret passage", 0x03);
@@ -1343,25 +1479,27 @@ void renderDialogue()
 		c.Y = 31;
 		g_Console.writeToBuffer(c, "Ryan: Fine, I've been planning this sweet", 0x03);
 		c.Y = 32;
-		g_Console.writeToBuffer(c, "escape since day one so you better not", 0x03);
+		g_Console.writeToBuffer(c, "      escape since day one so you better not", 0x03);
 		c.Y = 33;
-		g_Console.writeToBuffer(c, "screw my plan over.", 0x03);
+		g_Console.writeToBuffer(c, "      screw my plan over.", 0x03);
 		break;
 	case 5:
 		c.Y = 31;
 		g_Console.writeToBuffer(c, "Ryan: That wall right there, at the", 0x03);
 		c.Y = 32;
-		g_Console.writeToBuffer(c, "other end of this toilet, there is a crack.", 0x03);
+		g_Console.writeToBuffer(c, "      other end of this toilet, there is a crack.", 0x03);
 		c.Y = 33;
-		g_Console.writeToBuffer(c, "However, I just can't seem to break it open", 0x03);
+		g_Console.writeToBuffer(c, "      However, I just can't seem to break it open", 0x03);
 		c.Y = 34;
-		g_Console.writeToBuffer(c, "Though... you can try using the shives lying around", 0x03);
+		g_Console.writeToBuffer(c, "      Though... you can try using the shives lying around", 0x03);
 		level1[22][72] = '~';
+		movementLock = false;
 		break;
 	case 6:
 		c.Y = 31;
 		g_Console.writeToBuffer(c, " ", 0x03);
 		intelcount = 3;
+
 		break;
 	}
 }
@@ -1373,7 +1511,7 @@ void processUserInput()
 	{
 		g_bQuitGame = true;
 	}
-	if (g_abKeyPressed[K_TITLE])
+	if (g_abKeyPressed[K_RETURN])
 	{
 		g_eGameState = S_SPLASHSCREEN;
 	}
@@ -1473,10 +1611,10 @@ void renderTutorialMap()
 	COORD c;
 	c.X = 0;
 	c.Y = 0;
-	for (int y = 0; y < 125; y++)
+	for (int y = 0; y < 250; y++)
 	{
 		c.X = y;
-		for (int x = 0; x < 125; x++)
+		for (int x = 0; x < 250; x++)
 		{
 			c.Y = x;
 			g_Console.writeToBuffer(c, level1[x][y], 0x03);
@@ -1777,18 +1915,22 @@ void renderArrowLevel2()
 	{
 	case 1:
 		g_Console.writeToBuffer(g_sUpRotatingArr.m_cLocation, (char)30, 0X0F);
+		g_Console.writeToBuffer(g_sUpRotatingArr2.m_cLocation, (char)30, 0X0F);
 		g_Console.writeToBuffer(g_sCafeUpArr.m_cLocation, (char)30, 0X0F);
 		break;
 	case 2:
 		g_Console.writeToBuffer(g_sRightRotatingArr.m_cLocation, (char)16, 0X0F);
+		g_Console.writeToBuffer(g_sRightRotatingArr2.m_cLocation, (char)16, 0X0F);
 		g_Console.writeToBuffer(g_sCafeRightArr.m_cLocation, (char)16, 0X0F);
 		break;
 	case 3:
 		g_Console.writeToBuffer(g_sDownRotatingArr.m_cLocation, (char)31, 0X0F);
+		g_Console.writeToBuffer(g_sDownRotatingArr2.m_cLocation, (char)31, 0X0F);
 		g_Console.writeToBuffer(g_sCafeUpArr.m_cLocation, (char)30, 0X0F);
 		break;
 	case 4:
 		g_Console.writeToBuffer(g_sLeftRotatingArr.m_cLocation, (char)17, 0X0F);
+		g_Console.writeToBuffer(g_sLeftRotatingArr2.m_cLocation, (char)17, 0X0F);
 		g_Console.writeToBuffer(g_sCafeRightArr.m_cLocation, (char)16, 0X0F);
 		break;
 	}
@@ -2018,9 +2160,23 @@ void loadSteelMap()
 }
 
 //Section (RENDERING SPECIFIC PARTS OF THE GAME)
-void renderInventory()
+void renderUserInterface()
 {
 	COORD c = g_Console.getConsoleSize();
+
+	//Controls
+	c.X = 2;
+	c.Y = 27;
+	g_Console.writeToBuffer(c, "Controls:", 0x03);
+	c.Y = 28;
+	g_Console.writeToBuffer(c, "Move: W, A, S, D", 0x03);
+	c.Y = 29;
+	g_Console.writeToBuffer(c, "Move: Arrow keys", 0x03);
+	c.Y = 30;
+	g_Console.writeToBuffer(c, "Interact: E ", 0x03);
+	c.Y = 31;
+	g_Console.writeToBuffer(c, "Return titlescreen: R", 0x03);
+
 	c.X = 108;
 	c.Y = 2;
 	g_Console.writeToBuffer(c, "Intel:", 0x03);
@@ -2028,43 +2184,53 @@ void renderInventory()
 	{
 	case 1:
 		c.Y = 3;
-		g_Console.writeToBuffer(c, "> The Prisoner in the Cafe knows something about this secret passage", 0x03);
+		g_Console.writeToBuffer(c, "> The Prisoner in the Cafe knows", 0x03);
+		c.Y = 4;
+		g_Console.writeToBuffer(c, "  something about this secret", 0x03);
+		c.Y = 5;
+		g_Console.writeToBuffer(c, "  passage.", 0x03);
 		break;
 	case 2:
 		c.Y = 3;
-		g_Console.writeToBuffer(c, "> Someone in the toilet holds the information I need", 0x03);
+		g_Console.writeToBuffer(c, "> Someone in the toilet holds", 0x03);
+		c.Y = 4;
+		g_Console.writeToBuffer(c, "  the information I need.", 0x03);
 		break;
 	case 3:
 		c.Y = 3;
-		g_Console.writeToBuffer(c, "> That person happened to be Ryan! Well I still need to get the required tools", 0x03);
+		g_Console.writeToBuffer(c, "> That person happened to be Ryan!", 0x03);
+		c.Y = 4;
+		g_Console.writeToBuffer(c, "  Well I still need to", 0x03);
+		c.Y = 5;
+		g_Console.writeToBuffer(c, "  get the required tools.", 0x03);
 		break;
 	}
 
 	c.X = 108;
-	c.Y = 5;
+	c.Y = 11;
 	g_Console.writeToBuffer(c, "Items:", 0x03);
-	c.X = 108;
-	c.Y = 8;
+	c.X = 120;
+	c.Y = 23;
 	g_Console.writeToBuffer(c, "Lives:", 0x03);
-	c.X = 116;
-	c.Y = 8;
+	c.X = 128;
+	c.Y = 23;
 	g_Console.writeToBuffer(c, lives, 0x03);
 	if (ShiveNumber > '0')
 	{
 		c.X = 110;
-		c.Y = 6;
+		c.Y = 12;
 		g_Console.writeToBuffer(c, "Shive(s)", 0x03);
 		c.X = 108;
-		c.Y = 6;
+		c.Y = 12;
 		g_Console.writeToBuffer(c, ShiveNumber, 0x03);
 	}
 	if (KeyNumber > '0')
 	{
 		c.X = 110;
-		c.Y = 7;
+		c.Y = 23;
 		g_Console.writeToBuffer(c, "Key(s)", 0x03);
 		c.X = 108;
-		c.Y = 7;
+		c.Y = 23;
 		g_Console.writeToBuffer(c, KeyNumber, 0x03);
 	}
 }
@@ -2191,7 +2357,20 @@ void renderClear()
 		}
 		myfile.close();
 	}
-	c.X = 20;
+
+	if (g_abKeyPressed[K_RETURN])
+	{
+		g_eGameState = S_SPLASHSCREEN;
+	}
+
+	if (g_abKeyPressed[K_NEXTLEVEL])
+	{
+		g_Console.clearBuffer();
+		g_eGameState = S_GAMELEVEL2;
+	}
+
+	c.X = 6;
 	c.Y = 25;
-	g_Console.writeToBuffer(c, "Congratulations, you won! You will get sent back to the title screen by pressing R", 0x0F);
+	g_Console.writeToBuffer(c, "Congratulations, you won! Press R to return to titlescreen, press T to move on the the next level", 0x0F);
 }
+

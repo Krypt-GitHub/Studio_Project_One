@@ -54,15 +54,22 @@ void render      ( void );      // renders the current state of the game to the 
 void shutdown    ( void );      // do clean up, free memory
 
 void splashScreenWait();    // waits for time to pass in splash screen
+
 void gameplayLevel1();     // gameplay logic
 void gameplayLevel2();     // gameplay logic
 void gameplayLevel3();     // gameplay logic
+
 void Level1AIMovement();
 void Level2AIMovement();
+void Level3AIMovement();
+
 void moveCharacterLevel1();       // moves the character, collision detection, physics, etc
 void moveCharacterLevel2();       // moves the character, collision detection, physics, etc
+void moveCharacterLevel3();       // moves the character, collision detection, physics, etc
+
 void Level1ItemInteractions();
 void Level2ItemInteractions();
+void Level3ItemInteractions();
 
 void processUserInput();    // checks if you should change states or do something else with the game, e.g. pause, exit
 void clearScreen();         // clears the current screen and draw from scratch 
@@ -71,13 +78,18 @@ void renderSplashScreen();  // renders the splash screen
 void renderTutorialMap();   // renders the map to the buffer first
 void renderBronzeMap();   // renders the map to the buffer first
 void renderCharacter();     // renders the character into the buffer
+
 void renderLevelOne();
 void renderLevelTwo();
 void renderLevelThree();
+
 void renderUserInterface();
+
 void levelonelose();
 void leveltwolose();
-void loadSteelMap();
+void levelthreelose();
+
+
 void renderSteelMap();
 void renderDialogue();
 void renderClear();
@@ -101,6 +113,7 @@ void loadSteelMap();
 void HiddenEntranceOne();
 void HiddenEntranceTwo();
 void HiddenEntranceThree();
+void HiddenMap();
 
 void RemoveHidden();
 #endif // _GAME_H

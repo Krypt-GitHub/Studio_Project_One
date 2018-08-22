@@ -35,7 +35,8 @@ double startgame = 1.0; //SPLASHSCREEN TIME
 char level1[250][250]; //To store level 1 map into a 2D array 
 char level2[250][250]; //To store level 2 map into a 2D array 
 char Level2Hidden[250][250]; //To store the hidden passages of Level 2 into a 2D array
-char level3[125][125]; //To store level 3 map into a 2D array 
+char level3[250][250]; //To store level 3 map into a 2D array 
+char Level3Hidden[250][250]; // To store the hidden map of level 3 into a 2D array
 signed int MenuItem = 0;
 int level = 0;
 
@@ -46,8 +47,8 @@ char lives = 50;
 
 // Game specific variables here
 SGameChar   g_sChar; //Player character
-
 SGameChar   g_sLevel2Char; //Level 2 Characters
+SGameChar   g_sLevel3Char; //Level 3 Characters
 
 SGameChar   g_sLevel1GuardCells; //Level 1 guards
 SGameChar   g_sLevel1GuardCafe;
@@ -65,6 +66,7 @@ SGameChar   g_sLevel2LeftGuard;
 SGameChar   g_sLevel2RightGuard;
 SGameChar   g_sLevel2CafeGuard;
 //------------------------------------------------------------------
+//LEVEL 1 ARROWS
 SGameChar   g_sRightArr;
 SGameChar   g_sLeftArr;
 SGameChar   g_sUpF1Arr;
@@ -74,6 +76,7 @@ SGameChar   g_sDownF1Arr;
 SGameChar   g_sDownF2Arr;
 SGameChar   g_sDownCArr;
 
+//LEVEL 2 ARROWS
 SGameChar   g_sUpRotatingArr;
 SGameChar   g_sRightRotatingArr;
 SGameChar   g_sDownRotatingArr;
@@ -164,6 +167,8 @@ void init(void)
 	g_sDownCArr.m_cLocation.X = 45;//CAFETERIA
 	g_sDownCArr.m_cLocation.Y = 7;
 
+	//--------------------------------------------------------------------------------------
+
 	//LEVEL 2 CHARACTERS
 	g_sLevel2Char.m_cLocation.X = 46; //Level 2 Character spawn point (46, 3)
 	g_sLevel2Char.m_cLocation.Y = 3;
@@ -216,6 +221,12 @@ void init(void)
 
 	g_sCafeRightArr.m_cLocation.X = 3;
     g_sCafeRightArr.m_cLocation.Y = 28;
+
+	//------------------------------------------------------------------------------
+	//LEVEL 3 CHARACTERS
+
+	g_sLevel3Char.m_cLocation.X = 57;
+	g_sLevel3Char.m_cLocation.Y = 16;
 
 	// sets the width, height and the font name to use in the console
 	g_Console.setConsoleFont(0, 16, L"Consolas");
@@ -583,6 +594,10 @@ void Level2AIMovement()
 		}
 	}
 }
+void Level3AIMovement()
+{
+
+}
 
 //CHARACTER MOVEMENT
 void moveCharacterLevel1()
@@ -697,6 +712,47 @@ void moveCharacterLevel2()
 		bSomethingHappened = true;
 	}
 	
+	if (g_abKeyPressed[K_SPACE])
+	{
+		bSomethingHappened = true;
+	}
+	if (bSomethingHappened)
+	{
+		// set the bounce time to some time in the future to prevent accidental triggers
+		g_dBounceTime = g_dElapsedTime + 0.125; // 125ms should be enough
+	}
+}
+void moveCharacterLevel3()
+{
+	bool bSomethingHappened = false;
+	if (g_dBounceTime > g_dElapsedTime)
+		return;
+
+	// Updating the location of the character based on the key press
+	// providing a beep sound whenver we shift the character
+	//Level 3
+	if ((g_abKeyPressed[K_UP] || g_abKeyPressed[W]) && level3[g_sLevel3Char.m_cLocation.Y - 1][g_sLevel3Char.m_cLocation.X] == ' ') //To move up checking
+	{
+		g_sLevel3Char.m_cLocation.Y--;
+		bSomethingHappened = true;
+
+	}
+	if ((g_abKeyPressed[K_LEFT] || g_abKeyPressed[A]) && level3[g_sLevel3Char.m_cLocation.Y][g_sLevel3Char.m_cLocation.X - 1] == ' ')
+	{
+		g_sLevel3Char.m_cLocation.X--;
+		bSomethingHappened = true;
+	}
+	if ((g_abKeyPressed[K_DOWN] || g_abKeyPressed[S]) && level3[g_sLevel3Char.m_cLocation.Y + 1][g_sLevel3Char.m_cLocation.X] == ' ')
+	{
+		g_sLevel3Char.m_cLocation.Y++;
+		bSomethingHappened = true;
+	}
+	if ((g_abKeyPressed[K_RIGHT] || g_abKeyPressed[D]) && level3[g_sLevel3Char.m_cLocation.Y][g_sLevel3Char.m_cLocation.X + 1] == ' ')
+	{
+		g_sLevel3Char.m_cLocation.X++;
+		bSomethingHappened = true;
+	}
+
 	if (g_abKeyPressed[K_SPACE])
 	{
 		bSomethingHappened = true;
@@ -853,6 +909,43 @@ void Level2ItemInteractions()
 	{
 		level2[g_sLevel2Char.m_cLocation.Y + 1][g_sLevel2Char.m_cLocation.X] = ' ';
 		level2[g_sLevel2Char.m_cLocation.Y - 1][g_sLevel2Char.m_cLocation.X] = ' ';
+	}
+}
+void Level3ItemInteractions()
+{
+	COORD c = g_Console.getConsoleSize();
+
+	//OBTAINING A SHIVE RELATIVE TO THE POSITION OF THE PLAYER
+	if (g_abKeyPressed[K_INTERACT] && level3[g_sLevel3Char.m_cLocation.Y + 1][g_sLevel3Char.m_cLocation.X] == 'S')
+	{
+		//separate it later
+		ShiveNumber += 1;
+		level3[g_sLevel3Char.m_cLocation.Y + 1][g_sLevel3Char.m_cLocation.X] = ' ';
+	}
+	else if (g_abKeyPressed[K_INTERACT] && level3[g_sLevel3Char.m_cLocation.Y - 1][g_sLevel3Char.m_cLocation.X] == 'S')
+	{
+		ShiveNumber += 1;
+		level3[g_sLevel3Char.m_cLocation.Y - 1][g_sLevel3Char.m_cLocation.X] = ' ';
+	}
+	else if (g_abKeyPressed[K_INTERACT] && level3[g_sLevel3Char.m_cLocation.Y][g_sLevel3Char.m_cLocation.X + 1] == 'S')
+	{
+		ShiveNumber += 1;
+		level3[g_sLevel3Char.m_cLocation.Y][g_sLevel3Char.m_cLocation.X + 1] = ' ';
+	}
+	else if (g_abKeyPressed[K_INTERACT] && level3[g_sLevel3Char.m_cLocation.Y][g_sLevel3Char.m_cLocation.X - 1] == 'S')
+	{
+		ShiveNumber += 1;
+		level3[g_sLevel3Char.m_cLocation.Y][g_sLevel3Char.m_cLocation.X - 1] = ' ';
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+
+	if (g_abKeyPressed[K_INTERACT] && Level3Hidden[g_sLevel3Char.m_cLocation.Y - 1 ][g_sLevel3Char.m_cLocation.X] == '}' && ShiveNumber >= '1')
+	{
+		ShiveNumber -= 1; //REMOVES 1 SHIVE
+		HiddenMap(); //ALLOWS FOR THE CALLING OF THE FUNCTION THAT FULLY RENDERS ONE HIDDEN PATHWAY
+		level3[g_sLevel3Char.m_cLocation.Y - 1][g_sLevel3Char.m_cLocation.X] = ' '; //EDITS THE PATHWAY TO BE BLANK FOR THE PLAYER TO PROGRESS
+
 	}
 }
 
@@ -1172,7 +1265,7 @@ void leveltwolose()
 	}
 
 	
-		//IF IN FRONT OF THE GUARD
+		//IF IN FRONT OF THE GUARD (Radius is 2 tiles for North, south, east and west, radius is one tile for NE, SE, SW, NW) 
 		if ((UY + 2 == CH2Y && UX == CH2X) || (DY - 2 == CH2Y && DX == CH2X) || (RY == CH2Y && RX - 2 == CH2X) || (LY == CH2Y && LX + 2 == CH2X))
 		{
 			lives = lives - 1;
@@ -1272,6 +1365,10 @@ void leveltwolose()
 	
 	
 	}
+void levelthreelose()
+	{
+
+}
 
 
 int PcDial = 0;
@@ -1597,15 +1694,6 @@ void renderSplashScreen()  // renders the splash screen
 }
 
 //Section (FULL RENDERING)
-//void renderLevelOne()
-//{
-//	renderTutorialMap();  // renders the map to the buffer first
-//	renderCharacter();   // renders the character into the buffer
-//	renderDialogue();
-//	renderInventory(); //Renders the inventory
-//	Level1ItemInteractions();
-//	prisonerInteraction();
-//}
 void renderTutorialMap()
 {
 	COORD c;
@@ -1758,12 +1846,6 @@ void renderArrowLevel1()
 }
 
 //void renderLevelTwo()
-//{
-//	renderBronzeMap(); // renders the map to the buffer first
-//	renderCharacter();   // renders the character into the buffer
-//	renderInventory();
-//	Level2ItemInteractions();
-//}
 void renderBronzeMap()
 {
 	COORD c;
@@ -2056,11 +2138,7 @@ void RemoveHidden()
 		}
 }
 
-//void renderLevelThree()
-//{
-//	renderSteelMap();
-//	renderCharacter();
-//}
+
 void renderSteelMap()
 {
 	COORD c;
@@ -2096,13 +2174,31 @@ void loadSteelMap()
 		{
 			for (int col = 0; col < line.size(); col++)
 			{
+				level3[x][y] = line[col]; // Prevent the overwriting of characters that do not appear in this loop
 				if (line[col] == '#')
 				{
 					level3[x][y] = 205;
 				}
-				if (line[col] == '*')
+				if (line[col] == '{')
+				{
+					level3[x][y] = 205;
+					Level3Hidden[x][y] = '{';
+				}
+				if (line[col] == '*' || line[col] == '}' || line[col] == ')' || line[col] == ']')
 				{
 					level3[x][y] = 186;
+					if (line[col] == '}')
+					{
+						Level3Hidden[x][y] = '}';
+					}
+					else if (line[col] == ']')
+					{
+						Level3Hidden[x][y] = ']';
+					}
+					else if (line[col] == ')')
+					{
+						Level3Hidden[x][y] = ')';
+					}
 				}
 				if (line[col] == 'H')
 				{
@@ -2136,6 +2232,10 @@ void loadSteelMap()
 				{
 					level3[x][y] = 200;
 				}
+				if (line[col] == '+')
+				{
+					level3[x][y] = 206;
+				}
 				if (line[col] == 'I')
 				{
 					level3[x][y] = 188;
@@ -2144,9 +2244,33 @@ void loadSteelMap()
 				{
 					level3[x][y] = 176;
 				}
-				if (line[col] == '+')
+				if (line[col] == 'S')
 				{
-					level3[x][y] = 206;
+					level3[x][y] = 'S';
+				}
+				if (line[col] == 'K')
+				{
+					level3[x][y] = 'K';
+				}
+				if (line[col] == 47 || line[col] == 92 || line[col] == '-' || line[col] == '|' )
+				{
+					level3[x][y] = ' ';
+					if (line[col] == 47) // ASCII 47 IS /
+					{
+						Level2Hidden[x][y] = 47;
+					}
+					if (line[col] == 92) // ASCII 92 IS '\'
+					{
+						Level3Hidden[x][y] = 92;
+					}
+					if (line[col] == '|') // Vertical walls
+					{
+						Level3Hidden[x][y] = '|';
+					}
+					if (line[col] == '-') // Horizontal walls
+					{
+						Level3Hidden[x][y] = '-';
+					}
 				}
 				c.X++;
 				y++;
@@ -2155,6 +2279,37 @@ void loadSteelMap()
 			y = 1;
 			c.Y++;
 			c.X = 1;
+		}
+		myfile.close();
+	}
+}
+void HiddenMap()
+{
+	COORD c;
+	c.X = 0;
+	c.Y = 0;
+	for (int y = 0; y < 250; y++) // A forward loop to assign new values to the text on the map
+	{
+		c.X = y;
+		for (int x = 0; x < 250; x++)
+		{
+			c.Y = x;
+			if (Level3Hidden[x][y] == '-' && level3[x][y] == ' ')
+			{
+				level3[x][y] = 205;
+			}
+			if (Level3Hidden[x][y] == '|' && level3[x][y] == ' ')
+			{
+				level3[x][y] = 186;
+			}
+			if (Level3Hidden[x][y] == 92 && level3[x][y] == ' ')
+			{
+				level3[x][y] = 187;
+			}
+			if (Level3Hidden[x][y] == '-' && level3[x][y] == ' ')
+			{
+				level3[x][y] = '-';
+			}
 		}
 	}
 }
@@ -2308,8 +2463,10 @@ void renderCharacter()
 		g_Console.writeToBuffer(g_sLevel2RightGuard.m_cLocation, (char)1, 0X0F);
 		g_Console.writeToBuffer(g_sLevel2UpGuard.m_cLocation, (char)1, 0X0F);
 		g_Console.writeToBuffer(g_sLevel2CafeGuard.m_cLocation, (char)1, 0X0A);
-		
-
+	}
+	if (level == 3)
+	{
+		g_Console.writeToBuffer(g_sLevel3Char.m_cLocation, (char)1, 0x0C);
 	}
 }
 void renderFramerate()

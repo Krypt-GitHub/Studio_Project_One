@@ -54,9 +54,10 @@ void renderLevelOne()
 void renderLevelTwo()
 {
 	renderBronzeMap(); // renders the map to the buffer first
+	renderArrowLevel2();
 	renderCharacter();   // renders the character into the buffer
 	/*renderUserInterface();*/
-	renderArrowLevel2();
+	
 }
 
 void renderLevelThree()

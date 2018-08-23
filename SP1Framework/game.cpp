@@ -17,13 +17,16 @@ bool movementLock = false;
 double  g_dElapsedTime;
 double  g_dDeltaTime;
 double  g_dLevel2Timer;
+
 double  g_dGuardTimeX = 0.0;
 double  g_dGuardTimeY = 0.0;
 double  g_dGuardTimeZ = 0.0;
+
 double  g_dGuardTimeXLevel2 = 0.0;
 double  g_dGuardTimeYLevel2 = 0.0;
 double  g_dGuardTimeZLevel2 = 0.0;
 double  g_dRotationTime = 0.0;
+
 double  g_dGameOver = 0.0;
 bool    g_abKeyPressed[K_COUNT];
 
@@ -35,13 +38,14 @@ double startgame = 1.0; //SPLASHSCREEN TIME
 char level1[250][250]; //To store level 1 map into a 2D array 
 char level2[250][250]; //To store level 2 map into a 2D array 
 char Level2Hidden[250][250]; //To store the hidden passages of Level 2 into a 2D array
-char level3[250][250]; //To store level 3 map into a 2D array 
-char Level3Hidden[250][250]; // To store the hidden map of level 3 into a 2D array
+char level3[300][300]; //To store level 3 map into a 2D array 
+char Level3Hidden[300][300]; // To store the hidden map of level 3 into a 2D array
 signed int MenuItem = 0;
 int level = 0;
 
 char ShiveNumber = '0';
 char KeyNumber = '0';
+char KeyFragment = '0';
 char lives = 50;
 
 
@@ -66,25 +70,27 @@ SGameChar   g_sLevel2LeftGuard;
 SGameChar   g_sLevel2RightGuard;
 SGameChar   g_sLevel2CafeGuard;
 //------------------------------------------------------------------
-//LEVEL 1 ARROWS
-SGameChar   g_sRightArr;
-SGameChar   g_sLeftArr;
-SGameChar   g_sUpF1Arr;
-SGameChar   g_sUpF2Arr;
-SGameChar   g_sUpCArr;
-SGameChar   g_sDownF1Arr;
-SGameChar   g_sDownF2Arr;
-SGameChar   g_sDownCArr;
+//LEVEL 1 LOS/Arrows
+SGameChar   g_sRightArr[4];
+SGameChar   g_sLeftArr[4];
+SGameChar   g_sUpF1Arr[4];
+SGameChar   g_sUpF2Arr[4];
+SGameChar   g_sUpCArr[4];
+SGameChar   g_sDownF1Arr[4];
+SGameChar   g_sDownF2Arr[4];
+SGameChar   g_sDownCArr[4];
 
 //LEVEL 2 ARROWS
-SGameChar   g_sUpRotatingArr;
-SGameChar   g_sRightRotatingArr;
-SGameChar   g_sDownRotatingArr;
-SGameChar   g_sLeftRotatingArr;
-SGameChar   g_sUpRotatingArr2;
-SGameChar   g_sRightRotatingArr2;
-SGameChar   g_sDownRotatingArr2;
-SGameChar   g_sLeftRotatingArr2;
+SGameChar   g_sUpGuardDownLOS[26];
+SGameChar   g_sDownGuardUpLOS[26];
+SGameChar   g_sRightGuardLeftLOS[26];
+SGameChar   g_sLeftGuardRightLOS[26];
+
+SGameChar   g_sUpGuardUpLOS[26];
+SGameChar   g_sDownGuardDownLOS[26];
+SGameChar   g_sRightGuardRightLOS[26];
+SGameChar   g_sLeftGuardLeftLOS[26];
+
 
 SGameChar   g_sCafeUpArr;
 SGameChar   g_sCafeRightArr;
@@ -121,17 +127,17 @@ void init(void)
 	g_sChar.m_cLocation.X = 6; //Player spawn point
 	g_sChar.m_cLocation.Y = 4;
 
-	g_sLevel1GuardCells.m_cLocation.X = 3; //Spawn Point of Guard near the Cells area
+	g_sLevel1GuardCells.m_cLocation.X = 4; //Spawn Point of Guard near the Cells area
 	g_sLevel1GuardCells.m_cLocation.Y = 8;
 
 	g_sLevel1GuardCafe.m_cLocation.X = 45; //Spawn Point of Guard near the Cafe area
 	g_sLevel1GuardCafe.m_cLocation.Y = 11;
 
 	g_sLevel1GuardField1.m_cLocation.X = 85; //Spawn Point of Guard 1 near the Field area
-	g_sLevel1GuardField1.m_cLocation.Y = 13;
+	g_sLevel1GuardField1.m_cLocation.Y = 12;
 
 	g_sLevel1GuardField2.m_cLocation.X = 95;  //Spawn Point of Guard 2 near the Field area
-	g_sLevel1GuardField2.m_cLocation.Y = 3;
+	g_sLevel1GuardField2.m_cLocation.Y = 4;
 
 	g_sLevel1PrisonerCells.m_cLocation.X = 15; //Spawn Point of Prisoner near the Cells area
 	g_sLevel1PrisonerCells.m_cLocation.Y = 4;
@@ -143,30 +149,204 @@ void init(void)
 	g_sLevel1PrisonerCafe.m_cLocation.Y = 11;
 
 	//LEVEL 1 ARROWS
-	g_sRightArr.m_cLocation.X = 4; //Spawn of direction arrow (CELL)
-	g_sRightArr.m_cLocation.Y = 8;
+	//LEVEL 1 DIRECTION POINTERS 
+	for (int sett = 0; sett < 4; sett++)
+	{
+		int xx = 5;
+		int yy = 8;
+		if (sett == 1)
+		{
+			xx = 6;
+			yy = 7;
+		}
+		if (sett == 2)
+		{
+			xx = 6;
+			yy = 8;
+		}
+		if (sett == 3)
+		{
+			xx = 6;
+			yy = 9;
+		}
+		g_sRightArr[sett].m_cLocation.X = xx; //Spawn of direction arrow (CELL) RIGHT
+		g_sRightArr[sett].m_cLocation.Y = yy;
+	}
 
-	g_sLeftArr.m_cLocation.X = 12; //Spawn of direction arrow (CELL)
-	g_sLeftArr.m_cLocation.Y = 8;;
+	for (int sett = 0; sett < 4; sett++)
+	{
+		int xx = 13;
+		int yy = 8;
+		if (sett == 1)
+		{
+			xx = 13;
+			yy = 7;
+		}
+		if (sett == 2)
+		{
+			xx = 12;
+			yy = 8;
+		}
+		if (sett == 3)
+		{
+			xx = 12;
+			yy = 9;
+		}
+		g_sLeftArr[sett].m_cLocation.X = xx; //Spawn of direction arrow (CELL) LEFT
+		g_sLeftArr[sett].m_cLocation.Y = yy;
+	}
 
-	g_sUpF1Arr.m_cLocation.X = 85; //FIELD 1
-	g_sUpF1Arr.m_cLocation.Y = 12; 
+	for (int sett = 0; sett < 4; sett++)
+	{
+		int xx = 85;
+		int yy = 11;
+		if (sett == 1)
+		{
+			xx = 84;
+			yy = 10;
+		}
+		if (sett == 2)
+		{
+			xx = 85;
+			yy = 10;
+		}
+		if (sett == 3)
+		{
+			xx = 86;
+			yy = 10;
+		}
+		g_sUpF1Arr[sett].m_cLocation.X = xx; //Spawn of direction arrow (FIELD 1) DOWN
+		g_sUpF1Arr[sett].m_cLocation.Y = yy;
+	}
+	//g_sUpF1Arr.m_cLocation.X = 85; //FIELD 1
+	//g_sUpF1Arr.m_cLocation.Y = 11; 
 
-	g_sDownF1Arr.m_cLocation.X = 85; //FIELD 1
-	g_sDownF1Arr.m_cLocation.Y = 6;
+	//g_sDownF1Arr.m_cLocation.X = 85; //FIELD 1
+	//g_sDownF1Arr.m_cLocation.Y = 6;
+	for (int sett = 0; sett < 4; sett++)
+	{
+		int xx = 85;
+		int yy = 6;
+		if (sett == 1)
+		{
+			xx = 84;
+			yy = 7;
+		}
+		if (sett == 2)
+		{
+			xx = 85;
+			yy = 7;
+		}
+		if (sett == 3)
+		{
+			xx = 86;
+			yy = 7;
+		}
+		g_sDownF1Arr[sett].m_cLocation.X = xx; //Spawn of direction arrow (FIELD 1) DOWN
+		g_sDownF1Arr[sett].m_cLocation.Y = yy;
+	}
 
-	g_sUpF2Arr.m_cLocation.X = 95; //FIELD 2
-	g_sUpF2Arr.m_cLocation.Y = 10;
+	//g_sUpF2Arr.m_cLocation.X = 95; //FIELD 2
+	//g_sUpF2Arr.m_cLocation.Y = 10;
+	for (int sett = 0; sett < 4; sett++)
+	{
+		int xx = 95;
+		int yy = 10;
+		if (sett == 1)
+		{
+			xx = 94;
+			yy = 9;
+		}
+		if (sett == 2)
+		{
+			xx = 95;
+			yy = 9;
+		}
+		if (sett == 3)
+		{
+			xx = 96;
+			yy = 9;
+		}
+		g_sUpF2Arr[sett].m_cLocation.X = xx; //Spawn of direction arrow (FIELD 2) UP
+		g_sUpF2Arr[sett].m_cLocation.Y = yy;
+	}
 
-	g_sDownF2Arr.m_cLocation.X = 95; //FIELD 2
-	g_sDownF2Arr.m_cLocation.Y = 4;
+	//g_sDownF2Arr.m_cLocation.X = 95; //FIELD 2
+	//g_sDownF2Arr.m_cLocation.Y = 5;
+	for (int sett = 0; sett < 4; sett++)
+	{
+		int xx = 95;
+		int yy = 5;
+		if (sett == 1)
+		{
+			xx = 94;
+			yy = 6;
+		}
+		if (sett == 2)
+		{
+			xx = 95;
+			yy = 6;
+		}
+		if (sett == 3)
+		{
+			xx = 96;
+			yy = 6;
+		}
+		g_sDownF2Arr[sett].m_cLocation.X = xx; //Spawn of direction arrow (FIELD 2) DOWN
+		g_sDownF2Arr[sett].m_cLocation.Y = yy;
+	}
 
-	g_sUpCArr.m_cLocation.X = 45; //CAFETERIA
-	g_sUpCArr.m_cLocation.Y = 10;
+	//g_sUpCArr.m_cLocation.X = 45; //CAFETERIA
+	//g_sUpCArr.m_cLocation.Y = 10;
 
-	g_sDownCArr.m_cLocation.X = 45;//CAFETERIA
-	g_sDownCArr.m_cLocation.Y = 7;
+	for (int sett = 0; sett < 4; sett++)
+	{
+		int xx = 45;
+		int yy = 10;
+		if (sett == 1)
+		{
+			xx = 44;
+			yy = 9;
+		}
+		if (sett == 2)
+		{
+			xx = 45;
+			yy = 9;
+		}
+		if (sett == 3)
+		{
+			xx = 46;
+			yy = 9;
+		}
+		g_sUpCArr[sett].m_cLocation.X = xx; //Spawn of direction arrow (CAFE UP) 
+		g_sUpCArr[sett].m_cLocation.Y = yy;
+	}
 
+	//g_sDownCArr.m_cLocation.X = 45;//CAFETERIA
+	//g_sDownCArr.m_cLocation.Y = 7;
+
+	for (int sett = 0; sett < 4; sett++)
+	{
+		int xx = 45;
+		int yy = 7;
+		if (sett == 1)
+		{
+			xx = 44;
+			yy = 8;
+		}
+		if (sett == 2)
+		{
+			xx = 45;
+			yy = 8;
+		}
+		if (sett == 3)
+		{
+			xx = 46;
+			yy = 8;
+		}
+		g_sDownCArr[sett].m_cLocation.X = xx; //Spawn of direction arrow (CAFE DOWN)
+		g_sDownCArr[sett].m_cLocation.Y = yy;
+	}
 	//--------------------------------------------------------------------------------------
 
 	//LEVEL 2 CHARACTERS
@@ -180,7 +360,7 @@ void init(void)
 	g_sLevel2UpGuard.m_cLocation.Y = 2;
 
 	g_sLevel2DownGuard.m_cLocation.X = 36;
-	g_sLevel2DownGuard.m_cLocation.Y = 39;
+	g_sLevel2DownGuard.m_cLocation.Y = 38;
 	
 	g_sLevel2LeftGuard.m_cLocation.X = 70;
 	g_sLevel2LeftGuard.m_cLocation.Y = 20;
@@ -191,30 +371,82 @@ void init(void)
 	g_sLevel2CafeGuard.m_cLocation.X = 2;
 	g_sLevel2CafeGuard.m_cLocation.Y = 28;
 
-	//LEVEL 2 ARROWS
-	g_sUpRotatingArr.m_cLocation.X = 36;
-	g_sUpRotatingArr.m_cLocation.Y = 16;
+	//LEVEL 2 ARROWS/LOS
 
-    g_sRightRotatingArr.m_cLocation.X = 43;
-	g_sRightRotatingArr.m_cLocation.Y = 20;
+	int GlobalSett = 0;
+	
+	for (int yy = 2; yy < 4; yy++) //Setting of coordinates for LOS of Up guard
+	{
+		for (int xx = 32; xx < 41; xx++)
+		{
+			if (g_sUpGuardDownLOS[GlobalSett].m_cLocation.X != g_sLevel2Char.m_cLocation.X && g_sUpGuardDownLOS[GlobalSett].m_cLocation.Y != g_sLevel2Char.m_cLocation.Y)
+			{
+				g_sUpGuardDownLOS[GlobalSett].m_cLocation.X = xx;
+				g_sUpGuardDownLOS[GlobalSett].m_cLocation.Y = yy;
+				GlobalSett++;
+			}
+		}
+	}
 
-    g_sDownRotatingArr.m_cLocation.X = 36;
-	g_sDownRotatingArr.m_cLocation.Y = 24;
+	GlobalSett = 0;
 
-    g_sLeftRotatingArr.m_cLocation.X = 29;
-	g_sLeftRotatingArr.m_cLocation.Y = 20;
+	for (int yy = 4; yy > 2; yy--) //Setting of coordinates for LOS of Up guard
+	{
+		for (int xx = 41; xx > 32; xx--)
+		{
+			if (g_sUpGuardDownLOS[GlobalSett].m_cLocation.X != g_sLevel2Char.m_cLocation.X && g_sUpGuardDownLOS[GlobalSett].m_cLocation.Y != g_sLevel2Char.m_cLocation.Y)
+			{
+				g_sUpGuardDownLOS[GlobalSett].m_cLocation.X = xx;
+				g_sUpGuardDownLOS[GlobalSett].m_cLocation.Y = yy;
+				GlobalSett++;
+			}
+		}
+	}
 
-	g_sUpRotatingArr2.m_cLocation.X = 36;
-	g_sUpRotatingArr2.m_cLocation.Y = 7;
+	GlobalSett = 0;
 
-	g_sRightRotatingArr2.m_cLocation.X = 61;
-	g_sRightRotatingArr2.m_cLocation.Y = 20;
+	for (int yy = 38; yy > 36; yy--) //Setting of coordinates for LOS of Down guard
+	{
+		for (int xx = 32; xx < 41; xx++)
+		{
+			if (g_sDownGuardUpLOS[GlobalSett].m_cLocation.X != g_sLevel2Char.m_cLocation.X && g_sDownGuardUpLOS[GlobalSett].m_cLocation.Y != g_sLevel2Char.m_cLocation.Y)
+			{
+				g_sDownGuardUpLOS[GlobalSett].m_cLocation.X = xx;
+				g_sDownGuardUpLOS[GlobalSett].m_cLocation.Y = yy;
+				GlobalSett++;
+			}
+		}
+	}
 
-	g_sDownRotatingArr2.m_cLocation.X = 36;
-	g_sDownRotatingArr2.m_cLocation.Y = 33;
+	GlobalSett = 0;
 
-	g_sLeftRotatingArr2.m_cLocation.X = 11;
-	g_sLeftRotatingArr2.m_cLocation.Y = 20;
+	for (int yy = 18; yy < 23; yy++) //Setting of coordinates for LOS of Right guard
+	{
+		for (int xx = 2; xx < 5; xx++)
+		{
+			if (g_sRightGuardLeftLOS[GlobalSett].m_cLocation.X != g_sLevel2Char.m_cLocation.X && g_sRightGuardLeftLOS[GlobalSett].m_cLocation.Y != g_sLevel2Char.m_cLocation.Y)
+			{
+				g_sRightGuardLeftLOS[GlobalSett].m_cLocation.X = xx;
+				g_sRightGuardLeftLOS[GlobalSett].m_cLocation.Y = yy;
+				GlobalSett++;
+			}
+		}
+	}
+
+	GlobalSett = 0;
+
+	for (int yy = 22; yy > 17; yy--) //Setting of coordinates for LOS of Left guard
+	{
+		for (int xx = 68; xx < 71; xx++)
+		{
+			if (g_sLeftGuardRightLOS[GlobalSett].m_cLocation.X != g_sLevel2Char.m_cLocation.X && g_sLeftGuardRightLOS[GlobalSett].m_cLocation.Y != g_sLevel2Char.m_cLocation.Y)
+			{
+				g_sLeftGuardRightLOS[GlobalSett].m_cLocation.X = xx;
+				g_sLeftGuardRightLOS[GlobalSett].m_cLocation.Y = yy;
+				GlobalSett++;
+			}
+		}
+	}
 
 	g_sCafeUpArr.m_cLocation.X = 2;
 	g_sCafeUpArr.m_cLocation.Y = 27;
@@ -254,6 +486,7 @@ void getInput(void)
 	g_abKeyPressed[K_RETURN] = isKeyPressed(0x52);
 	g_abKeyPressed[K_ESCAPE] = isKeyPressed(VK_ESCAPE);
 	g_abKeyPressed[K_INTERACT] = isKeyPressed(0x45);
+	g_abKeyPressed[K_CRAFT] = isKeyPressed(0x43);
 	g_abKeyPressed[K_NEXTLEVEL] = isKeyPressed(0x54);
 	g_abKeyPressed[K_ENTER] = isKeyPressed(VK_RETURN);
 }
@@ -397,11 +630,27 @@ void Level1AIMovement()
 		count = 1;
 
 		//FOR CELL GUARD
-		if (g_sLevel1GuardCells.m_cLocation.X < 13 && move != 10) //X starts at 3
+		if (g_sLevel1GuardCells.m_cLocation.X < 14 && move != 10) //X starts at 3
 		{
-			g_sLeftArr.m_cLocation.X = 12;
+			/*g_sLeftArr.m_cLocation.X = 12;*/
+			for (int sett = 0; sett < 4; sett++)
+			{
+				int xx = 0;
+				if (sett == 0)
+				{
+					xx = 13;
+				}
+				else
+				{
+					xx = 12;
+				}
+				g_sLeftArr[sett].m_cLocation.X = xx; //Spawn of direction arrow (CELL)
+			}
 			g_sLevel1GuardCells.m_cLocation.X++;
-			g_sRightArr.m_cLocation.X++;
+			for (int inc = 0; inc < 4; inc++)
+			{
+				g_sRightArr[inc].m_cLocation.X++;
+			}
 			g_dGuardTimeX = 0.0;
 			move++;
 		}
@@ -409,23 +658,40 @@ void Level1AIMovement()
 
 	if (g_dGuardTimeX >= 0.20 && move == 10)
 	{
+
 		count = 2;
 
 		contactcheck = false;
 		//FOR CELL GUARD
 		if (g_sLevel1GuardCells.m_cLocation.X > 2)
 		{
-			g_sRightArr.m_cLocation.X = 4;
+			for (int sett = 0; sett < 4; sett++)
+			{
+				int xx = 0;
+				if (sett == 0)
+				{
+					xx = 5;
+				}
+				else
+				{
+					xx = 6;
+				}
+				g_sRightArr[sett].m_cLocation.X = xx; //Spawn of direction arrow (CELL)
+			}
+			/*	g_sRightArr.m_cLocation.X = 4;*/
 			g_sLevel1GuardCells.m_cLocation.X--;
-			g_sLeftArr.m_cLocation.X--;
+			for (int inc = 0; inc < 4; inc++)
+			{
+				g_sLeftArr[inc].m_cLocation.X--;
+			}
+			/*g_sLeftArr.m_cLocation.X--;*/
 			g_dGuardTimeX = 0.0;
 		}
 
 		//TO RESET FOR LOOPING
-		if (g_sLevel1GuardCells.m_cLocation.X == 3)
+		if (g_sLevel1GuardCells.m_cLocation.X == 4)
 		{
 			move = 0;
-			contactcheck = true;
 		}
 	}
 	////////////////////
@@ -435,52 +701,121 @@ void Level1AIMovement()
 		count1 = 1;
 		if (move2 == 0)
 		{
-			g_sUpF2Arr.m_cLocation.Y = 10;
-			g_sDownF1Arr.m_cLocation.Y = 6;
+			for (int sett = 0; sett < 4; sett++)
+			{
+				int yy = 0;
+				if (sett == 0)
+				{
+					yy = 10;
+				}
+				else
+				{
+					yy = 9;
+				}
+				g_sUpF2Arr[sett].m_cLocation.Y = yy; //Spawn of direction arrow (CELL)
+			}
+			/*g_sUpF2Arr.m_cLocation.Y = 10;*/
+			/*g_sDownF1Arr.m_cLocation.Y = 6;*/
+			for (int sett = 0; sett < 4; sett++)
+			{
+				int yy = 0;
+				if (sett == 0)
+				{
+					yy = 6;
+				}
+				else
+				{
+					yy = 7;
+				}
+				g_sDownF1Arr[sett].m_cLocation.Y = yy; //Spawn of direction arrow (CELL)
+			}
 		}
 		//FOR FIELD GUARDS
-		if (g_sLevel1GuardField1.m_cLocation.Y > 3 && move2 != 8) //Y starts at 15
+		if (g_sLevel1GuardField1.m_cLocation.Y > 3 && move2 != 7) //Y starts at 15
 		{
 
 			g_sLevel1GuardField1.m_cLocation.Y--;
-			g_sUpF1Arr.m_cLocation.Y--;
+			for (int inc = 0; inc < 4; inc++)
+			{
+				g_sUpF1Arr[inc].m_cLocation.Y--;
+			}
+			/*g_sUpF1Arr.m_cLocation.Y--;*/
 			g_dGuardTimeZ = 0.0;
 		}
 
 
-		if (g_sLevel1GuardField2.m_cLocation.Y < 13 && move2 != 8) //Y starts at 5
+		if (g_sLevel1GuardField2.m_cLocation.Y < 12 && move2 != 7) //Y starts at 5
 		{
 			g_sLevel1GuardField2.m_cLocation.Y++;
-			g_sDownF2Arr.m_cLocation.Y++;
+			for (int inc = 0; inc < 4; inc++)
+			{
+				g_sDownF2Arr[inc].m_cLocation.Y++;
+			}
+			/*g_sDownF2Arr.m_cLocation.Y++;*/
 			g_dGuardTimeZ = 0.0;
 			move2++;
 		}
 	}
 
-	if (g_dGuardTimeZ >= 0.25 && move2 == 8)
+	if (g_dGuardTimeZ >= 0.25 && move2 == 7)
 	{
 		contactcheck = false;
 
 		//FOR FIELD GUARDS
-		if (g_sLevel1GuardField1.m_cLocation.Y < 13) //Y starts at 5
+		if (g_sLevel1GuardField1.m_cLocation.Y < 12) //Y starts at 5
 		{
 			count1 = 2;
 			g_sLevel1GuardField1.m_cLocation.Y++;
-			g_sDownF1Arr.m_cLocation.Y++;
+			/*g_sDownF1Arr.m_cLocation.Y++;*/
+			for (int inc = 0; inc < 4; inc++)
+			{
+				g_sDownF1Arr[inc].m_cLocation.Y++;
+			}
 			g_dGuardTimeZ = 0.0;
 
 		}
-		if (g_sLevel1GuardField2.m_cLocation.Y > 3) //Y starts at 5
+		if (g_sLevel1GuardField2.m_cLocation.Y > 4/*3*/) //Y starts at 5
 		{
 			g_sLevel1GuardField2.m_cLocation.Y--;
 			g_dGuardTimeZ = 0.0;
-			g_sUpF2Arr.m_cLocation.Y--;
+			/*g_sUpF2Arr.m_cLocation.Y--;*/
+			for (int dec = 0; dec < 4; dec++)
+			{
+				g_sUpF2Arr[dec].m_cLocation.Y--;
+			}
 		}
 
-		if (g_sLevel1GuardField1.m_cLocation.Y == 13)
+		if (g_sLevel1GuardField1.m_cLocation.Y == 12)
 		{
-			g_sUpF1Arr.m_cLocation.Y = 12;
-			g_sDownF2Arr.m_cLocation.Y = 4;
+			/*g_sUpF1Arr.m_cLocation.Y = 11;*/
+			for (int sett = 0; sett < 4; sett++)
+			{
+				int yy = 0;
+				if (sett == 0)
+				{
+					yy = 11;
+				}
+				else
+				{
+					yy = 10;
+				}
+				g_sUpF1Arr[sett].m_cLocation.Y = yy; //Spawn of direction arrow (CELL)
+			}
+
+			for (int sett = 0; sett < 4; sett++)
+			{
+				int yy = 0;
+				if (sett == 0)
+				{
+					yy = 5;
+				}
+				else
+				{
+					yy = 6;
+				}
+				g_sDownF2Arr[sett].m_cLocation.Y = yy; //Spawn of direction arrow (CELL)
+			}
+			/*g_sDownF2Arr.m_cLocation.Y = 5;*/
 			move2 = 0;
 		}
 	}
@@ -490,7 +825,20 @@ void Level1AIMovement()
 	{
 		if (move1 == 0)
 		{
-			g_sDownCArr.m_cLocation.Y = 7;
+			/*g_sDownCArr.m_cLocation.Y = 7;*/
+			for (int sett = 0; sett < 4; sett++)
+			{
+				int yy = 0;
+				if (sett == 0)
+				{
+					yy = 7;
+				}
+				else
+				{
+					yy = 8;
+				}
+				g_sDownCArr[sett].m_cLocation.Y = yy; //Spawn of direction arrow (CELL)
+			}
 		}
 		contactcheck = true;
 		//FOR CAFE GUARD
@@ -498,7 +846,11 @@ void Level1AIMovement()
 		{
 			count2 = 1;
 			g_sLevel1GuardCafe.m_cLocation.Y--;
-			g_sUpCArr.m_cLocation.Y--;
+			/*g_sUpCArr.m_cLocation.Y--;*/
+			for (int dec = 0; dec < 4; dec++)
+			{
+				g_sUpCArr[dec].m_cLocation.Y--;
+			}
 			g_dGuardTimeY = 0.0;
 			move1++;
 		}
@@ -512,12 +864,29 @@ void Level1AIMovement()
 		if (g_sLevel1GuardCafe.m_cLocation.Y < 13)
 		{
 			g_sLevel1GuardCafe.m_cLocation.Y++;
-			g_sDownCArr.m_cLocation.Y++;
+			/*g_sDownCArr.m_cLocation.Y++;*/
+			for (int dec = 0; dec < 4; dec++)
+			{
+				g_sDownCArr[dec].m_cLocation.Y++;
+			}
 			g_dGuardTimeY = 0.0;
 		}
 		if (g_sLevel1GuardCafe.m_cLocation.Y == 11)
 		{
-			g_sUpCArr.m_cLocation.Y = 10;
+			/*g_sUpCArr.m_cLocation.Y = 10;*/
+			for (int sett = 0; sett < 4; sett++)
+			{
+				int yy = 0;
+				if (sett == 0)
+				{
+					yy = 10;
+				}
+				else
+				{
+					yy = 9;
+				}
+				g_sUpCArr[sett].m_cLocation.Y = yy; //Spawn of direction arrow (CELL)
+			}
 			move1 = 0;
 		}
 	}
@@ -550,7 +919,13 @@ void Level2AIMovement()
 	if (g_dGuardTimeYLevel2 >= 0.25 && moveLevel2 != 14) //MOVING FORWARD
 	{
 		g_sLevel2UpGuard.m_cLocation.Y++;
-		g_sLevel2DownGuard.m_cLocation.Y--;
+				g_sLevel2DownGuard.m_cLocation.Y--;
+
+		for (int i = 0; i < 27; i++)
+		{
+			g_sUpGuardDownLOS[i].m_cLocation.Y++;
+			g_sDownGuardUpLOS[i].m_cLocation.Y--;
+		}
 
 		g_dGuardTimeYLevel2 = 0;
 		++moveLevel2;
@@ -561,6 +936,11 @@ void Level2AIMovement()
 
 		g_sLevel2UpGuard.m_cLocation.Y--;
 		g_sLevel2DownGuard.m_cLocation.Y++;
+		for (int i = 0; i < 27; i++)
+		{
+			g_sUpGuardDownLOS[i].m_cLocation.Y--;
+			g_sDownGuardUpLOS[i].m_cLocation.Y++;
+		}
 
 		g_dGuardTimeYLevel2 = 0;
 		if (g_sLevel2UpGuard.m_cLocation.Y == 2)
@@ -576,6 +956,11 @@ void Level2AIMovement()
 
 		g_sLevel2RightGuard.m_cLocation.X++;
 		g_sLevel2LeftGuard.m_cLocation.X--;
+		for (int i = 0; i < 27; i++)
+		{
+			g_sRightGuardLeftLOS[i].m_cLocation.X++;
+			g_sLeftGuardRightLOS[i].m_cLocation.X--;
+		}
 
 		g_dGuardTimeXLevel2 = 0;
 		++move1Level2;
@@ -586,6 +971,11 @@ void Level2AIMovement()
 
 		g_sLevel2RightGuard.m_cLocation.X--;
 		g_sLevel2LeftGuard.m_cLocation.X++;
+		for (int i = 0; i < 27; i++)
+		{
+			g_sRightGuardLeftLOS[i].m_cLocation.X--;
+			g_sLeftGuardRightLOS[i].m_cLocation.X++;
+		}
 
 		g_dGuardTimeXLevel2 = 0;
 		if (g_sLevel2RightGuard.m_cLocation.X == 2)
@@ -938,14 +1328,42 @@ void Level3ItemInteractions()
 		level3[g_sLevel3Char.m_cLocation.Y][g_sLevel3Char.m_cLocation.X - 1] = ' ';
 	}
 
+	//OBTAINING A FRAGMENT RELATIVE TO THE POSITION OF THE PLAYER
+	if (g_abKeyPressed[K_INTERACT] && level3[g_sLevel3Char.m_cLocation.Y + 1][g_sLevel3Char.m_cLocation.X] == 'S')
+	{
+		//separate it later
+		KeyFragment += 1;
+		level3[g_sLevel3Char.m_cLocation.Y + 1][g_sLevel3Char.m_cLocation.X] = ' ';
+	}
+	else if (g_abKeyPressed[K_INTERACT] && level3[g_sLevel3Char.m_cLocation.Y - 1][g_sLevel3Char.m_cLocation.X] == 'S')
+	{
+		KeyFragment += 1;
+		level3[g_sLevel3Char.m_cLocation.Y - 1][g_sLevel3Char.m_cLocation.X] = ' ';
+	}
+	else if (g_abKeyPressed[K_INTERACT] && level3[g_sLevel3Char.m_cLocation.Y][g_sLevel3Char.m_cLocation.X + 1] == 'S')
+	{
+		KeyFragment += 1;
+		level3[g_sLevel3Char.m_cLocation.Y][g_sLevel3Char.m_cLocation.X + 1] = ' ';
+	}
+	else if (g_abKeyPressed[K_INTERACT] && level3[g_sLevel3Char.m_cLocation.Y][g_sLevel3Char.m_cLocation.X - 1] == 'S')
+	{
+		KeyFragment += 1;
+		level3[g_sLevel3Char.m_cLocation.Y][g_sLevel3Char.m_cLocation.X - 1] = ' ';
+	}
+
 	//------------------------------------------------------------------------------------------------------------------
 
-	if (g_abKeyPressed[K_INTERACT] && Level3Hidden[g_sLevel3Char.m_cLocation.Y - 1 ][g_sLevel3Char.m_cLocation.X] == '}' && ShiveNumber >= '1')
+	if (g_abKeyPressed[K_INTERACT] && Level3Hidden[g_sLevel3Char.m_cLocation.Y][g_sLevel3Char.m_cLocation.X + 1] == '}' && ShiveNumber >= '1')
 	{
 		ShiveNumber -= 1; //REMOVES 1 SHIVE
-		HiddenMap(); //ALLOWS FOR THE CALLING OF THE FUNCTION THAT FULLY RENDERS ONE HIDDEN PATHWAY
-		level3[g_sLevel3Char.m_cLocation.Y - 1][g_sLevel3Char.m_cLocation.X] = ' '; //EDITS THE PATHWAY TO BE BLANK FOR THE PLAYER TO PROGRESS
+		level3[g_sLevel3Char.m_cLocation.Y][g_sLevel3Char.m_cLocation.X + 1] = ' '; //EDITS THE PATHWAY TO BE BLANK FOR THE PLAYER TO PROGRESS
+	}
 
+	if (g_sLevel3Char.m_cLocation.X == 63 && g_sLevel3Char.m_cLocation.Y == 3)
+	{
+		HiddenMap(); //ALLOWS FOR THE CALLING OF THE FUNCTION THAT FULLY RENDERS ONE HIDDEN PATHWAY
+		g_sLevel3Char.m_cLocation.X += 63;
+		g_sLevel3Char.m_cLocation.Y += 22;
 	}
 }
 
@@ -967,6 +1385,22 @@ void levelonelose()
 	int Ch1X = g_sChar.m_cLocation.X;
 	int Ch1Y = g_sChar.m_cLocation.Y;
 
+	for (int sett = 0; sett < 4; sett++)
+	{
+		if (((Ch1X == g_sRightArr[sett].m_cLocation.X) && (Ch1Y == g_sRightArr[sett].m_cLocation.Y)) || ((Ch1X == g_sLeftArr[sett].m_cLocation.X) && (Ch1Y == g_sLeftArr[sett].m_cLocation.Y)) || ((Ch1X == g_sUpF1Arr[sett].m_cLocation.X) && (Ch1Y == g_sUpF1Arr[sett].m_cLocation.Y)) || ((Ch1X == g_sUpF2Arr[sett].m_cLocation.X) && (Ch1Y == g_sUpF2Arr[sett].m_cLocation.Y)) || ((Ch1X == g_sDownF1Arr[sett].m_cLocation.X) && (Ch1Y == g_sDownF1Arr[sett].m_cLocation.Y)) || ((Ch1X == g_sDownF2Arr[sett].m_cLocation.X) && (Ch1Y == g_sDownF2Arr[sett].m_cLocation.Y)) || ((Ch1X == g_sDownCArr[sett].m_cLocation.X) && (Ch1Y == g_sDownCArr[sett].m_cLocation.Y)) || ((Ch1X == g_sUpCArr[sett].m_cLocation.X) && (Ch1Y == g_sUpCArr[sett].m_cLocation.Y)))
+		{
+			lives = lives - 1;
+			if (lives != '0') {
+				g_sChar.m_cLocation.X = 6;
+				g_sChar.m_cLocation.Y = 4;
+			}
+			else {
+				g_eGameState = S_GAMEOVER;
+				lives = '2';
+			}
+		}
+	}
+
 	if (((Ch1X == CeX) && (Ch1Y == CeY)) || ((Ch1X == CaX) && (Ch1Y == CaY)) || ((Ch1X == F1X) && (Ch1Y == F1Y)) || ((Ch1X == F2X) && (Ch1Y == F2Y)))
 	{
 		lives = lives - 1;
@@ -976,211 +1410,7 @@ void levelonelose()
 		}
 		else {
 			g_eGameState = S_GAMEOVER;
-		}
-	}
-
-	if (contactcheck == true)
-	{
-		////THIS IS DETECTION WHEN ALL GUARDS ARE MOVING FORWARD////
-		//FOR IF PLAYER NORTH OF GUARD//
-		if (((Ch1X == CeX) && (Ch1Y == CeY - 1)) || ((Ch1X == CaX) && (Ch1Y == CaY - 1)) || ((Ch1X == F1X) && (Ch1Y == F1Y - 1)))
-		{
-			lives = lives - 1;
-			if (lives != '0') {
-				g_sChar.m_cLocation.X = 6;
-				g_sChar.m_cLocation.Y = 4;
-			}
-			else {
-				g_eGameState = S_GAMEOVER;
-			}
-		}
-
-		//FOR IF PLAYER DIAGONALLY RIGHT TO GUARD//
-		if (((Ch1X == CeX + 1) && (Ch1Y == CeY - 1)) || ((Ch1X == CaX + 1) && (Ch1Y == CaY - 1)) || ((Ch1X == F1X + 1) && (Ch1Y == F1Y - 1)))
-		{
-			lives = lives - 1;
-			if (lives != '0') {
-				g_sChar.m_cLocation.X = 6;
-				g_sChar.m_cLocation.Y = 4;
-			}
-			else {
-				g_eGameState = S_GAMEOVER;
-			}
-		}
-
-		//FOR IF PLAYER DIAGONALLY LEFT TO GUARD//
-		if (((Ch1X == CaX - 1) && (Ch1Y == CaY - 1)) || ((Ch1X == F1X - 1) && (Ch1Y == F1Y - 1))) {
-			lives = lives - 1;
-			if (lives != '0') {
-				g_sChar.m_cLocation.X = 6;
-				g_sChar.m_cLocation.Y = 4;
-			}
-			else {
-				g_eGameState = S_GAMEOVER;
-			}
-		}
-
-		//FOR IF THE PLAYER IS EAST OF GUARD//
-		if (((Ch1X == CeX + 1) && (Ch1Y == CeY)) || ((Ch1X == CaX + 1) && (Ch1Y == CaY)) || ((Ch1X == F1X + 1) && (Ch1Y == F1Y)) || ((Ch1X == F2X + 1) && (Ch1Y == F2Y))) {
-			lives = lives - 1;
-			if (lives != '0') {
-				g_sChar.m_cLocation.X = 6;
-				g_sChar.m_cLocation.Y = 4;
-			}
-			else {
-				g_eGameState = S_GAMEOVER;
-			}
-		}
-
-		//FOR IF THE PLAYER IS WEST OF GUARD//
-		if (((Ch1X == CaX - 1) && (Ch1Y == CaY)) || ((Ch1X == F1X - 1) && (Ch1Y == F1Y)) || ((Ch1X == F2X - 1) && (Ch1Y == F2Y))) {
-			lives = lives - 1;
-			if (lives != '0') {
-				g_sChar.m_cLocation.X = 6;
-				g_sChar.m_cLocation.Y = 4;
-			}
-			else {
-				g_eGameState = S_GAMEOVER;
-			}
-		}
-
-		//FOR IF THE PLAYER IS SOUTH OF GUARD//
-		if (((Ch1X == CeX) && (Ch1Y == CeY + 1)) || ((Ch1X == F2X) && (Ch1Y == F2Y + 1))) {
-			lives = lives - 1;
-			if (lives != '0') {
-				g_sChar.m_cLocation.X = 6;
-				g_sChar.m_cLocation.Y = 4;
-			}
-			else {
-				g_eGameState = S_GAMEOVER;
-			}
-		}
-
-		//FOR IF THE PLAYER IS DIAGONALLY RIGHT BELOW//
-		if (((Ch1X == CeX + 1) && (Ch1Y == CeY + 1)) || ((Ch1X == F2X + 1) && (Ch1Y == F2Y + 1))) {
-			lives = lives - 1;
-			if (lives != '0') {
-				g_sChar.m_cLocation.X = 6;
-				g_sChar.m_cLocation.Y = 4;
-			}
-			else {
-				g_eGameState = S_GAMEOVER;
-			}
-		}
-
-		//FOR IF THE PLAYER IS DIAGONALLY LEFT BELOW//
-		if ((Ch1X == F2X - 1) && (Ch1Y == F2Y + 1)) {
-			lives = lives - 1;
-			if (lives != '0') {
-				g_sChar.m_cLocation.X = 6;
-				g_sChar.m_cLocation.Y = 4;
-			}
-			else {
-				g_eGameState = S_GAMEOVER;
-			}
-		}
-	}
-
-
-	////IF ALL GUARDS ARE MOVING BACKWARDS////
-	if (contactcheck == false)
-	{
-		//FOR IF PLAYER IS NORTH OF GUARD//
-		if (((Ch1X == CeX) && (Ch1Y == CeY - 1)) || ((Ch1X == F2X) && (Ch1Y == F2Y - 1))) {
-			lives = lives - 1;
-			if (lives != '0') {
-				g_sChar.m_cLocation.X = 6;
-				g_sChar.m_cLocation.Y = 4;
-			}
-			else {
-				g_eGameState = S_GAMEOVER;
-			}
-		}
-
-		//FOR IF PLAYER DIAGONALLY RIGHT TO GUARD//
-		if ((Ch1X == F2X + 1) && (Ch1Y == F2Y - 1)) {
-			lives = lives - 1;
-			if (lives != '0') {
-				g_sChar.m_cLocation.X = 6;
-				g_sChar.m_cLocation.Y = 4;
-			}
-			else {
-				g_eGameState = S_GAMEOVER;
-			}
-		}
-
-		//FOR IF PLAYER DIAGONALLY FRONT LEFT TO GUARD//
-		if (((Ch1X == CeX - 1) && (Ch1Y == CeY - 1)) || ((Ch1X == F2X - 1) && (Ch1Y == F2Y - 1))) {
-			lives = lives - 1;
-			if (lives != '0') {
-				g_sChar.m_cLocation.X = 6;
-				g_sChar.m_cLocation.Y = 4;
-			}
-			else {
-				g_eGameState = S_GAMEOVER;
-			}
-		}
-
-		//FOR IF PLAYER IS EAST OF GUARD//
-		if (((Ch1X == CaX + 1) && (Ch1Y == CaY)) || ((Ch1X == F1X + 1) && (Ch1Y == F1Y)) || ((Ch1X == F2X + 1) && (Ch1Y == F2Y)))
-		{
-			lives = lives - 1;
-			if (lives != '0') {
-				g_sChar.m_cLocation.X = 6;
-				g_sChar.m_cLocation.Y = 4;
-			}
-			else {
-				g_eGameState = S_GAMEOVER;
-			}
-		}
-
-		//FOR IF PLAYER IS WEST OF GUARD//
-		if (((Ch1X == CeX - 1) && (Ch1Y == CeY)) || ((Ch1X == CaX - 1) && (Ch1Y == CaY)) || ((Ch1X == F1X - 1) && (Ch1Y == F1Y)) || ((Ch1X == F2X - 1) && (Ch1Y == F2Y)))
-		{
-			lives = lives - 1;
-			if (lives != '0') {
-				g_sChar.m_cLocation.X = 6;
-				g_sChar.m_cLocation.Y = 4;
-			}
-			else {
-				g_eGameState = S_GAMEOVER;
-			}
-		}
-		//FOR IF PLAYER SOUTH OF GUARD//
-		if (((Ch1X == CeX) && (Ch1Y == CeY + 1)) || ((Ch1X == CaX) && (Ch1Y == CaY + 1)) || ((Ch1X == F1X) && (Ch1Y == F1Y + 1)))
-		{
-			lives = lives - 1;
-			if (lives != '0') {
-				g_sChar.m_cLocation.X = 6;
-				g_sChar.m_cLocation.Y = 4;
-			}
-			else {
-				g_eGameState = S_GAMEOVER;
-			}
-		}
-		//FOR IF PLAYER SOUTH RIGHT BELOW//
-		if (((Ch1X == CaX + 1) && (Ch1Y == CaY + 1)) || ((Ch1X == F1X + 1) && (Ch1Y == F1Y + 1)))
-		{
-			lives = lives - 1;
-			if (lives != '0') {
-				g_sChar.m_cLocation.X = 6;
-				g_sChar.m_cLocation.Y = 4;
-			}
-			else {
-				g_eGameState = S_GAMEOVER;
-			}
-		}
-		//FOR IF PLAYER SOUTH LEFT BELOW//
-		if (((Ch1X == F1X - 1) && (Ch1Y == F1Y + 1)) || ((Ch1X == CeX - 1) && (Ch1Y == CeY + 1)) || ((Ch1X == CaX - 1) && (Ch1Y == CaY + 1)))
-		{
-			lives = lives - 1;
-			if (lives != '0') {
-				g_sChar.m_cLocation.X = 6;
-				g_sChar.m_cLocation.Y = 4;
-			}
-			else {
-				g_eGameState = S_GAMEOVER;
-			}
+			lives = '2';
 		}
 	}
 }
@@ -1431,6 +1661,23 @@ void prisonerInteraction()
 	if (bSomethingHappened)
 	{
 		g_dBounceTime = g_dElapsedTime + 0.1;
+	}
+}
+
+void crafting()
+{
+	if (KeyFragment == 3)
+	{
+		COORD c;
+		c.X = 0;
+		c.Y = 0;
+
+		g_Console.writeToBuffer(c, "You can now craft a Key, press 'C' to craft one", 0x03);
+		if (g_abKeyPressed[K_CRAFT])
+		{
+			KeyFragment -= 3;
+			KeyNumber += 1;
+		}
 	}
 }
 
@@ -1813,35 +2060,86 @@ void renderArrowLevel1()
 	switch (count)
 	{
 	case 1:
-		g_Console.writeToBuffer(g_sRightArr.m_cLocation, (char)16, 0X0F); //RENDER DIRECTION
-		break;
-	case 2:
-		g_Console.writeToBuffer(g_sLeftArr.m_cLocation, (char)17, 0X0F); //RENDER DIRECTION
-		break;
+	{
+		for (int sett = 0; sett < 4; sett++)
+		{
+			g_Console.writeToBuffer(g_sRightArr[sett].m_cLocation, "Û", 0X08); //RENDER DIRECTION
+		}
 	}
+	break;
+	case 2:
+	{
+		for (int sett = 0; sett < 4; sett++)
+		{
+			g_Console.writeToBuffer(g_sLeftArr[sett].m_cLocation, "Û", 0X08); //RENDER DIRECTION
+		}
+	}
+	break;
+	}
+
 	//---------------------------------------------------------------------------------------------------------------------------
 
 	switch (count1)
 	{
 	case 1:
-		g_Console.writeToBuffer(g_sDownF2Arr.m_cLocation, (char)31, 0X0F);
-		g_Console.writeToBuffer(g_sUpF1Arr.m_cLocation, (char)30, 0X0F); //RENDER DIRECTION
-		break;
+	{
+		for (int sett = 0; sett < 4; sett++)
+		{
+			g_Console.writeToBuffer(g_sDownF2Arr[sett].m_cLocation, "Û", 0X08); //RENDER DIRECTION
+		}
+		for (int sett = 0; sett < 4; sett++)
+		{
+			g_Console.writeToBuffer(g_sUpF1Arr[sett].m_cLocation, "Û", 0X08); //RENDER DIRECTION
+		}
+	}
+	break;
 	case 2:
-		g_Console.writeToBuffer(g_sUpF2Arr.m_cLocation, (char)30, 0X0F);
-		g_Console.writeToBuffer(g_sDownF1Arr.m_cLocation, (char)31, 0X0F);
-		break;
+	{
+		for (int sett = 0; sett < 4; sett++)
+		{
+			g_Console.writeToBuffer(g_sUpF2Arr[sett].m_cLocation, "Û", 0X08); //RENDER DIRECTION
+		}
+		for (int sett = 0; sett < 4; sett++)
+		{
+			g_Console.writeToBuffer(g_sDownF1Arr[sett].m_cLocation, "Û", 0X08); //RENDER DIRECTION
+		}
+	}
+	break;
 	}
 	//----------------------------------------------------------------------------------------------------------------------------
 
 	switch (count2)
 	{
 	case 1:
-		g_Console.writeToBuffer(g_sUpCArr.m_cLocation, (char)30, 0X0F);
-		break;
+	{
+		for (int sett = 0; sett < 4; sett++)
+		{
+			if (sett == 1 && (g_sLevel1GuardCafe.m_cLocation.Y != 8 && g_sLevel1GuardCafe.m_cLocation.Y != 6 && g_sLevel1GuardCafe.m_cLocation.Y != 7 && g_sLevel1GuardCafe.m_cLocation.Y != 11))
+			{
+				g_Console.writeToBuffer(g_sUpCArr[sett].m_cLocation, "Û", 0X08);
+			}
+			if (sett != 1)
+			{
+				g_Console.writeToBuffer(g_sUpCArr[sett].m_cLocation, "Û", 0X08);
+			} //RENDER DIRECTION
+		}
+	}
+	break;
 	case 2:
-		g_Console.writeToBuffer(g_sDownCArr.m_cLocation, (char)31, 0X0F);
-		break;
+	{
+		/*g_Console.writeToBuffer(g_sDownCArr.m_cLocation, (char)31, 0X0F);*/
+		for (int sett = 0; sett < 4; sett++)
+		{
+			if (sett == 1 && (g_sLevel1GuardCafe.m_cLocation.Y != 9 && g_sLevel1GuardCafe.m_cLocation.Y != 10 && g_sLevel1GuardCafe.m_cLocation.Y != 8))
+			{
+				g_Console.writeToBuffer(g_sDownCArr[sett].m_cLocation, "Û", 0X08);
+			}
+			if (sett != 1)
+			{
+				g_Console.writeToBuffer(g_sDownCArr[sett].m_cLocation, "Û", 0X08);
+			} //RENDER DIRECTION
+		}
+	}
 	}
 }
 
@@ -1915,6 +2213,10 @@ void loadBronzeMap()
 				if (line[col] == 'A')
 				{
 					level2[x][y] = 185;
+				}
+				if (line[col] == '3')
+				{
+					level2[x][y] = 219;
 				}
 				if (line[col] == 'B')
 				{
@@ -1996,26 +2298,27 @@ void renderArrowLevel2()
 	switch (TurnCount)
 	{
 	case 1:
-		g_Console.writeToBuffer(g_sUpRotatingArr.m_cLocation, (char)30, 0X0F);
-		g_Console.writeToBuffer(g_sUpRotatingArr2.m_cLocation, (char)30, 0X0F);
 		g_Console.writeToBuffer(g_sCafeUpArr.m_cLocation, (char)30, 0X0F);
 		break;
 	case 2:
-		g_Console.writeToBuffer(g_sRightRotatingArr.m_cLocation, (char)16, 0X0F);
-		g_Console.writeToBuffer(g_sRightRotatingArr2.m_cLocation, (char)16, 0X0F);
 		g_Console.writeToBuffer(g_sCafeRightArr.m_cLocation, (char)16, 0X0F);
 		break;
 	case 3:
-		g_Console.writeToBuffer(g_sDownRotatingArr.m_cLocation, (char)31, 0X0F);
-		g_Console.writeToBuffer(g_sDownRotatingArr2.m_cLocation, (char)31, 0X0F);
 		g_Console.writeToBuffer(g_sCafeUpArr.m_cLocation, (char)30, 0X0F);
 		break;
 	case 4:
-		g_Console.writeToBuffer(g_sLeftRotatingArr.m_cLocation, (char)17, 0X0F);
-		g_Console.writeToBuffer(g_sLeftRotatingArr2.m_cLocation, (char)17, 0X0F);
 		g_Console.writeToBuffer(g_sCafeRightArr.m_cLocation, (char)16, 0X0F);
 		break;
 	}
+
+	for (int sett = 0; sett < 26; sett++)
+	{
+		g_Console.writeToBuffer(g_sUpGuardDownLOS[sett].m_cLocation, "Û", 0X08); //RENDER DIRECTION
+		g_Console.writeToBuffer(g_sDownGuardUpLOS[sett].m_cLocation, "Û", 0X08); //RENDER DIRECTION
+		g_Console.writeToBuffer(g_sRightGuardLeftLOS[sett].m_cLocation, "Û", 0X08); //RENDER DIRECTION
+		g_Console.writeToBuffer(g_sLeftGuardRightLOS[sett].m_cLocation, "Û", 0X08); //RENDER DIRECTION
+	}
+
 }
 void HiddenEntranceOne()
 {
@@ -2144,10 +2447,10 @@ void renderSteelMap()
 	COORD c;
 	c.X = 0;
 	c.Y = 0;
-	for (int y = 0; y < 125; y++)
+	for (int y = 0; y < 300; y++)
 	{
 		c.X = y;
-		for (int x = 0; x < 125; x++)
+		for (int x = 0; x < 300; x++)
 		{
 			c.Y = x;
 			g_Console.writeToBuffer(c, level3[x][y], 0x03);
@@ -2240,6 +2543,10 @@ void loadSteelMap()
 				{
 					level3[x][y] = 188;
 				}
+				if (line[col] == '3')
+				{
+					level3[x][y] = 219;
+				}
 				if (line[col] == '!')
 				{
 					level3[x][y] = 176;
@@ -2285,30 +2592,40 @@ void loadSteelMap()
 }
 void HiddenMap()
 {
-	COORD c;
-	c.X = 0;
-	c.Y = 0;
-	for (int y = 0; y < 250; y++) // A forward loop to assign new values to the text on the map
 	{
-		c.X = y;
-		for (int x = 0; x < 250; x++)
+		COORD c;
+		c.X = 0;
+		c.Y = 0;
+		for (int y = 0; y < 300; y++) // A forward loop to assign new values to the text on the map
 		{
-			c.Y = x;
-			if (Level3Hidden[x][y] == '-' && level3[x][y] == ' ')
+			c.X = y;
+			for (int x = 0; x < 300; x++)
 			{
-				level3[x][y] = 205;
-			}
-			if (Level3Hidden[x][y] == '|' && level3[x][y] == ' ')
-			{
-				level3[x][y] = 186;
-			}
-			if (Level3Hidden[x][y] == 92 && level3[x][y] == ' ')
-			{
-				level3[x][y] = 187;
-			}
-			if (Level3Hidden[x][y] == '-' && level3[x][y] == ' ')
-			{
-				level3[x][y] = '-';
+				c.Y = x;
+				if (Level3Hidden[x][y] == '-' && level3[x][y] == ' ')
+				{
+					level3[x][y] = 205;
+				}
+				if (Level3Hidden[x][y] == '|' && level3[x][y] == ' ')
+				{
+					level3[x][y] = 186;
+				}
+				if (Level3Hidden[x][y] == 92 && level3[x][y] == ' ')
+				{
+					level3[x][y] = 187;
+				}
+				if (Level3Hidden[x][y] == '-' && level3[x][y] == ' ')
+				{
+					level3[x][y] = '-';
+				}
+				if (Level3Hidden[x][y] == 47 && level3[x][y] == ' ')
+				{
+					level3[x][y] = 188;
+				}
+				if (Level3Hidden[x][y] == '<' && level3[x][y] == ' ')
+				{
+					level3[x][y] = ' ';
+				}
 			}
 		}
 	}
@@ -2319,74 +2636,203 @@ void renderUserInterface()
 {
 	COORD c = g_Console.getConsoleSize();
 
-	//Controls
-	c.X = 2;
-	c.Y = 27;
-	g_Console.writeToBuffer(c, "Controls:", 0x03);
-	c.Y = 28;
-	g_Console.writeToBuffer(c, "Move: W, A, S, D", 0x03);
-	c.Y = 29;
-	g_Console.writeToBuffer(c, "Move: Arrow keys", 0x03);
-	c.Y = 30;
-	g_Console.writeToBuffer(c, "Interact: E ", 0x03);
-	c.Y = 31;
-	g_Console.writeToBuffer(c, "Return titlescreen: R", 0x03);
-
-	c.X = 108;
-	c.Y = 2;
-	g_Console.writeToBuffer(c, "Intel:", 0x03);
-	switch (intelcount)
+	if (level == 1)
 	{
-	case 1:
-		c.Y = 3;
-		g_Console.writeToBuffer(c, "> The Prisoner in the Cafe knows", 0x03);
-		c.Y = 4;
-		g_Console.writeToBuffer(c, "  something about this secret", 0x03);
-		c.Y = 5;
-		g_Console.writeToBuffer(c, "  passage.", 0x03);
-		break;
-	case 2:
-		c.Y = 3;
-		g_Console.writeToBuffer(c, "> Someone in the toilet holds", 0x03);
-		c.Y = 4;
-		g_Console.writeToBuffer(c, "  the information I need.", 0x03);
-		break;
-	case 3:
-		c.Y = 3;
-		g_Console.writeToBuffer(c, "> That person happened to be Ryan!", 0x03);
-		c.Y = 4;
-		g_Console.writeToBuffer(c, "  Well I still need to", 0x03);
-		c.Y = 5;
-		g_Console.writeToBuffer(c, "  get the required tools.", 0x03);
-		break;
+		//Controls
+		c.X = 2;
+		c.Y = 27;
+		g_Console.writeToBuffer(c, "Controls:", 0x03);
+		c.Y = 28;
+		g_Console.writeToBuffer(c, "Move: W, A, S, D", 0x03);
+		c.Y = 29;
+		g_Console.writeToBuffer(c, "Move: Arrow keys", 0x03);
+		c.Y = 30;
+		g_Console.writeToBuffer(c, "Interact: E ", 0x03);
+		c.Y = 31;
+		g_Console.writeToBuffer(c, "Return titlescreen: R", 0x03);
+
+		c.X = 108;
+		c.Y = 2;
+		g_Console.writeToBuffer(c, "Intel:", 0x03);
+		switch (intelcount)
+		{
+		case 1:
+			c.Y = 3;
+			g_Console.writeToBuffer(c, "> The Prisoner in the Cafe knows", 0x03);
+			c.Y = 4;
+			g_Console.writeToBuffer(c, "  something about this secret", 0x03);
+			c.Y = 5;
+			g_Console.writeToBuffer(c, "  passage.", 0x03);
+			break;
+		case 2:
+			c.Y = 3;
+			g_Console.writeToBuffer(c, "> Someone in the toilet holds", 0x03);
+			c.Y = 4;
+			g_Console.writeToBuffer(c, "  the information I need.", 0x03);
+			break;
+		case 3:
+			c.Y = 3;
+			g_Console.writeToBuffer(c, "> That person happened to be Ryan!", 0x03);
+			c.Y = 4;
+			g_Console.writeToBuffer(c, "  Well I still need to", 0x03);
+			c.Y = 5;
+			g_Console.writeToBuffer(c, "  get the required tools.", 0x03);
+			break;
+		}
+
+		c.X = 108;
+		c.Y = 11;
+		g_Console.writeToBuffer(c, "Items:", 0x03);
+		c.X = 120;
+		c.Y = 23;
+		g_Console.writeToBuffer(c, "Lives:", 0x03);
+		c.X = 128;
+		c.Y = 23;
+		g_Console.writeToBuffer(c, lives, 0x03);
+		if (ShiveNumber > '0')
+		{
+			c.X = 110;
+			c.Y = 12;
+			g_Console.writeToBuffer(c, "Shive(s)", 0x03);
+			c.X = 108;
+			c.Y = 12;
+			g_Console.writeToBuffer(c, ShiveNumber, 0x03);
+		}
+		if (KeyNumber > '0')
+		{
+			c.X = 110;
+			c.Y = 23;
+			g_Console.writeToBuffer(c, "Key(s)", 0x03);
+			c.X = 108;
+			c.Y = 23;
+			g_Console.writeToBuffer(c, KeyNumber, 0x03);
+		}
 	}
 
-	c.X = 108;
-	c.Y = 11;
-	g_Console.writeToBuffer(c, "Items:", 0x03);
-	c.X = 120;
-	c.Y = 23;
-	g_Console.writeToBuffer(c, "Lives:", 0x03);
-	c.X = 128;
-	c.Y = 23;
-	g_Console.writeToBuffer(c, lives, 0x03);
-	if (ShiveNumber > '0')
+	if (level == 2)
 	{
-		c.X = 110;
-		c.Y = 12;
-		g_Console.writeToBuffer(c, "Shive(s)", 0x03);
+		//Controls
+		c.X = 80;
+		c.Y = 2;
+		g_Console.writeToBuffer(c, "Controls:", 0x03);
+		c.Y = 3;
+		g_Console.writeToBuffer(c, "Move: W, A, S, D", 0x03);
+		c.Y = 4;
+		g_Console.writeToBuffer(c, "Move: Arrow keys", 0x03);
+		c.Y = 5;
+		g_Console.writeToBuffer(c, "Interact: E ", 0x03);
+		c.Y = 6;
+		g_Console.writeToBuffer(c, "Return titlescreen: R", 0x03);
+
 		c.X = 108;
-		c.Y = 12;
-		g_Console.writeToBuffer(c, ShiveNumber, 0x03);
+		c.Y = 2;
+		g_Console.writeToBuffer(c, "Intel:", 0x03);
+		switch (intelcount)
+		{
+		case 1:
+			c.Y = 3;
+			g_Console.writeToBuffer(c, "> The Prisoner in the Cafe knows", 0x03);
+			c.Y = 4;
+			g_Console.writeToBuffer(c, "  something about this secret", 0x03);
+			c.Y = 5;
+			g_Console.writeToBuffer(c, "  passage.", 0x03);
+			break;
+		case 2:
+			c.Y = 3;
+			g_Console.writeToBuffer(c, "> Someone in the toilet holds", 0x03);
+			c.Y = 4;
+			g_Console.writeToBuffer(c, "  the information I need.", 0x03);
+			break;
+		case 3:
+			c.Y = 3;
+			g_Console.writeToBuffer(c, "> That person happened to be Ryan!", 0x03);
+			c.Y = 4;
+			g_Console.writeToBuffer(c, "  Well I still need to", 0x03);
+			c.Y = 5;
+			g_Console.writeToBuffer(c, "  get the required tools.", 0x03);
+			break;
+		}
+
+		c.X = 108;
+		c.Y = 11;
+		g_Console.writeToBuffer(c, "Items:", 0x03);
+		c.X = 120;
+		c.Y = 23;
+		g_Console.writeToBuffer(c, "Lives:", 0x03);
+		c.X = 128;
+		c.Y = 23;
+		g_Console.writeToBuffer(c, lives, 0x03);
+		if (ShiveNumber > '0')
+		{
+			c.X = 110;
+			c.Y = 12;
+			g_Console.writeToBuffer(c, "Shive(s)", 0x03);
+			c.X = 108;
+			c.Y = 12;
+			g_Console.writeToBuffer(c, ShiveNumber, 0x03);
+		}
+		if (KeyNumber > '0')
+		{
+			c.X = 110;
+			c.Y = 23;
+			g_Console.writeToBuffer(c, "Key(s)", 0x03);
+			c.X = 108;
+			c.Y = 23;
+			g_Console.writeToBuffer(c, KeyNumber, 0x03);
+		}
 	}
-	if (KeyNumber > '0')
+
+	if (level == 3)
 	{
-		c.X = 110;
-		c.Y = 23;
-		g_Console.writeToBuffer(c, "Key(s)", 0x03);
-		c.X = 108;
-		c.Y = 23;
-		g_Console.writeToBuffer(c, KeyNumber, 0x03);
+		//Controls
+		c.X = 2;
+		c.Y = 34;
+		g_Console.writeToBuffer(c, "Controls:", 0x03);
+		c.Y = 35;
+		g_Console.writeToBuffer(c, "Move: W, A, S, D", 0x03);
+		c.Y = 36;
+		g_Console.writeToBuffer(c, "Move: Arrow keys", 0x03);
+		c.Y = 37;
+		g_Console.writeToBuffer(c, "Interact: E ", 0x03);
+		c.Y = 38;
+		g_Console.writeToBuffer(c, "Return titlescreen: R", 0x03);
+
+		c.X = 26;
+		c.Y = 34;
+		g_Console.writeToBuffer(c, "Items:", 0x03);
+		c.X = 138;
+		c.Y = 38;
+		g_Console.writeToBuffer(c, "Lives:", 0x03);
+		c.X = 144;
+		c.Y = 38;
+		g_Console.writeToBuffer(c, lives, 0x03);
+		if (ShiveNumber > '0')
+		{
+			c.X = 28;
+			c.Y = 35;
+			g_Console.writeToBuffer(c, "Shive(s)", 0x03);
+			c.X = 26;
+			c.Y = 35;
+			g_Console.writeToBuffer(c, ShiveNumber, 0x03);
+		}
+		if (KeyNumber > '0')
+		{
+			c.X = 28;
+			c.Y = 36;
+			g_Console.writeToBuffer(c, "Key(s)", 0x03);
+			c.X = 26;
+			c.Y = 36;
+			g_Console.writeToBuffer(c, KeyNumber, 0x03);
+		}
+		if (KeyFragment > '0')
+		{
+			c.X = 28;
+			c.Y = 37;
+			g_Console.writeToBuffer(c, "Key Fragment(s)", 0x03);
+			c.X = 26;
+			c.Y = 37;
+			g_Console.writeToBuffer(c, KeyNumber, 0x03);
+		}
 	}
 }
 void renderGameOver()

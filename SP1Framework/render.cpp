@@ -36,7 +36,7 @@ void gameplayLevel3()
 	processUserInput();
 	moveCharacterLevel3();
 	Level3ItemInteractions();
-	levelonelose();
+	levelthreelose();
 	Level3AIMovement();
 	
 }
@@ -64,6 +64,7 @@ void renderLevelThree()
 {
 	renderSteelMap();
 	renderCharacter();
+	renderLOS3();
 	renderUserInterface();
 }
 

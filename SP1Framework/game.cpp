@@ -633,6 +633,7 @@ void update(double dt)
     g_dGuardTimeYLevel2 += g_dDeltaTime;
 	g_dGuardTimeZLevel2 += g_dDeltaTime;
 	g_dRotationTime += g_dDeltaTime;
+	g_dRotationTime3 += g_dDeltaTime;
 	g_dGameOver += dt;
 
 	switch (g_eGameState)
@@ -1147,12 +1148,12 @@ void Level3AIMovement()
 		tracker3 = 1;
 		contactcheck31 = true;
 	}
-	if (g_dRotationTime3 > 0.2)
+	if (g_dRotationTime3 > 0.4)
 	{
 		tracker3 = 2;
 		contactcheck31 = false;
 	}
-	if (g_dRotationTime3 > 0.4)
+	if (g_dRotationTime3 > 0.8)
 	{
 		tracker3 = 1;
 		contactcheck32 = true;
@@ -1192,7 +1193,7 @@ void Level3AIMovement()
 			g_sRightGHorLOS[sett].m_cLocation.X = 86;
 		}
 	}
-	if (g_dRotationTime3 > 0.6)
+	if (g_dRotationTime3 > 1.2)
 	{
 		tracker3 = 2;
 		contactcheck32 = false;
@@ -1224,7 +1225,7 @@ void Level3AIMovement()
 			g_sRightGVerLOS[sett].m_cLocation.Y = 22;
 		}
 	}
-	if (g_dRotationTime3 > 0.8)
+	if (g_dRotationTime3 > 1.6)
 	{
 		tracker3 = 0;
 		g_sLeftGHorLOS[0].m_cLocation.X = 13;
@@ -3570,6 +3571,10 @@ void renderCharacter()
 	if (level == 3)
 	{
 		g_Console.writeToBuffer(g_sLevel3Char.m_cLocation, (char)1, 0x0C);
+		for (int i = 0; i < 3; i++)
+		{
+			g_Console.writeToBuffer(g_sLevel3Guard[i].m_cLocation, (char)1, 0x0C);
+		}
 	}
 }
 void renderFramerate()

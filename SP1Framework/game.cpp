@@ -16,7 +16,6 @@ bool movementLock = false;
 
 double  g_dElapsedTime;
 double  g_dDeltaTime;
-double  g_dLevel2Timer;
 
 double  g_dGuardTimeX = 0.0;
 double  g_dGuardTimeY = 0.0;
@@ -47,7 +46,7 @@ int level = 0;
 char ShiveNumber = '0';
 char KeyNumber = '0';
 char KeyFragment = '0';
-char lives = 50;
+char lives = '2';
 
 
 // Game specific variables here
@@ -84,16 +83,10 @@ SGameChar   g_sDownF2Arr[4];
 SGameChar   g_sDownCArr[4];
 
 //LEVEL 2 ARROWS
-SGameChar   g_sUpGuardDownLOS[26];
-SGameChar   g_sDownGuardUpLOS[26];
-SGameChar   g_sRightGuardLeftLOS[26];
-SGameChar   g_sLeftGuardRightLOS[26];
 
-SGameChar   g_sUpGuardUpLOS[26];
-SGameChar   g_sDownGuardDownLOS[26];
-SGameChar   g_sRightGuardRightLOS[26];
-SGameChar   g_sLeftGuardLeftLOS[26];
 
+
+//LEVEL 3 ARROWS
 SGameChar   g_sLeftGHorLOS[25];
 SGameChar   g_sLeftGVerLOS[16];
 SGameChar   g_sRightGHorLOS[25];
@@ -123,7 +116,6 @@ void init(void)
 	// Set precision for floating point output
 	g_dElapsedTime = 0.0;
 	g_dBounceTime = 0.0;
-	g_dLevel2Timer = 120.0;
 
 	// sets the initial state for the game
 	g_eGameState = S_SPLASHSCREEN;
@@ -381,86 +373,6 @@ void init(void)
 
 	//LEVEL 2 ARROWS/LOS
 
-	int GlobalSett = 0;
-	
-	for (int yy = 2; yy < 4; yy++) //Setting of coordinates for LOS of Up guard
-	{
-		for (int xx = 32; xx < 41; xx++)
-		{
-			if (g_sUpGuardDownLOS[GlobalSett].m_cLocation.X != g_sLevel2Char.m_cLocation.X && g_sUpGuardDownLOS[GlobalSett].m_cLocation.Y != g_sLevel2Char.m_cLocation.Y)
-			{
-				g_sUpGuardDownLOS[GlobalSett].m_cLocation.X = xx;
-				g_sUpGuardDownLOS[GlobalSett].m_cLocation.Y = yy;
-				GlobalSett++;
-			}
-		}
-	}
-
-	GlobalSett = 0;
-
-	for (int yy = 16; yy > 14; yy--) //Setting of coordinates for LOS of Up guard
-	{
-		for (int xx = 40; xx > 31; xx--)
-		{
-			if (g_sUpGuardUpLOS[GlobalSett].m_cLocation.X != g_sLevel2Char.m_cLocation.X && g_sUpGuardUpLOS[GlobalSett].m_cLocation.Y != g_sLevel2Char.m_cLocation.Y)
-			{
-				g_sUpGuardUpLOS[GlobalSett].m_cLocation.X = xx;
-				g_sUpGuardUpLOS[GlobalSett].m_cLocation.Y = yy;
-				GlobalSett++;
-			}
-		}
-	}
-
-	GlobalSett = 0;
-
-	for (int yy = 38; yy > 36; yy--) //Setting of coordinates for LOS of Down guard
-	{
-		for (int xx = 32; xx < 41; xx++)
-		{
-			if (g_sDownGuardUpLOS[GlobalSett].m_cLocation.X != g_sLevel2Char.m_cLocation.X && g_sDownGuardUpLOS[GlobalSett].m_cLocation.Y != g_sLevel2Char.m_cLocation.Y)
-			{
-				g_sDownGuardUpLOS[GlobalSett].m_cLocation.X = xx;
-				g_sDownGuardUpLOS[GlobalSett].m_cLocation.Y = yy;
-				GlobalSett++;
-			}
-		}
-	}
-
-	GlobalSett = 0;
-
-	for (int yy = 18; yy < 23; yy++) //Setting of coordinates for LOS of Right guard
-	{
-		for (int xx = 2; xx < 5; xx++)
-		{
-			if (g_sRightGuardLeftLOS[GlobalSett].m_cLocation.X != g_sLevel2Char.m_cLocation.X && g_sRightGuardLeftLOS[GlobalSett].m_cLocation.Y != g_sLevel2Char.m_cLocation.Y)
-			{
-				g_sRightGuardLeftLOS[GlobalSett].m_cLocation.X = xx;
-				g_sRightGuardLeftLOS[GlobalSett].m_cLocation.Y = yy;
-				GlobalSett++;
-			}
-		}
-	}
-
-	GlobalSett = 0;
-
-	for (int yy = 22; yy > 17; yy--) //Setting of coordinates for LOS of Left guard
-	{
-		for (int xx = 68; xx < 71; xx++)
-		{
-			if (g_sLeftGuardRightLOS[GlobalSett].m_cLocation.X != g_sLevel2Char.m_cLocation.X && g_sLeftGuardRightLOS[GlobalSett].m_cLocation.Y != g_sLevel2Char.m_cLocation.Y)
-			{
-				g_sLeftGuardRightLOS[GlobalSett].m_cLocation.X = xx;
-				g_sLeftGuardRightLOS[GlobalSett].m_cLocation.Y = yy;
-				GlobalSett++;
-			}
-		}
-	}
-
-	g_sCafeUpArr.m_cLocation.X = 2;
-	g_sCafeUpArr.m_cLocation.Y = 27;
-
-	g_sCafeRightArr.m_cLocation.X = 3;
-    g_sCafeRightArr.m_cLocation.Y = 28;
 
 	//------------------------------------------------------------------------------
 	//LEVEL 3 CHARACTERS
@@ -625,7 +537,6 @@ void update(double dt)
 	// update the delta time
 	g_dElapsedTime += dt;
 	g_dDeltaTime = dt;
-	g_dLevel2Timer -= dt;
 	g_dGuardTimeX += g_dDeltaTime;
 	g_dGuardTimeY += g_dDeltaTime;
 	g_dGuardTimeZ += g_dDeltaTime;
@@ -729,7 +640,6 @@ void gameoverwait()
 		Hidden1Stage2 = false;
 		Hidden2Stage2 = false;
 		Hidden3Stage2 = false;
-		g_dLevel2Timer = 120.0;
 		ShiveNumber = '0';
 	}
 }
@@ -1052,29 +962,11 @@ void Level2AIMovement()
 	if (g_dGuardTimeYLevel2 >= 0.25 && moveLevel2 != 14) //MOVING FORWARD
 	{
 		Level2Count1 = 0;
-
-		for (int Set = 0; Set < 27; Set++)
-		{
-			int yy = 0;
-			if (Set < 11)
-			{
-				yy = 2;
-			}
-			else
-			{
-				yy = 3;
-			}
-			g_sUpGuardDownLOS[Set].m_cLocation.Y = yy;
-		}
+		
 		g_sLevel2UpGuard.m_cLocation.Y++;
 		g_sLevel2DownGuard.m_cLocation.Y--;
 
 
-		for (int i = 0; i < 27; i++)
-		{
-			g_sUpGuardDownLOS[i].m_cLocation.Y++;
-			g_sDownGuardUpLOS[i].m_cLocation.Y--;
-		}
 
 		g_dGuardTimeYLevel2 = 0;
 		++moveLevel2;
@@ -1086,11 +978,6 @@ void Level2AIMovement()
 
 		g_sLevel2UpGuard.m_cLocation.Y--;
 		g_sLevel2DownGuard.m_cLocation.Y++;
-		for (int i = 0; i < 27; i++)
-		{
-			g_sUpGuardUpLOS[i].m_cLocation.Y--;
-			g_sDownGuardDownLOS[i].m_cLocation.Y++;
-		}
 		g_dGuardTimeYLevel2 = 0;
 
 		if (g_sLevel2UpGuard.m_cLocation.Y == 2)
@@ -1107,11 +994,6 @@ void Level2AIMovement()
 
 		g_sLevel2RightGuard.m_cLocation.X++;
 		g_sLevel2LeftGuard.m_cLocation.X--;
-		for (int i = 0; i < 27; i++)
-		{
-			g_sRightGuardLeftLOS[i].m_cLocation.X++;
-			g_sLeftGuardRightLOS[i].m_cLocation.X--;
-		}
 
 		g_dGuardTimeXLevel2 = 0;
 		++move1Level2;
@@ -1123,12 +1005,7 @@ void Level2AIMovement()
 
 		g_sLevel2RightGuard.m_cLocation.X--;
 		g_sLevel2LeftGuard.m_cLocation.X++;
-		for (int i = 0; i < 27; i++)
-		{
-			g_sRightGuardLeftLOS[i].m_cLocation.X--;
-			g_sLeftGuardRightLOS[i].m_cLocation.X++;
-		}
-
+		
 		g_dGuardTimeXLevel2 = 0;
 		if (g_sLevel2RightGuard.m_cLocation.X == 2)
 		{
@@ -1140,23 +1017,28 @@ void Level2AIMovement()
 int tracker3 = 1;
 bool contactcheck31 = true;
 bool contactcheck32 = true;
-
+bool contactcheck33 = true;
+bool contactcheck34 = true;
 void Level3AIMovement()
 {
 	if (g_dRotationTime3 >= 0.0)
 	{
 		tracker3 = 1;
-		contactcheck31 = true;
+		contactcheck31 = false;
 	}
+
 	if (g_dRotationTime3 > 0.4)
 	{
 		tracker3 = 2;
-		contactcheck31 = false;
+		contactcheck31 = true;
+		contactcheck32 = false;
 	}
+
 	if (g_dRotationTime3 > 0.8)
 	{
-		tracker3 = 1;
 		contactcheck32 = true;
+		contactcheck33 = false;
+		tracker3 = 1;
 		g_sLeftGHorLOS[0].m_cLocation.X = 11;
 		for (int sett = 1; sett < 4; sett++)
 		{
@@ -1193,10 +1075,12 @@ void Level3AIMovement()
 			g_sRightGHorLOS[sett].m_cLocation.X = 86;
 		}
 	}
+
 	if (g_dRotationTime3 > 1.2)
 	{
+		contactcheck33 = true;
+		contactcheck34 = false;
 		tracker3 = 2;
-		contactcheck32 = false;
 		g_sLeftGVerLOS[0].m_cLocation.Y = 19;
 		for (int sett = 1; sett < 4; sett++)
 		{
@@ -1227,6 +1111,7 @@ void Level3AIMovement()
 	}
 	if (g_dRotationTime3 > 1.6)
 	{
+		contactcheck34 = true;
 		tracker3 = 0;
 		g_sLeftGHorLOS[0].m_cLocation.X = 13;
 		for (int sett = 1; sett < 4; sett++)
@@ -1293,6 +1178,7 @@ void Level3AIMovement()
 		}
 		g_dRotationTime3 = 0.0;
 	}
+
 }
 void renderLOS3()
 {
@@ -1450,7 +1336,7 @@ void moveCharacterLevel3()
 
 	// Updating the location of the character based on the key press
 	// providing a beep sound whenver we shift the character
-	//Level 3
+	//Level 2
 	if ((g_abKeyPressed[K_UP] || g_abKeyPressed[W]) && level3[g_sLevel3Char.m_cLocation.Y - 1][g_sLevel3Char.m_cLocation.X] == ' ') //To move up checking
 	{
 		g_sLevel3Char.m_cLocation.Y--;
@@ -1480,7 +1366,7 @@ void moveCharacterLevel3()
 	if (bSomethingHappened)
 	{
 		// set the bounce time to some time in the future to prevent accidental triggers
-		g_dBounceTime = g_dElapsedTime + 0.125; // 125ms should be enough
+		g_dBounceTime = g_dElapsedTime + 0.08; // 125ms should be enough
 	}
 }
 
@@ -2127,39 +2013,7 @@ void levelthreelose()
 
 		for (int sett = 0; sett < 25; sett++)
 		{
-			if ((((Ch1X == g_sLeftGHorLOS[sett].m_cLocation.X) && (Ch1Y == g_sLeftGHorLOS[sett].m_cLocation.Y)) || ((Ch1X == g_sRightGHorLOS[sett].m_cLocation.X) && (Ch1Y == g_sRightGHorLOS[sett].m_cLocation.Y))) && (contactcheck31 == true))
-			{
-				lives = lives - 1;
-				if (lives != '0') {
-					g_sChar.m_cLocation.X = 6;
-					g_sChar.m_cLocation.Y = 4;
-				}
-				else {
-					g_eGameState = S_GAMEOVER;
-					lives = '2';
-				}
-			}
-		}
-
-		for (int sett = 0; sett < 16; sett++)
-		{
-			if ((((Ch1X == g_sLeftGVerLOS[sett].m_cLocation.X) && (Ch1Y == g_sLeftGVerLOS[sett].m_cLocation.Y)) || ((Ch1X == g_sRightGVerLOS[sett].m_cLocation.X) && (Ch1Y == g_sRightGVerLOS[sett].m_cLocation.Y))) && (contactcheck31 == false))
-			{
-				lives = lives - 1;
-				if (lives != '0') {
-					g_sChar.m_cLocation.X = 6;
-					g_sChar.m_cLocation.Y = 4;
-				}
-				else {
-					g_eGameState = S_GAMEOVER;
-					lives = '2';
-				}
-			}
-		}
-
-		for (int sett = 0; sett < 25; sett++)
-		{
-			if ((((Ch1X == g_sLeftGHorLOS[sett].m_cLocation.X) && (Ch1Y == g_sLeftGHorLOS[sett].m_cLocation.Y)) || ((Ch1X == g_sRightGHorLOS[sett].m_cLocation.X) && (Ch1Y == g_sRightGHorLOS[sett].m_cLocation.Y))) && (contactcheck32 == true))
+			if ((((Ch1X == g_sLeftGHorLOS[sett].m_cLocation.X) && (Ch1Y == g_sLeftGHorLOS[sett].m_cLocation.Y)) || ((Ch1X == g_sRightGHorLOS[sett].m_cLocation.X) && (Ch1Y == g_sRightGHorLOS[sett].m_cLocation.Y))) && (contactcheck31 == false))
 			{
 				lives = lives - 1;
 				if (lives != '0') {
@@ -2176,6 +2030,38 @@ void levelthreelose()
 		for (int sett = 0; sett < 16; sett++)
 		{
 			if ((((Ch1X == g_sLeftGVerLOS[sett].m_cLocation.X) && (Ch1Y == g_sLeftGVerLOS[sett].m_cLocation.Y)) || ((Ch1X == g_sRightGVerLOS[sett].m_cLocation.X) && (Ch1Y == g_sRightGVerLOS[sett].m_cLocation.Y))) && (contactcheck32 == false))
+			{
+				lives = lives - 1;
+				if (lives != '0') {
+					g_sChar.m_cLocation.X = 6;
+					g_sChar.m_cLocation.Y = 4;
+				}
+				else {
+					g_eGameState = S_GAMEOVER;
+					lives = '2';
+				}
+			}
+		}
+
+		for (int sett = 0; sett < 25; sett++)
+		{
+			if ((((Ch1X == g_sLeftGHorLOS[sett].m_cLocation.X) && (Ch1Y == g_sLeftGHorLOS[sett].m_cLocation.Y)) || ((Ch1X == g_sRightGHorLOS[sett].m_cLocation.X) && (Ch1Y == g_sRightGHorLOS[sett].m_cLocation.Y))) && (contactcheck33 == false))
+			{
+				lives = lives - 1;
+				if (lives != '0') {
+					g_sChar.m_cLocation.X = 6;
+					g_sChar.m_cLocation.Y = 4;
+				}
+				else {
+					g_eGameState = S_GAMEOVER;
+					lives = '2';
+				}
+			}
+		}
+
+		for (int sett = 0; sett < 16; sett++)
+		{
+			if ((((Ch1X == g_sLeftGVerLOS[sett].m_cLocation.X) && (Ch1Y == g_sLeftGVerLOS[sett].m_cLocation.Y)) || ((Ch1X == g_sRightGVerLOS[sett].m_cLocation.X) && (Ch1Y == g_sRightGVerLOS[sett].m_cLocation.Y))) && (contactcheck34 == false))
 			{
 				lives = lives - 1;
 				if (lives != '0') {
@@ -2914,44 +2800,7 @@ void renderArrowLevel2()
 		break;
 	}
 
-	switch (Level2Count1)
-	{
-	case 0:
-		for (int sett = 0; sett < 26; sett++)
-		{
-			g_Console.writeToBuffer(g_sUpGuardDownLOS[sett].m_cLocation, "Û", 0X08); //RENDER DIRECTION
-			g_Console.writeToBuffer(g_sDownGuardUpLOS[sett].m_cLocation, "Û", 0X08); //RENDER DIRECTION
-		}
-		break;
 
-	case 1:
-		for (int sett = 0; sett < 26; sett++)
-		{
-			g_Console.writeToBuffer(g_sUpGuardUpLOS[sett].m_cLocation, "Û", 0X08); //RENDER DIRECTION
-			g_Console.writeToBuffer(g_sDownGuardDownLOS[sett].m_cLocation, "Û", 0X08); //RENDER DIRECTION
-		}
-		break;
-	}
-
-	switch (Level2Count2)
-	{
-	case 0:
-		for (int sett = 0; sett < 26; sett++)
-		{
-			g_Console.writeToBuffer(g_sRightGuardLeftLOS[sett].m_cLocation, "Û", 0X08); //RENDER DIRECTION
-			g_Console.writeToBuffer(g_sLeftGuardRightLOS[sett].m_cLocation, "Û", 0X08); //RENDER DIRECTION
-		}
-		break;
-	case 1:
-		for (int sett = 0; sett < 26; sett++)
-		{
-			g_Console.writeToBuffer(g_sRightGuardRightLOS[sett].m_cLocation, "Û", 0X08); //RENDER DIRECTION
-			g_Console.writeToBuffer(g_sLeftGuardLeftLOS[sett].m_cLocation, "Û", 0X08); //RENDER DIRECTION
-		}
-		break;
-	}
-
-	
 
 }
 void HiddenEntranceOne()
@@ -3216,6 +3065,26 @@ void loadSteelMap()
 				{
 					level3[x][y] = ' ';
 					Level3Hidden[x][y] = 92;
+				}
+				if (line[col] == '^')
+				{
+					level3[x][y] = ' ';
+					Level3Hidden[x][y] = '^';
+				}
+				if (line[col] == '&')
+				{
+					level3[x][y] = ' ';
+					Level3Hidden[x][y] = '&';
+				}
+				if (line[col] == '"')
+				{
+					level3[x][y] = ' ';
+					Level3Hidden[x][y] = '"';
+				}
+				if (line[col] == '!')
+				{
+					level3[x][y] = ' ';
+					Level3Hidden[x][y] = '!';
 				}
 				if (line[col] == 47 || line[col] == '-' || line[col] == '|')
 				{

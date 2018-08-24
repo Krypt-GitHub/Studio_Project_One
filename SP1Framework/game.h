@@ -84,6 +84,8 @@ void renderLevelOne();
 void renderLevelTwo();
 void renderLevelThree();
 
+void renderLOS3();
+
 void renderUserInterface();
 
 void levelonelose();

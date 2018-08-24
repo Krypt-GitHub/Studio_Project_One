@@ -26,6 +26,7 @@ double  g_dGuardTimeXLevel2 = 0.0;
 double  g_dGuardTimeYLevel2 = 0.0;
 double  g_dGuardTimeZLevel2 = 0.0;
 double  g_dRotationTime = 0.0;
+double  g_dRotationTime3 = 0.0;
 
 double  g_dGameOver = 0.0;
 bool    g_abKeyPressed[K_COUNT];
@@ -69,6 +70,8 @@ SGameChar   g_sLevel2DownGuard;
 SGameChar   g_sLevel2LeftGuard;
 SGameChar   g_sLevel2RightGuard;
 SGameChar   g_sLevel2CafeGuard;
+
+SGameChar   g_sLevel3Guard[3]; //Level 3 Guard
 //------------------------------------------------------------------
 //LEVEL 1 LOS/Arrows
 SGameChar   g_sRightArr[4];
@@ -90,6 +93,11 @@ SGameChar   g_sUpGuardUpLOS[26];
 SGameChar   g_sDownGuardDownLOS[26];
 SGameChar   g_sRightGuardRightLOS[26];
 SGameChar   g_sLeftGuardLeftLOS[26];
+
+SGameChar   g_sLeftGHorLOS[25];
+SGameChar   g_sLeftGVerLOS[16];
+SGameChar   g_sRightGHorLOS[25];
+SGameChar   g_sRightGVerLOS[16];
 
 
 SGameChar   g_sCafeUpArr;
@@ -390,14 +398,14 @@ void init(void)
 
 	GlobalSett = 0;
 
-	for (int yy = 4; yy > 2; yy--) //Setting of coordinates for LOS of Up guard
+	for (int yy = 16; yy > 14; yy--) //Setting of coordinates for LOS of Up guard
 	{
-		for (int xx = 41; xx > 32; xx--)
+		for (int xx = 40; xx > 31; xx--)
 		{
-			if (g_sUpGuardDownLOS[GlobalSett].m_cLocation.X != g_sLevel2Char.m_cLocation.X && g_sUpGuardDownLOS[GlobalSett].m_cLocation.Y != g_sLevel2Char.m_cLocation.Y)
+			if (g_sUpGuardUpLOS[GlobalSett].m_cLocation.X != g_sLevel2Char.m_cLocation.X && g_sUpGuardUpLOS[GlobalSett].m_cLocation.Y != g_sLevel2Char.m_cLocation.Y)
 			{
-				g_sUpGuardDownLOS[GlobalSett].m_cLocation.X = xx;
-				g_sUpGuardDownLOS[GlobalSett].m_cLocation.Y = yy;
+				g_sUpGuardUpLOS[GlobalSett].m_cLocation.X = xx;
+				g_sUpGuardUpLOS[GlobalSett].m_cLocation.Y = yy;
 				GlobalSett++;
 			}
 		}
@@ -457,9 +465,130 @@ void init(void)
 	//------------------------------------------------------------------------------
 	//LEVEL 3 CHARACTERS
 
-	g_sLevel3Char.m_cLocation.X = 57;
-	g_sLevel3Char.m_cLocation.Y = 16;
+	g_sLevel3Char.m_cLocation.X = 58; //Level 2 Character spawn point (46, 3)
+	g_sLevel3Char.m_cLocation.Y = 3;
 
+	g_sLevel3Guard[0].m_cLocation.X = 12;
+	g_sLevel3Guard[0].m_cLocation.Y = 18;
+
+	g_sLevel3Guard[1].m_cLocation.X = 46;
+	g_sLevel3Guard[1].m_cLocation.Y = 18;
+
+	g_sLevel3Guard[2].m_cLocation.X = 81;
+	g_sLevel3Guard[2].m_cLocation.Y = 18;
+
+	g_sLeftGHorLOS[0].m_cLocation.X = 13;
+	g_sLeftGHorLOS[0].m_cLocation.Y = 18;
+	int yy;
+	yy = 17;
+	for (int sett = 1; sett < 4; sett++)
+	{
+		g_sLeftGHorLOS[sett].m_cLocation.Y = yy;
+		g_sLeftGHorLOS[sett].m_cLocation.X = 14;
+		yy++;
+	}
+	yy = 16;
+	for (int sett = 4; sett < 9; sett++)
+	{
+		g_sLeftGHorLOS[sett].m_cLocation.Y = yy;
+		g_sLeftGHorLOS[sett].m_cLocation.X = 15;
+		yy++;
+	}
+	yy = 15;
+	for (int sett = 9; sett < 16; sett++)
+	{
+		g_sLeftGHorLOS[sett].m_cLocation.Y = yy;
+		g_sLeftGHorLOS[sett].m_cLocation.X = 16;
+		yy++;
+	}
+	yy = 14;
+	for (int sett = 16; sett < 25; sett++)
+	{
+		g_sLeftGHorLOS[sett].m_cLocation.Y = yy;
+		g_sLeftGHorLOS[sett].m_cLocation.X = 17;
+		yy++;
+	}
+	g_sRightGHorLOS[0].m_cLocation.X = 80;
+	g_sRightGHorLOS[0].m_cLocation.Y = 18;
+	int yy1;
+	yy1 = 17;
+	for (int sett = 1; sett < 4; sett++)
+	{
+		g_sRightGHorLOS[sett].m_cLocation.Y = yy1;
+		g_sRightGHorLOS[sett].m_cLocation.X = 79;
+		yy1++;
+	}
+	yy1 = 16;
+	for (int sett = 4; sett < 9; sett++)
+	{
+		g_sRightGHorLOS[sett].m_cLocation.Y = yy1;
+		g_sRightGHorLOS[sett].m_cLocation.X = 78;
+		yy1++;
+	}
+	yy1 = 15;
+	for (int sett = 9; sett < 16; sett++)
+	{
+		g_sRightGHorLOS[sett].m_cLocation.Y = yy1;
+		g_sRightGHorLOS[sett].m_cLocation.X = 77;
+		yy1++;
+	}
+	yy1 = 14;
+	for (int sett = 16; sett < 25; sett++)
+	{
+		g_sRightGHorLOS[sett].m_cLocation.Y = yy1;
+		g_sRightGHorLOS[sett].m_cLocation.X = 76;
+		yy1++;
+	}
+
+	g_sLeftGVerLOS[0].m_cLocation.X = 12;
+	g_sLeftGVerLOS[0].m_cLocation.Y = 17;
+	int xx;
+	xx = 11;
+	for (int sett = 1; sett < 4; sett++)
+	{
+		g_sLeftGVerLOS[sett].m_cLocation.Y = 16;
+		g_sLeftGVerLOS[sett].m_cLocation.X = xx;
+		xx++;
+	}
+	xx = 10;
+	for (int sett = 4; sett < 9; sett++)
+	{
+		g_sLeftGVerLOS[sett].m_cLocation.Y = 15;
+		g_sLeftGVerLOS[sett].m_cLocation.X = xx;
+		xx++;
+	}
+	xx = 9;
+	for (int sett = 9; sett < 16; sett++)
+	{
+		g_sLeftGVerLOS[sett].m_cLocation.Y = 14;
+		g_sLeftGVerLOS[sett].m_cLocation.X = xx;
+		xx++;
+	}
+
+	g_sRightGVerLOS[0].m_cLocation.X = 81;
+	g_sRightGVerLOS[0].m_cLocation.Y = 17;
+	int xx1;
+	xx1 = 80;
+	for (int sett = 1; sett < 4; sett++)
+	{
+		g_sRightGVerLOS[sett].m_cLocation.Y = 16;
+		g_sRightGVerLOS[sett].m_cLocation.X = xx1;
+		xx1++;
+	}
+	xx1 = 79;
+	for (int sett = 4; sett < 9; sett++)
+	{
+		g_sRightGVerLOS[sett].m_cLocation.Y = 15;
+		g_sRightGVerLOS[sett].m_cLocation.X = xx1;
+		xx1++;
+	}
+	xx1 = 78;
+	for (int sett = 9; sett < 16; sett++)
+	{
+		g_sRightGVerLOS[sett].m_cLocation.Y = 14;
+		g_sRightGVerLOS[sett].m_cLocation.X = xx1;
+		xx1++;
+	}
 	// sets the width, height and the font name to use in the console
 	g_Console.setConsoleFont(0, 16, L"Consolas");
 }
@@ -621,6 +750,9 @@ int count2 = 0;
 int TurnCount = 0;
 int moveLevel2 = 0;
 int move1Level2 = 0;
+
+int Level2Count1 = 0;
+int Level2Count2 = 0;
 
 //AI MOVEMENT
 void Level1AIMovement()
@@ -918,8 +1050,24 @@ void Level2AIMovement()
 	//For the Up and down guards (Total 14, 6 down first)
 	if (g_dGuardTimeYLevel2 >= 0.25 && moveLevel2 != 14) //MOVING FORWARD
 	{
+		Level2Count1 = 0;
+
+		for (int Set = 0; Set < 27; Set++)
+		{
+			int yy = 0;
+			if (Set < 11)
+			{
+				yy = 2;
+			}
+			else
+			{
+				yy = 3;
+			}
+			g_sUpGuardDownLOS[Set].m_cLocation.Y = yy;
+		}
 		g_sLevel2UpGuard.m_cLocation.Y++;
-				g_sLevel2DownGuard.m_cLocation.Y--;
+		g_sLevel2DownGuard.m_cLocation.Y--;
+
 
 		for (int i = 0; i < 27; i++)
 		{
@@ -933,16 +1081,17 @@ void Level2AIMovement()
 	if (g_dGuardTimeYLevel2 >= 0.25 && moveLevel2 == 14)
 	{
 		contactcheckLevel2 = false; // MOVING BACKWARD
+		Level2Count1 = 1;
 
 		g_sLevel2UpGuard.m_cLocation.Y--;
 		g_sLevel2DownGuard.m_cLocation.Y++;
 		for (int i = 0; i < 27; i++)
 		{
-			g_sUpGuardDownLOS[i].m_cLocation.Y--;
-			g_sDownGuardUpLOS[i].m_cLocation.Y++;
+			g_sUpGuardUpLOS[i].m_cLocation.Y--;
+			g_sDownGuardDownLOS[i].m_cLocation.Y++;
 		}
-
 		g_dGuardTimeYLevel2 = 0;
+
 		if (g_sLevel2UpGuard.m_cLocation.Y == 2)
 		{
 			moveLevel2 = 0;
@@ -953,6 +1102,7 @@ void Level2AIMovement()
 	if (g_dGuardTimeXLevel2 >= 0.25 && move1Level2 != 27) //Moving "FOWARD"
 	{
 		contactcheckLevel2 = true;
+		Level2Count2 = 0;
 
 		g_sLevel2RightGuard.m_cLocation.X++;
 		g_sLevel2LeftGuard.m_cLocation.X--;
@@ -968,6 +1118,7 @@ void Level2AIMovement()
 	if (g_dGuardTimeXLevel2 >= 0.25 && move1Level2 == 27)
 	{
 		contactcheckLevel2 = false;
+		Level2Count2 = 1;
 
 		g_sLevel2RightGuard.m_cLocation.X--;
 		g_sLevel2LeftGuard.m_cLocation.X++;
@@ -984,9 +1135,187 @@ void Level2AIMovement()
 		}
 	}
 }
+
+int tracker3 = 1;
+bool contactcheck31 = true;
+bool contactcheck32 = true;
+
 void Level3AIMovement()
 {
+	if (g_dRotationTime3 >= 0.0)
+	{
+		tracker3 = 1;
+		contactcheck31 = true;
+	}
+	if (g_dRotationTime3 > 0.2)
+	{
+		tracker3 = 2;
+		contactcheck31 = false;
+	}
+	if (g_dRotationTime3 > 0.4)
+	{
+		tracker3 = 1;
+		contactcheck32 = true;
+		g_sLeftGHorLOS[0].m_cLocation.X = 11;
+		for (int sett = 1; sett < 4; sett++)
+		{
+			g_sLeftGHorLOS[sett].m_cLocation.X = 10;
+		}
+		for (int sett = 4; sett < 9; sett++)
+		{
+			g_sLeftGHorLOS[sett].m_cLocation.X = 9;
+		}
+		for (int sett = 9; sett < 16; sett++)
+		{
+			g_sLeftGHorLOS[sett].m_cLocation.X = 8;
+		}
+		for (int sett = 16; sett < 25; sett++)
+		{
+			g_sLeftGHorLOS[sett].m_cLocation.X = 7;
+		}
 
+		g_sRightGHorLOS[0].m_cLocation.X = 82;
+		for (int sett = 1; sett < 4; sett++)
+		{
+			g_sRightGHorLOS[sett].m_cLocation.X = 83;
+		}
+		for (int sett = 4; sett < 9; sett++)
+		{
+			g_sRightGHorLOS[sett].m_cLocation.X = 84;
+		}
+		for (int sett = 9; sett < 16; sett++)
+		{
+			g_sRightGHorLOS[sett].m_cLocation.X = 85;
+		}
+		for (int sett = 16; sett < 25; sett++)
+		{
+			g_sRightGHorLOS[sett].m_cLocation.X = 86;
+		}
+	}
+	if (g_dRotationTime3 > 0.6)
+	{
+		tracker3 = 2;
+		contactcheck32 = false;
+		g_sLeftGVerLOS[0].m_cLocation.Y = 19;
+		for (int sett = 1; sett < 4; sett++)
+		{
+			g_sLeftGVerLOS[sett].m_cLocation.Y = 20;
+		}
+		for (int sett = 4; sett < 9; sett++)
+		{
+			g_sLeftGVerLOS[sett].m_cLocation.Y = 21;
+		}
+		for (int sett = 9; sett < 16; sett++)
+		{
+			g_sLeftGVerLOS[sett].m_cLocation.Y = 22;
+		}
+
+		g_sRightGVerLOS[0].m_cLocation.Y = 19;
+		for (int sett = 1; sett < 4; sett++)
+		{
+			g_sRightGVerLOS[sett].m_cLocation.Y = 20;
+		}
+		for (int sett = 4; sett < 9; sett++)
+		{
+			g_sRightGVerLOS[sett].m_cLocation.Y = 21;
+		}
+		for (int sett = 9; sett < 16; sett++)
+		{
+			g_sRightGVerLOS[sett].m_cLocation.Y = 22;
+		}
+	}
+	if (g_dRotationTime3 > 0.8)
+	{
+		tracker3 = 0;
+		g_sLeftGHorLOS[0].m_cLocation.X = 13;
+		for (int sett = 1; sett < 4; sett++)
+		{
+			g_sLeftGHorLOS[sett].m_cLocation.X = 14;
+		}
+		for (int sett = 4; sett < 9; sett++)
+		{
+			g_sLeftGHorLOS[sett].m_cLocation.X = 15;
+		}
+		for (int sett = 9; sett < 16; sett++)
+		{
+			g_sLeftGHorLOS[sett].m_cLocation.X = 16;
+		}
+		for (int sett = 16; sett < 25; sett++)
+		{
+			g_sLeftGHorLOS[sett].m_cLocation.X = 17;
+		}
+
+		g_sRightGHorLOS[0].m_cLocation.X = 80;
+		for (int sett = 1; sett < 4; sett++)
+		{
+			g_sRightGHorLOS[sett].m_cLocation.X = 79;
+		}
+		for (int sett = 4; sett < 9; sett++)
+		{
+			g_sRightGHorLOS[sett].m_cLocation.X = 78;
+		}
+		for (int sett = 9; sett < 16; sett++)
+		{
+			g_sRightGHorLOS[sett].m_cLocation.X = 77;
+		}
+		for (int sett = 16; sett < 25; sett++)
+		{
+			g_sRightGHorLOS[sett].m_cLocation.X = 76;
+		}
+
+		g_sLeftGVerLOS[0].m_cLocation.Y = 17;
+		for (int sett = 1; sett < 4; sett++)
+		{
+			g_sLeftGVerLOS[sett].m_cLocation.Y = 16;
+		}
+		for (int sett = 4; sett < 9; sett++)
+		{
+			g_sLeftGVerLOS[sett].m_cLocation.Y = 15;
+		}
+		for (int sett = 9; sett < 16; sett++)
+		{
+			g_sLeftGVerLOS[sett].m_cLocation.Y = 14;
+		}
+
+		g_sRightGVerLOS[0].m_cLocation.Y = 17;
+		for (int sett = 1; sett < 4; sett++)
+		{
+			g_sRightGVerLOS[sett].m_cLocation.Y = 16;
+		}
+		for (int sett = 4; sett < 9; sett++)
+		{
+			g_sRightGVerLOS[sett].m_cLocation.Y = 15;
+		}
+		for (int sett = 9; sett < 16; sett++)
+		{
+			g_sRightGVerLOS[sett].m_cLocation.Y = 14;
+		}
+		g_dRotationTime3 = 0.0;
+	}
+}
+void renderLOS3()
+{
+	switch (tracker3)
+	{
+	case 1:
+	{
+		for (int sett = 0; sett < 25; sett++)
+		{
+			g_Console.writeToBuffer(g_sLeftGHorLOS[sett].m_cLocation, "Û", 0X08);
+			g_Console.writeToBuffer(g_sRightGHorLOS[sett].m_cLocation, "Û", 0X08);
+		}
+	}
+	break;
+	case 2:
+	{
+		for (int sett = 0; sett < 16; sett++)
+		{
+			g_Console.writeToBuffer(g_sLeftGVerLOS[sett].m_cLocation, "Û", 0X08);
+			g_Console.writeToBuffer(g_sRightGVerLOS[sett].m_cLocation, "Û", 0X08);
+		}
+	}
+	break;
+	}
 }
 
 //CHARACTER MOVEMENT
@@ -1385,9 +1714,184 @@ void levelonelose()
 	int Ch1X = g_sChar.m_cLocation.X;
 	int Ch1Y = g_sChar.m_cLocation.Y;
 
-	for (int sett = 0; sett < 4; sett++)
+	if (((Ch1X == CeX) && (Ch1Y == CeY)) || ((Ch1X == CaX) && (Ch1Y == CaY)) || ((Ch1X == F1X) && (Ch1Y == F1Y)) || ((Ch1X == F2X) && (Ch1Y == F2Y))) //IF THE PLAYER COLLIDES INTO A GUARD
 	{
-		if (((Ch1X == g_sRightArr[sett].m_cLocation.X) && (Ch1Y == g_sRightArr[sett].m_cLocation.Y)) || ((Ch1X == g_sLeftArr[sett].m_cLocation.X) && (Ch1Y == g_sLeftArr[sett].m_cLocation.Y)) || ((Ch1X == g_sUpF1Arr[sett].m_cLocation.X) && (Ch1Y == g_sUpF1Arr[sett].m_cLocation.Y)) || ((Ch1X == g_sUpF2Arr[sett].m_cLocation.X) && (Ch1Y == g_sUpF2Arr[sett].m_cLocation.Y)) || ((Ch1X == g_sDownF1Arr[sett].m_cLocation.X) && (Ch1Y == g_sDownF1Arr[sett].m_cLocation.Y)) || ((Ch1X == g_sDownF2Arr[sett].m_cLocation.X) && (Ch1Y == g_sDownF2Arr[sett].m_cLocation.Y)) || ((Ch1X == g_sDownCArr[sett].m_cLocation.X) && (Ch1Y == g_sDownCArr[sett].m_cLocation.Y)) || ((Ch1X == g_sUpCArr[sett].m_cLocation.X) && (Ch1Y == g_sUpCArr[sett].m_cLocation.Y)))
+		lives = lives - 1;
+		if (lives != '0') {
+			g_sChar.m_cLocation.X = 6;
+			g_sChar.m_cLocation.Y = 4;
+		}
+		else {
+			g_eGameState = S_GAMEOVER;
+		}
+	}
+
+	if (contactcheck == true)
+	{
+		////THIS IS DETECTION WHEN ALL GUARDS ARE MOVING FORWARD////
+		//FOR IF PLAYER NORTH OF GUARD//
+		if (((Ch1X == CeX) && (Ch1Y == CeY - 1)) || ((Ch1X == CaX) && (Ch1Y == CaY - 1)) || ((Ch1X == F1X) && (Ch1Y == F1Y - 1)))
+		{
+			lives = lives - 1;
+			if (lives != '0') {
+				g_sChar.m_cLocation.X = 6;
+				g_sChar.m_cLocation.Y = 4;
+			}
+			else {
+				g_eGameState = S_GAMEOVER;
+			}
+		}
+
+		//FOR IF PLAYER DIAGONALLY RIGHT TO GUARD//
+		if (((Ch1X == CeX + 1) && (Ch1Y == CeY - 1)) || ((Ch1X == CaX + 1) && (Ch1Y == CaY - 1)) || ((Ch1X == F1X + 1) && (Ch1Y == F1Y - 1)))
+		{
+			lives = lives - 1;
+			if (lives != '0') {
+				g_sChar.m_cLocation.X = 6;
+				g_sChar.m_cLocation.Y = 4;
+			}
+			else {
+				g_eGameState = S_GAMEOVER;
+			}
+		}
+
+		//FOR IF PLAYER DIAGONALLY LEFT TO GUARD//
+		if (((Ch1X == CaX - 1) && (Ch1Y == CaY - 1)) || ((Ch1X == F1X - 1) && (Ch1Y == F1Y - 1))) {
+			lives = lives - 1;
+			if (lives != '0') {
+				g_sChar.m_cLocation.X = 6;
+				g_sChar.m_cLocation.Y = 4;
+			}
+			else {
+				g_eGameState = S_GAMEOVER;
+			}
+		}
+
+		//FOR IF THE PLAYER IS EAST OF GUARD//
+		if (((Ch1X == CeX + 1) && (Ch1Y == CeY)) || ((Ch1X == CaX + 1) && (Ch1Y == CaY)) || ((Ch1X == F1X + 1) && (Ch1Y == F1Y)) || ((Ch1X == F2X + 1) && (Ch1Y == F2Y))) {
+			lives = lives - 1;
+			if (lives != '0') {
+				g_sChar.m_cLocation.X = 6;
+				g_sChar.m_cLocation.Y = 4;
+			}
+			else {
+				g_eGameState = S_GAMEOVER;
+			}
+		}
+
+		//FOR IF THE PLAYER IS WEST OF GUARD//
+		if (((Ch1X == CaX - 1) && (Ch1Y == CaY)) || ((Ch1X == F1X - 1) && (Ch1Y == F1Y)) || ((Ch1X == F2X - 1) && (Ch1Y == F2Y))) {
+			lives = lives - 1;
+			if (lives != '0') {
+				g_sChar.m_cLocation.X = 6;
+				g_sChar.m_cLocation.Y = 4;
+			}
+			else {
+				g_eGameState = S_GAMEOVER;
+			}
+		}
+
+		//FOR IF THE PLAYER IS SOUTH OF GUARD//
+		if (((Ch1X == CeX) && (Ch1Y == CeY + 1)) || ((Ch1X == F2X) && (Ch1Y == F2Y + 1))) {
+			lives = lives - 1;
+			if (lives != '0') {
+				g_sChar.m_cLocation.X = 6;
+				g_sChar.m_cLocation.Y = 4;
+			}
+			else {
+				g_eGameState = S_GAMEOVER;
+			}
+		}
+
+		//FOR IF THE PLAYER IS DIAGONALLY RIGHT BELOW//
+		if (((Ch1X == CeX + 1) && (Ch1Y == CeY + 1)) || ((Ch1X == F2X + 1) && (Ch1Y == F2Y + 1))) {
+			lives = lives - 1;
+			if (lives != '0') {
+				g_sChar.m_cLocation.X = 6;
+				g_sChar.m_cLocation.Y = 4;
+			}
+			else {
+				g_eGameState = S_GAMEOVER;
+			}
+		}
+
+		//FOR IF THE PLAYER IS DIAGONALLY LEFT BELOW//
+		if ((Ch1X == F2X - 1) && (Ch1Y == F2Y + 1)) {
+			lives = lives - 1;
+			if (lives != '0') {
+				g_sChar.m_cLocation.X = 6;
+				g_sChar.m_cLocation.Y = 4;
+			}
+			else {
+				g_eGameState = S_GAMEOVER;
+			}
+		}
+	}
+    
+	////IF ALL GUARDS ARE MOVING BACKWARDS////
+	if (contactcheck == false)
+	{
+		//FOR IF PLAYER IS NORTH OF GUARD//
+		if (((Ch1X == CeX) && (Ch1Y == CeY - 1)) || ((Ch1X == F2X) && (Ch1Y == F2Y - 1))) {
+			lives = lives - 1;
+			if (lives != '0') {
+				g_sChar.m_cLocation.X = 6;
+				g_sChar.m_cLocation.Y = 4;
+			}
+			else {
+				g_eGameState = S_GAMEOVER;
+			}
+		}
+		//FOR IF PLAYER DIAGONALLY RIGHT TO GUARD//
+		if ((Ch1X == F2X + 1) && (Ch1Y == F2Y - 1)) {
+			lives = lives - 1;
+			if (lives != '0') {
+				g_sChar.m_cLocation.X = 6;
+				g_sChar.m_cLocation.Y = 4;
+			}
+			else {
+				g_eGameState = S_GAMEOVER;
+			}
+		}
+		//FOR IF PLAYER DIAGONALLY FRONT LEFT TO GUARD//
+		if (((Ch1X == CeX - 1) && (Ch1Y == CeY - 1)) || ((Ch1X == F2X - 1) && (Ch1Y == F2Y - 1))) {
+			lives = lives - 1;
+			if (lives != '0') {
+				g_sChar.m_cLocation.X = 6;
+				g_sChar.m_cLocation.Y = 4;
+			}
+			else {
+				g_eGameState = S_GAMEOVER;
+			}
+		}
+
+		//FOR IF PLAYER IS EAST OF GUARD//
+		if (((Ch1X == CaX + 1) && (Ch1Y == CaY)) || ((Ch1X == F1X + 1) && (Ch1Y == F1Y)) || ((Ch1X == F2X + 1) && (Ch1Y == F2Y)))
+		{
+			lives = lives - 1;
+			if (lives != '0') {
+				g_sChar.m_cLocation.X = 6;
+				g_sChar.m_cLocation.Y = 4;
+			}
+			else {
+				g_eGameState = S_GAMEOVER;
+			}
+		}
+
+		//FOR IF PLAYER IS WEST OF GUARD//
+		if (((Ch1X == CeX - 1) && (Ch1Y == CeY)) || ((Ch1X == CaX - 1) && (Ch1Y == CaY)) || ((Ch1X == F1X - 1) && (Ch1Y == F1Y)) || ((Ch1X == F2X - 1) && (Ch1Y == F2Y)))
+		{
+			lives = lives - 1;
+			if (lives != '0') {
+				g_sChar.m_cLocation.X = 6;
+				g_sChar.m_cLocation.Y = 4;
+			}
+			else {
+				g_eGameState = S_GAMEOVER;
+			}
+		}
+		//FOR IF PLAYER SOUTH OF GUARD//
+		if (((Ch1X == CeX) && (Ch1Y == CeY + 1)) || ((Ch1X == CaX) && (Ch1Y == CaY + 1)) || ((Ch1X == F1X) && (Ch1Y == F1Y + 1)))
 		{
 			lives = lives - 1;
 			if (lives != '0') {
@@ -1399,18 +1903,29 @@ void levelonelose()
 				lives = '2';
 			}
 		}
-	}
-
-	if (((Ch1X == CeX) && (Ch1Y == CeY)) || ((Ch1X == CaX) && (Ch1Y == CaY)) || ((Ch1X == F1X) && (Ch1Y == F1Y)) || ((Ch1X == F2X) && (Ch1Y == F2Y)))
-	{
-		lives = lives - 1;
-		if (lives != '0') {
-			g_sChar.m_cLocation.X = 6;
-			g_sChar.m_cLocation.Y = 4;
+		//FOR IF PLAYER SOUTH RIGHT BELOW//
+		if (((Ch1X == CaX + 1) && (Ch1Y == CaY + 1)) || ((Ch1X == F1X + 1) && (Ch1Y == F1Y + 1)))
+		{
+			lives = lives - 1;
+			if (lives != '0') {
+				g_sChar.m_cLocation.X = 6;
+				g_sChar.m_cLocation.Y = 4;
+			}
+			else {
+				g_eGameState = S_GAMEOVER;
+			}
 		}
-		else {
-			g_eGameState = S_GAMEOVER;
-			lives = '2';
+		//FOR IF PLAYER SOUTH LEFT BELOW//
+		if (((Ch1X == F1X - 1) && (Ch1Y == F1Y + 1)) || ((Ch1X == CeX - 1) && (Ch1Y == CeY + 1)) || ((Ch1X == CaX - 1) && (Ch1Y == CaY + 1)))
+		{
+			lives = lives - 1;
+			if (lives != '0') {
+				g_sChar.m_cLocation.X = 6;
+				g_sChar.m_cLocation.Y = 4;
+			}
+			else {
+				g_eGameState = S_GAMEOVER;
+			}
 		}
 	}
 }
@@ -1597,8 +2112,95 @@ void leveltwolose()
 	}
 void levelthreelose()
 	{
+		int leftX = g_sLevel3Guard[0].m_cLocation.X;
+		int leftY = g_sLevel3Guard[0].m_cLocation.Y;
 
-}
+		int midX = g_sLevel3Guard[1].m_cLocation.X;
+		int midY = g_sLevel3Guard[1].m_cLocation.Y;
+
+		int rightX = g_sLevel3Guard[2].m_cLocation.X;
+		int rightY = g_sLevel3Guard[2].m_cLocation.Y;
+
+		int Ch1X = g_sLevel3Char.m_cLocation.X;
+		int Ch1Y = g_sLevel3Char.m_cLocation.Y;
+
+		for (int sett = 0; sett < 25; sett++)
+		{
+			if ((((Ch1X == g_sLeftGHorLOS[sett].m_cLocation.X) && (Ch1Y == g_sLeftGHorLOS[sett].m_cLocation.Y)) || ((Ch1X == g_sRightGHorLOS[sett].m_cLocation.X) && (Ch1Y == g_sRightGHorLOS[sett].m_cLocation.Y))) && (contactcheck31 == true))
+			{
+				lives = lives - 1;
+				if (lives != '0') {
+					g_sChar.m_cLocation.X = 6;
+					g_sChar.m_cLocation.Y = 4;
+				}
+				else {
+					g_eGameState = S_GAMEOVER;
+					lives = '2';
+				}
+			}
+		}
+
+		for (int sett = 0; sett < 16; sett++)
+		{
+			if ((((Ch1X == g_sLeftGVerLOS[sett].m_cLocation.X) && (Ch1Y == g_sLeftGVerLOS[sett].m_cLocation.Y)) || ((Ch1X == g_sRightGVerLOS[sett].m_cLocation.X) && (Ch1Y == g_sRightGVerLOS[sett].m_cLocation.Y))) && (contactcheck31 == false))
+			{
+				lives = lives - 1;
+				if (lives != '0') {
+					g_sChar.m_cLocation.X = 6;
+					g_sChar.m_cLocation.Y = 4;
+				}
+				else {
+					g_eGameState = S_GAMEOVER;
+					lives = '2';
+				}
+			}
+		}
+
+		for (int sett = 0; sett < 25; sett++)
+		{
+			if ((((Ch1X == g_sLeftGHorLOS[sett].m_cLocation.X) && (Ch1Y == g_sLeftGHorLOS[sett].m_cLocation.Y)) || ((Ch1X == g_sRightGHorLOS[sett].m_cLocation.X) && (Ch1Y == g_sRightGHorLOS[sett].m_cLocation.Y))) && (contactcheck32 == true))
+			{
+				lives = lives - 1;
+				if (lives != '0') {
+					g_sChar.m_cLocation.X = 6;
+					g_sChar.m_cLocation.Y = 4;
+				}
+				else {
+					g_eGameState = S_GAMEOVER;
+					lives = '2';
+				}
+			}
+		}
+
+		for (int sett = 0; sett < 16; sett++)
+		{
+			if ((((Ch1X == g_sLeftGVerLOS[sett].m_cLocation.X) && (Ch1Y == g_sLeftGVerLOS[sett].m_cLocation.Y)) || ((Ch1X == g_sRightGVerLOS[sett].m_cLocation.X) && (Ch1Y == g_sRightGVerLOS[sett].m_cLocation.Y))) && (contactcheck32 == false))
+			{
+				lives = lives - 1;
+				if (lives != '0') {
+					g_sChar.m_cLocation.X = 6;
+					g_sChar.m_cLocation.Y = 4;
+				}
+				else {
+					g_eGameState = S_GAMEOVER;
+					lives = '2';
+				}
+			}
+		}
+
+		if (((Ch1X == leftX) && (Ch1Y == leftY)) || ((Ch1X == midX) && (Ch1Y == midY)) || ((Ch1X == rightX) && (Ch1Y == rightY)))
+		{
+			lives = lives - 1;
+			if (lives != '0') {
+				g_sChar.m_cLocation.X = 6;
+				g_sChar.m_cLocation.Y = 4;
+			}
+			else {
+				g_eGameState = S_GAMEOVER;
+				lives = '2';
+			}
+		}
+	}
 
 
 int PcDial = 0;
@@ -2311,13 +2913,44 @@ void renderArrowLevel2()
 		break;
 	}
 
-	for (int sett = 0; sett < 26; sett++)
+	switch (Level2Count1)
 	{
-		g_Console.writeToBuffer(g_sUpGuardDownLOS[sett].m_cLocation, "Û", 0X08); //RENDER DIRECTION
-		g_Console.writeToBuffer(g_sDownGuardUpLOS[sett].m_cLocation, "Û", 0X08); //RENDER DIRECTION
-		g_Console.writeToBuffer(g_sRightGuardLeftLOS[sett].m_cLocation, "Û", 0X08); //RENDER DIRECTION
-		g_Console.writeToBuffer(g_sLeftGuardRightLOS[sett].m_cLocation, "Û", 0X08); //RENDER DIRECTION
+	case 0:
+		for (int sett = 0; sett < 26; sett++)
+		{
+			g_Console.writeToBuffer(g_sUpGuardDownLOS[sett].m_cLocation, "Û", 0X08); //RENDER DIRECTION
+			g_Console.writeToBuffer(g_sDownGuardUpLOS[sett].m_cLocation, "Û", 0X08); //RENDER DIRECTION
+		}
+		break;
+
+	case 1:
+		for (int sett = 0; sett < 26; sett++)
+		{
+			g_Console.writeToBuffer(g_sUpGuardUpLOS[sett].m_cLocation, "Û", 0X08); //RENDER DIRECTION
+			g_Console.writeToBuffer(g_sDownGuardDownLOS[sett].m_cLocation, "Û", 0X08); //RENDER DIRECTION
+		}
+		break;
 	}
+
+	switch (Level2Count2)
+	{
+	case 0:
+		for (int sett = 0; sett < 26; sett++)
+		{
+			g_Console.writeToBuffer(g_sRightGuardLeftLOS[sett].m_cLocation, "Û", 0X08); //RENDER DIRECTION
+			g_Console.writeToBuffer(g_sLeftGuardRightLOS[sett].m_cLocation, "Û", 0X08); //RENDER DIRECTION
+		}
+		break;
+	case 1:
+		for (int sett = 0; sett < 26; sett++)
+		{
+			g_Console.writeToBuffer(g_sRightGuardRightLOS[sett].m_cLocation, "Û", 0X08); //RENDER DIRECTION
+			g_Console.writeToBuffer(g_sLeftGuardLeftLOS[sett].m_cLocation, "Û", 0X08); //RENDER DIRECTION
+		}
+		break;
+	}
+
+	
 
 }
 void HiddenEntranceOne()
@@ -2539,6 +3172,10 @@ void loadSteelMap()
 				{
 					level3[x][y] = 206;
 				}
+				if (line[col] == 'V')
+				{
+					level3[x][y] = 177;
+				}
 				if (line[col] == 'I')
 				{
 					level3[x][y] = 188;
@@ -2559,16 +3196,32 @@ void loadSteelMap()
 				{
 					level3[x][y] = 'K';
 				}
-				if (line[col] == 47 || line[col] == 92 || line[col] == '-' || line[col] == '|' )
+				if (line[col] == '<')
+				{
+					level3[x][y] = ' ';
+					Level3Hidden[x][y] = '<';
+				}
+				if (line[col] == '>')
+				{
+					level3[x][y] = ' ';
+					Level3Hidden[x][y] = '>';
+				}
+				if (line[col] == '/')
+				{
+					level3[x][y] = ' ';
+					Level3Hidden[x][y] = '/';
+				}
+				if (line[col] == 92)
+				{
+					level3[x][y] = ' ';
+					Level3Hidden[x][y] = 92;
+				}
+				if (line[col] == 47 || line[col] == '-' || line[col] == '|')
 				{
 					level3[x][y] = ' ';
 					if (line[col] == 47) // ASCII 47 IS /
 					{
 						Level2Hidden[x][y] = 47;
-					}
-					if (line[col] == 92) // ASCII 92 IS '\'
-					{
-						Level3Hidden[x][y] = 92;
 					}
 					if (line[col] == '|') // Vertical walls
 					{
@@ -2610,10 +3263,6 @@ void HiddenMap()
 				{
 					level3[x][y] = 186;
 				}
-				if (Level3Hidden[x][y] == 92 && level3[x][y] == ' ')
-				{
-					level3[x][y] = 187;
-				}
 				if (Level3Hidden[x][y] == '-' && level3[x][y] == ' ')
 				{
 					level3[x][y] = '-';
@@ -2624,7 +3273,15 @@ void HiddenMap()
 				}
 				if (Level3Hidden[x][y] == '<' && level3[x][y] == ' ')
 				{
-					level3[x][y] = ' ';
+					level3[x][y] = 202;
+				}
+				if (Level3Hidden[x][y] == '>' && level3[x][y] == ' ')
+				{
+					level3[x][y] = 203;
+				}
+				if (Level3Hidden[x][y] == 92 && level3[x][y] == ' ')
+				{
+					level3[x][y] = 200;
 				}
 			}
 		}

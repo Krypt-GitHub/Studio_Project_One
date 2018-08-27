@@ -12,6 +12,8 @@
 //using namespace std;
 bool contactcheck = true;
 bool contactcheckLevel2 = true;
+bool contactcheckLevel21 = true;
+bool contactcheckLevel22= true;
 bool movementLock = false;
 
 double  g_dElapsedTime;
@@ -106,7 +108,7 @@ SGameChar   g_sRotatingGuardRightLOS[34];
 SGameChar   g_sRotatingGuardLeftLOS[34];
 
 SGameChar   g_sCafeRotatingGuardRightLOS[20];
-SGameChar   g_sCafeRotatingGuardUpLOS[3];
+SGameChar   g_sCafeRotatingGuardUpLOS[5];
 
 //LEVEL 3 ARROWS
 SGameChar   g_sLeftGHorLOS[25];
@@ -114,9 +116,6 @@ SGameChar   g_sLeftGVerLOS[16];
 SGameChar   g_sRightGHorLOS[25];
 SGameChar   g_sRightGVerLOS[16];
 
-
-SGameChar   g_sCafeUpArr;
-SGameChar   g_sCafeRightArr;
 
 EGAMESTATES g_eGameState = S_SPLASHSCREEN;
 
@@ -385,7 +384,7 @@ void init(void)
 	g_sLevel2DownGuard.m_cLocation.X = 36;
 	g_sLevel2DownGuard.m_cLocation.Y = 38;
 	
-	g_sLevel2RightGuard.m_cLocation.X = 62;
+	g_sLevel2RightGuard.m_cLocation.X = 70;
 	g_sLevel2RightGuard.m_cLocation.Y = 20;
 	
 	g_sLevel2LeftGuard.m_cLocation.X = 2;
@@ -415,7 +414,7 @@ void init(void)
 		g_sLeftGuardRightLOS[sett].m_cLocation.X = 3;
 		g_sLeftGuardRightLOS[sett].m_cLocation.Y = yyL2;
 
-		g_sRightGuardLeftLOS[sett].m_cLocation.X = 61;
+		g_sRightGuardLeftLOS[sett].m_cLocation.X = 69;
 		g_sRightGuardLeftLOS[sett].m_cLocation.Y = yyL2;
 
 		//when going in the reverse directions
@@ -428,7 +427,7 @@ void init(void)
 		g_sLeftGuardLeftLOS[sett].m_cLocation.X = 28;
 		g_sLeftGuardLeftLOS[sett].m_cLocation.Y = yyL2;
 
-		g_sRightGuardRightLOS[sett].m_cLocation.X = 63;
+		g_sRightGuardRightLOS[sett].m_cLocation.X = 45;
 		g_sRightGuardRightLOS[sett].m_cLocation.Y = yyL2;
 
 		xxL2++;
@@ -459,14 +458,14 @@ void init(void)
 			g_sLeftGuardRightLOS[sett].m_cLocation.X = 4;
 			g_sLeftGuardRightLOS[sett].m_cLocation.Y = yyL2;
 
-			g_sRightGuardLeftLOS[sett].m_cLocation.X = 60;
+			g_sRightGuardLeftLOS[sett].m_cLocation.X = 68;
 			g_sRightGuardLeftLOS[sett].m_cLocation.Y = yyL2;
 
 			//Reverse Direction
 			g_sLeftGuardLeftLOS[sett].m_cLocation.X = 27;
 			g_sLeftGuardLeftLOS[sett].m_cLocation.Y = yyL2;
 
-			g_sRightGuardRightLOS[sett].m_cLocation.X = 64;
+			g_sRightGuardRightLOS[sett].m_cLocation.X = 46;
 			g_sRightGuardRightLOS[sett].m_cLocation.Y = yyL2;
 			yyL2++;
 		}
@@ -1091,25 +1090,6 @@ void Level2AIMovement()
 	if (g_dRotationTime >= 0 && g_dRotationTime <= 1.0)
 	{
 		TurnCount = 1;
-		for (int sett = 0; sett < 5; sett++)
-		{
-			if (sett < 3)
-			{
-				g_sRightGuardRightLOS[sett].m_cLocation.X = 63;
-				g_sRightGuardRightLOS[sett].m_cLocation.Y = yyL2;
-			}
-			else
-			{
-				if (sett == 3)
-				{
-					yyL2 = 18;
-				}
-				g_sRightGuardRightLOS[sett].m_cLocation.X = 64;
-				g_sRightGuardRightLOS[sett].m_cLocation.Y = yyL2;
-			}
-			yyL2++;
-		}
-		yyL2 = 19;
 	}
 	if (g_dRotationTime >= 1.0 && g_dRotationTime <= 2.0)
 	{
@@ -1118,48 +1098,10 @@ void Level2AIMovement()
 	if (g_dRotationTime >= 2.0 && g_dRotationTime <= 3.0)
 	{
 		TurnCount = 3;
-		for (int sett = 0; sett < 5; sett++)
-		{
-			if (sett < 3)
-			{
-				g_sRightGuardLeftLOS[sett].m_cLocation.X = 61;
-				g_sRightGuardLeftLOS[sett].m_cLocation.Y = yyL2;
-			}
-			else
-			{
-				if (sett == 3)
-				{
-					yyL2 = 18;
-				}
-				g_sRightGuardRightLOS[sett].m_cLocation.X = 60;
-				g_sRightGuardRightLOS[sett].m_cLocation.Y = yyL2;
-			}
-			yyL2++;
-		}
-		yyL2 = 19;
 	}
 	if (g_dRotationTime >= 3.0 && g_dRotationTime <= 4.0)
 	{
 		TurnCount = 4;
-		for (int sett = 0; sett < 5; sett++)
-		{
-			if (sett < 3)
-			{
-				g_sRightGuardLeftLOS[sett].m_cLocation.X = 61;
-				g_sRightGuardLeftLOS[sett].m_cLocation.Y = yyL2;
-			}
-			else
-			{
-				if (sett == 3)
-				{
-					yyL2 = 18;
-				}
-				g_sRightGuardRightLOS[sett].m_cLocation.X = 60;
-				g_sRightGuardRightLOS[sett].m_cLocation.Y = yyL2;
-			}
-			yyL2++;
-		}
-		yyL2 = 19;
 	}
 	if (g_dRotationTime >= 4.0)
 	{
@@ -1169,11 +1111,12 @@ void Level2AIMovement()
 	int XX = 34; //USED TO SET THE X VALUES OF THE RENDER
 
 	//For the Up and down guards (Total 14, 6 down first)
-	if (g_dGuardTimeYLevel2 >= 0.25 && moveLevel2 != 14) //MOVING FORWARD
+	if (g_dGuardTimeYLevel2 >= 0.25 && moveLevel2 != 12) //MOVING FORWARD
 	{
+		contactcheckLevel21 = true;
 		Level2Count1 = 0;
 
-		for (int inc = 0; inc < 14; inc++)// INCREMENT LOOP
+		for (int inc = 0; inc < 12; inc++)// INCREMENT LOOP
 		{
 			g_sUpGuardDownLOS[inc].m_cLocation.Y++;
 			g_sDownGuardUpLOS[inc].m_cLocation.Y--;
@@ -1181,7 +1124,7 @@ void Level2AIMovement()
 		g_sLevel2UpGuard.m_cLocation.Y++;
 		g_sLevel2DownGuard.m_cLocation.Y--;
 
-		for (int sett = 0; sett < 13; sett++) //SETTING LOOP
+		for (int sett = 0; sett < 12; sett++) //SETTING LOOP
 		{
 			int yy2 = 0;
 			int yy = 0;
@@ -1191,33 +1134,32 @@ void Level2AIMovement()
 
 				g_sUpGuardUpLOS[sett].m_cLocation.X = XX;
 				g_sDownGuardDownLOS[sett].m_cLocation.X = XX;
-				yy = 15;
-				yy2 = 25;
+				yy = 13;
+				yy2 = 27;
 			}
 			else
 			{
-				yy = 14;
-				yy2 = 26;
+				yy = 12;
+				yy2 = 28;
 			}
 			g_sUpGuardUpLOS[sett].m_cLocation.Y = yy;
 			g_sDownGuardDownLOS[sett].m_cLocation.Y = yy2;
 		}
 
 
-		g_dGuardTimeYLevel2 = 0;
+		g_dGuardTimeYLevel2 = 0.0;
 		++moveLevel2;
 	}
 
 	XX = 34; //RESET THE SETTER
 
-	if (g_dGuardTimeYLevel2 >= 0.25 && moveLevel2 == 14)
+	if (g_dGuardTimeYLevel2 >= 0.25 && moveLevel2 == 12)
 	{
-		contactcheckLevel2 = false; // MOVING BACKWARD
+		contactcheckLevel21 = false; // MOVING BACKWARD
 
 		Level2Count1 = 1;
-		for (int inc = 0; inc < 15; inc++) //INCREMENT LOOP
+		for (int inc = 0; inc < 12; inc++) //INCREMENT LOOP
 		{
-
 			g_sUpGuardUpLOS[inc].m_cLocation.Y--;
 			g_sDownGuardDownLOS[inc].m_cLocation.Y++;
 		}
@@ -1237,54 +1179,62 @@ void Level2AIMovement()
 
 				g_sUpGuardDownLOS[sett].m_cLocation.X = XX;
 				g_sDownGuardUpLOS[sett].m_cLocation.X = XX;
-				yy = 3;
-				yy2 = 37;
+				yy = 5;
+				yy2 = 35;
 			}
 			else
 			{
-				yy = 4;
-				yy2 = 36;
+				yy = 6;
+				yy2 = 34;
 			}
 			g_sUpGuardDownLOS[sett].m_cLocation.Y = yy;
 			g_sDownGuardUpLOS[sett].m_cLocation.Y = yy2;
 		}
 
-		if (g_sLevel2UpGuard.m_cLocation.Y == 2)
+
+		if (g_sLevel2UpGuard.m_cLocation.Y == 4)
 		{
-			moveLevel2 = 0;
+			moveLevel2 = 2;
 		}
 	}
 
 	int YY = 18; //USED TO SET THE Y VALUES OF THE RENDER
 
 	//For the Right and Left guards (Total 14, 6 down first)
-	if (g_dGuardTimeXLevel2 >= 0.25 && move1Level2 != 27) //Moving "FOWARD"
+	if (g_dGuardTimeXLevel2 >= 0.25 && move1Level2 != 26) //Moving "FOWARD"
 	{
-		contactcheckLevel2 = true;
+		contactcheckLevel22 = true;
 
 		Level2Count2 = 0;
 
 		for (int inc = 0; inc < 13; inc++)
 		{
 			g_sLeftGuardRightLOS[inc].m_cLocation.X++;
+			g_sRightGuardLeftLOS[inc].m_cLocation.X--;
 		}
 
 		g_sLevel2LeftGuard.m_cLocation.X++;
+		g_sLevel2RightGuard.m_cLocation.X--;
 
 		for (int sett = 0; sett < 13; sett++) //SETTING LOOP
 		{
 			int xx2 = 0;// for the left guard
+			int xx = 0;
 			if (sett < 3)
 			{
-				xx2 = 28;
+				xx2 = 27;
+				xx = 45;
 				YY++;
 				g_sLeftGuardLeftLOS[sett].m_cLocation.Y = YY;
+				g_sRightGuardRightLOS[sett].m_cLocation.Y = YY;
 			}
 			else
 			{
-				xx2 = 27;
+				xx2 = 26;
+				xx = 46;
 			}
 			g_sLeftGuardLeftLOS[sett].m_cLocation.X = xx2;
+			g_sRightGuardRightLOS[sett].m_cLocation.X = xx;
 		}
 
 		g_dGuardTimeXLevel2 = 0.0;
@@ -1293,17 +1243,19 @@ void Level2AIMovement()
 
 	YY = 18;
 
-	if (g_dGuardTimeXLevel2 >= 0.25 && move1Level2 == 27) //MOVING IN THE REVERSE DIRECTION
+	if (g_dGuardTimeXLevel2 >= 0.25 && move1Level2 == 26) //MOVING IN THE REVERSE DIRECTION
 	{
-		contactcheckLevel2 = false;
+		contactcheckLevel22 = false;
 		Level2Count2 = 1;
 
 		for (int inc = 0; inc < 13; inc++)
 		{
 			g_sLeftGuardLeftLOS[inc].m_cLocation.X--;
+			g_sRightGuardRightLOS[inc].m_cLocation.X++;
 		}
 
 		g_sLevel2LeftGuard.m_cLocation.X--;
+		g_sLevel2RightGuard.m_cLocation.X++;
 		
 		for (int sett = 0; sett < 13; sett++) //SETTING LOOP
 		{
@@ -1311,22 +1263,27 @@ void Level2AIMovement()
 			int xx = 0; // for the right guard
 			if (sett < 3)
 			{
-				xx = 69;
-				xx2 = 3;
+				xx = 67;
+				xx2 = 5;
 				YY++;
+				g_sLeftGuardLeftLOS[sett].m_cLocation.Y = YY;
+				g_sRightGuardLeftLOS[sett].m_cLocation.Y = YY;
 			}
 			else
 			{
-				xx = 68;
-				xx2 = 4;
+				xx = 66;
+				xx2 = 6;
 			}
 			g_sLeftGuardRightLOS[sett].m_cLocation.X = xx2;
+			g_sRightGuardLeftLOS[sett].m_cLocation.X = xx;
 		}
 
 		g_dGuardTimeXLevel2 = 0;
-		if (g_sLevel2LeftGuard.m_cLocation.X == 2)
+
+
+		if (g_sLevel2LeftGuard.m_cLocation.X == 4)
 		{
-			move1Level2 = 0;
+			move1Level2 = 2;
 		}
 	}
 }
@@ -1920,7 +1877,7 @@ void levelonelose()
 
 	for (int sett = 0; sett < 4; sett++)
 	{
-		if ((((Ch1X == g_sRightArr[sett].m_cLocation.X) && (Ch1Y == g_sRightArr[sett].m_cLocation.Y)) || ((Ch1X == g_sUpF1Arr[sett].m_cLocation.X) && (Ch1Y == g_sUpF1Arr[sett].m_cLocation.Y)) || ((Ch1X == g_sDownF2Arr[sett].m_cLocation.X) && (Ch1Y == g_sDownF2Arr[sett].m_cLocation.Y)) || ((Ch1X == g_sUpCArr[sett].m_cLocation.X) && (Ch1Y == g_sUpCArr[sett].m_cLocation.Y))) && (contactcheck == true))
+		if ( (((Ch1X == g_sRightArr[sett].m_cLocation.X) && (Ch1Y == g_sRightArr[sett].m_cLocation.Y)) || ((Ch1X == g_sUpF1Arr[sett].m_cLocation.X) && (Ch1Y == g_sUpF1Arr[sett].m_cLocation.Y)) || ((Ch1X == g_sDownF2Arr[sett].m_cLocation.X) && (Ch1Y == g_sDownF2Arr[sett].m_cLocation.Y)) || ((Ch1X == g_sUpCArr[sett].m_cLocation.X) && (Ch1Y == g_sUpCArr[sett].m_cLocation.Y))) && (contactcheck == true))
 		{
 			lives = lives - 1;
 			if (lives != '0') {
@@ -1968,8 +1925,8 @@ void leveltwolose()
 	int CH2X = g_sLevel2Char.m_cLocation.X;
 	int CH2Y = g_sLevel2Char.m_cLocation.Y;
 
-	int RtX = g_sLevel2RotatingGuard.m_cLocation.X;
 	int RtY = g_sLevel2RotatingGuard.m_cLocation.Y;
+	int RtX = g_sLevel2RotatingGuard.m_cLocation.X;
 
 	int CRtX = g_sLevel2CafeGuard.m_cLocation.X;
 	int CRtY = g_sLevel2CafeGuard.m_cLocation.Y;
@@ -1988,7 +1945,7 @@ void leveltwolose()
 
 	if (TurnCount == 1) //for the rotating guards
 	{
-		if ((RtX == g_sLevel2Char.m_cLocation.X && (RtY - g_sLevel2Char.m_cLocation.Y >= 0)) || (CRtX == g_sLevel2Char.m_cLocation.X && (g_sLevel2Char.m_cLocation.Y - CRtY <= 3)))
+		if ((RtX == g_sLevel2Char.m_cLocation.X && (RtY - g_sLevel2Char.m_cLocation.Y >= 0)) || (CRtX == g_sLevel2Char.m_cLocation.X && (CRtY - g_sLevel2Char.m_cLocation.Y <= 3)))
 		{
 			lives -= 1;
 			g_sLevel2Char.m_cLocation.X = 46;
@@ -2016,7 +1973,7 @@ void leveltwolose()
 	}
 	if (TurnCount == 3) // for the rotating guards
 	{
-		if (RtX == g_sLevel2Char.m_cLocation.X && (g_sLevel2Char.m_cLocation.Y - RtY >= 0) || (CRtX == g_sLevel2Char.m_cLocation.X && (g_sLevel2Char.m_cLocation.Y - CRtY <= 3)))
+		if (RtX == g_sLevel2Char.m_cLocation.X && (g_sLevel2Char.m_cLocation.Y - RtY >= 0) || (CRtX == g_sLevel2Char.m_cLocation.X && (CRtY - g_sLevel2Char.m_cLocation.Y <= 3)))
 		{
 			lives -= 1;
 			g_sLevel2Char.m_cLocation.X = 46;
@@ -2043,9 +2000,9 @@ void leveltwolose()
 		}
 	}
 
-	
-		//IF IN FRONT OF THE GUARD (Radius is 2 tiles for North, south, east and west, radius is one tile for NE, SE, SW, NW) 
-		if ((UY + 2 == CH2Y && UX == CH2X) || (DY - 2 == CH2Y && DX == CH2X) || (RY == CH2Y && RX - 2 == CH2X) || (LY == CH2Y && LX + 2 == CH2X))
+	for (int sett = 0; sett < 12; sett++) // for moving forward (up and down guards)
+	{
+		if ((((CH2X == g_sUpGuardDownLOS[sett].m_cLocation.X) && (CH2Y == g_sUpGuardDownLOS[sett].m_cLocation.Y)) || ((CH2X == g_sDownGuardUpLOS[sett].m_cLocation.X) && (CH2Y == g_sDownGuardUpLOS[sett].m_cLocation.Y))) && (contactcheckLevel21 == true))
 		{
 			lives = lives - 1;
 			if (lives != '0') {
@@ -2054,96 +2011,62 @@ void leveltwolose()
 			}
 			else {
 				g_eGameState = S_GAMEOVER;
+				lives = '2';
 			}
 		}
-		//TO YOUR BOTTOM RIGHT (REFERENCE TO UP GUARD)
-		if ((UX + 1 == CH2X && UY + 1 == CH2Y) || (DX + 1 == CH2X && DY - 1 == CH2Y) || (RX - 1 == CH2X && RY - 1 == CH2Y) || (LX + 1 == CH2X && LY + 1 == CH2Y))
+	}
+	for (int sett = 0; sett < 13; sett++) // for moving forward (left and right guards)
+	{
+		if ((((CH2X == g_sLeftGuardRightLOS[sett].m_cLocation.X) && (CH2Y == g_sLeftGuardRightLOS[sett].m_cLocation.Y)) || ((CH2X == g_sRightGuardLeftLOS[sett].m_cLocation.X) && (CH2Y == g_sRightGuardLeftLOS[sett].m_cLocation.Y))) && (contactcheckLevel22 == true))
 		{
-			lives = lives - 1;
-			if (lives != '0') {
-				g_sLevel2Char.m_cLocation.X = 46;
-				g_sLevel2Char.m_cLocation.Y = 3;
-			}
-			else {
-				g_eGameState = S_GAMEOVER;
-			}
-		}
-		//TO YOUR BOTTOM LEFT (REFERENCE TO UP GUARD)
-		if ((UX - 1 == CH2X && UY + 1 == CH2Y) || (DX - 1 == CH2X && DY - 1 == CH2Y) || (RX - 1 == CH2X && RY + 1 == CH2Y) || (LX + 1 == CH2X && LY - 1 == CH2Y))
-		{
-			lives = lives - 1;
-			if (lives != '0') {
-				g_sLevel2Char.m_cLocation.X = 46;
-				g_sLevel2Char.m_cLocation.Y = 3;
-			}
-			else {
-				g_eGameState = S_GAMEOVER;
-			}
-		}
-		//TO THE RIGHT
-		if ((UX + 2 == CH2X && UY == CH2Y) || (DX + 2 == CH2X && DY == CH2Y) || (RX == CH2X && RY - 2 == CH2Y) || (LX == CH2X && LY + 2 == CH2Y))
-		{
-			lives = lives - 1;
-			if (lives != '0') {
-				g_sLevel2Char.m_cLocation.X = 46;
-				g_sLevel2Char.m_cLocation.Y = 3;
-			}
-			else {
-				g_eGameState = S_GAMEOVER;
-			}
-		}
-		//TO THE LEFT
-		if ((UX - 2 == CH2X && UY == CH2Y) || (DX - 2 == CH2X && DY == CH2Y) || (RX == CH2X && RY + 2 == CH2Y) || (LX == CH2X && LY - 2 == CH2Y))
-		{
-			lives = lives - 1;
-			if (lives != '0') {
-				g_sLevel2Char.m_cLocation.X = 46;
-				g_sLevel2Char.m_cLocation.Y = 3;
-			}
-			else {
-				g_eGameState = S_GAMEOVER;
-			}
-		}
-		//TOP RIGHT
-		if ((UX + 1 == CH2X && UY - 1 == CH2Y) || (DX + 1 == CH2X && DY + 1 == CH2Y) || (RX + 1 == CH2X && RY - 1 == CH2Y) || (LX - 1 == CH2X && LY + 1 == CH2Y))
-		{
-			lives = lives - 1;
-			if (lives != '0') {
-				g_sLevel2Char.m_cLocation.X = 46;
-				g_sLevel2Char.m_cLocation.Y = 3;
-			}
-			else {
-				g_eGameState = S_GAMEOVER;
-			}
-		}
-		//TOP LEFT
-		if ((UX - 1 == CH2X && UY - 1 == CH2Y) || (DX - 1 == CH2X && DY + 1 == CH2Y) || (RX + 1 == CH2X && RY + 1 == CH2Y) || (LX - 1 == CH2X && LY - 1 == CH2Y))
-		{
-			lives = lives - 1;
-			if (lives != '0') {
-				g_sLevel2Char.m_cLocation.X = 46;
-				g_sLevel2Char.m_cLocation.Y = 3;
-			}
-			else {
-				g_eGameState = S_GAMEOVER;
-			}
-		}
-		//IF BEHIND
-		if ((UY - 2 == CH2Y && UX == CH2X) || (DY + 2 == CH2Y && DX == CH2X) || (RY == CH2Y && RX + 2 == CH2X) || (LY == CH2Y && LX - 2 == CH2X))
-		{
-			lives = lives - 1;
-			if (lives != '0') {
-				g_sLevel2Char.m_cLocation.X = 46;
-				g_sLevel2Char.m_cLocation.Y = 3;
-			}
-			else {
-				g_eGameState = S_GAMEOVER;
+			{
+				lives = lives - 1;
+				if (lives != '0') {
+					g_sLevel2Char.m_cLocation.X = 46;
+					g_sLevel2Char.m_cLocation.Y = 3;
+				}
+				else {
+					g_eGameState = S_GAMEOVER;
+					lives = '2';
+				}
 			}
 		}
 
-	
-	
+		for (int sett = 0; sett < 12; sett++) // for moving backwards (up and down guards)
+		{
+			if ((((CH2X == g_sUpGuardUpLOS[sett].m_cLocation.X) && (CH2Y == g_sUpGuardUpLOS[sett].m_cLocation.Y)) || ((CH2X == g_sDownGuardDownLOS[sett].m_cLocation.X) && (CH2Y == g_sDownGuardDownLOS[sett].m_cLocation.Y))) && (contactcheckLevel21 == false))
+			{
+				lives = lives - 1;
+				if (lives != '0') {
+					g_sLevel2Char.m_cLocation.X = 46;
+					g_sLevel2Char.m_cLocation.Y = 3;
+				}
+				else {
+					g_eGameState = S_GAMEOVER;
+					lives = '2';
+				}
+			}
+		}
+		for (int sett = 0; sett < 13; sett++) // for moving backwards (left and right guards)
+		{
+			if ((((CH2X == g_sLeftGuardLeftLOS[sett].m_cLocation.X) && (CH2Y == g_sLeftGuardLeftLOS[sett].m_cLocation.Y)) || ((CH2X == g_sRightGuardRightLOS[sett].m_cLocation.X) && (CH2Y == g_sRightGuardRightLOS[sett].m_cLocation.Y))) && (contactcheckLevel22 == false))
+			{
+				{
+					lives = lives - 1;
+					if (lives != '0') {
+						g_sLevel2Char.m_cLocation.X = 46;
+						g_sLevel2Char.m_cLocation.Y = 3;
+					}
+					else {
+						g_eGameState = S_GAMEOVER;
+						lives = '2';
+					}
+				}
+			}
+		}
+        
 	}
+}
 void levelthreelose()
 	{
 		int leftX = g_sLevel3Guard[0].m_cLocation.X;
@@ -2933,36 +2856,24 @@ void renderArrowLevel2()
 	switch (TurnCount)
 	{
 	case 1:
-		g_Console.writeToBuffer(g_sCafeUpArr.m_cLocation, (char)30, 0X0F);
-		for (int sett = 0; sett < 13; sett++)
-		{g_Console.writeToBuffer(g_sRightGuardRightLOS[sett].m_cLocation, "Û", 0X0F);}
 		for (int sett = 0; sett < 18; sett++)
 		{g_Console.writeToBuffer(g_sRotatingGuardUpLOS[sett].m_cLocation, "Û", 0X08);}
-		for (int sett = 0; sett < 5; sett++)
+		for (int sett = 0; sett < 4; sett++)
 		{g_Console.writeToBuffer(g_sCafeRotatingGuardUpLOS[sett].m_cLocation, "Û", 0X08);}
 		break;
 	case 2:
-		g_Console.writeToBuffer(g_sCafeRightArr.m_cLocation, (char)16, 0X0F);
-		for (int sett = 0; sett < 13; sett++)
-		{g_Console.writeToBuffer(g_sRightGuardRightLOS[sett].m_cLocation, "Û", 0X0F);}
 		for (int sett = 0; sett < 34; sett++)
 		{g_Console.writeToBuffer(g_sRotatingGuardRightLOS[sett].m_cLocation, "Û", 0X08);}
 		for (int sett = 0; sett < 20; sett++)
 		{g_Console.writeToBuffer(g_sCafeRotatingGuardRightLOS[sett].m_cLocation, "Û", 0X08);}
 		break;
 	case 3:
-		g_Console.writeToBuffer(g_sCafeUpArr.m_cLocation, (char)30, 0X0F);
-		for (int sett = 0; sett < 13; sett++)
-		{g_Console.writeToBuffer(g_sRightGuardLeftLOS[sett].m_cLocation, "Û", 0X0F);}
 		for (int sett = 0; sett < 18; sett++)
 		{g_Console.writeToBuffer(g_sRotatingGuardDownLOS[sett].m_cLocation, "Û", 0X08);}
-		for (int sett = 0; sett < 5; sett++)
+		for (int sett = 0; sett < 4; sett++)
 		{g_Console.writeToBuffer(g_sCafeRotatingGuardUpLOS[sett].m_cLocation, "Û", 0X08);}
 		break;
 	case 4:
-		g_Console.writeToBuffer(g_sCafeRightArr.m_cLocation, (char)16, 0X0F);
-		for (int sett = 0; sett < 13; sett++)
-		{g_Console.writeToBuffer(g_sRightGuardLeftLOS[sett].m_cLocation, "Û", 0X0F);}
 		for (int sett = 0; sett < 34; sett++)
 		{g_Console.writeToBuffer(g_sRotatingGuardLeftLOS[sett].m_cLocation, "Û", 0X08);}
 		for (int sett = 0; sett < 20; sett++)
@@ -2973,14 +2884,14 @@ void renderArrowLevel2()
 	switch (Level2Count1)
 	{
 	case 0:
-		for (int sett = 0; sett < 13; sett++)
+		for (int sett = 0; sett < 12; sett++)
 		{
 			g_Console.writeToBuffer(g_sUpGuardDownLOS[sett].m_cLocation, "Û", 0X0F);
 			g_Console.writeToBuffer(g_sDownGuardUpLOS[sett].m_cLocation, "Û", 0X0F);
 		}
 		break;
 	case 1:
-		for (int sett = 0; sett < 13; sett++)
+		for (int sett = 0; sett < 12; sett++)
 		{
 			g_Console.writeToBuffer(g_sUpGuardUpLOS[sett].m_cLocation, "Û", 0X0F);
 			g_Console.writeToBuffer(g_sDownGuardDownLOS[sett].m_cLocation, "Û", 0X0F);
@@ -2992,18 +2903,23 @@ void renderArrowLevel2()
 	switch (Level2Count2)
 	{
 	case 0:
-		for (int sett = 0; sett < 13; sett++)
+		for (int sett = 0; sett < 8; sett++)
 		{
 			g_Console.writeToBuffer(g_sLeftGuardRightLOS[sett].m_cLocation, "Û", 0X0F);
+			g_Console.writeToBuffer(g_sRightGuardLeftLOS[sett].m_cLocation, "Û", 0X0F);
 		}
 		break;
 	case 1:
-		for (int sett = 0; sett < 13; sett++)
+		for (int sett = 0; sett < 8; sett++)
 		{
 			g_Console.writeToBuffer(g_sLeftGuardLeftLOS[sett].m_cLocation, "Û", 0X0F);
+			g_Console.writeToBuffer(g_sRightGuardRightLOS[sett].m_cLocation, "Û", 0X0F);
 		}
 		break;
 	}
+
+
+\
 }
 void HiddenEntranceOne()
 {

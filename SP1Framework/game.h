@@ -119,4 +119,8 @@ void HiddenEntranceThree();
 void HiddenMap();
 
 void RemoveHidden();
+void midgLOS();
+void guardChase();
+void renderShooting();
+
 #endif // _GAME_H

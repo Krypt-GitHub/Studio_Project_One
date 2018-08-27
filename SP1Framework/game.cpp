@@ -3725,14 +3725,44 @@ void guardChase()
 {
 	if (detect == true)
 	{
-		if (g_sLevel3Guard[1].m_cLocation.X != g_sLevel3Char.m_cLocation.X && g_dGuardMove == 0.0)
+		if ((g_sLevel3Char.m_cLocation.Y <= 15) && (g_sLevel3Guard[1].m_cLocation.Y > 14) && g_dGuardMove == 0.0)
 		{
-			if (g_sLevel3Char.m_cLocation.X > g_sLevel3Guard[1].m_cLocation.X)
+			if (g_sLevel3Guard[1].m_cLocation.X >= 46)
+			{
+				g_sLevel3Guard[1].m_cLocation.X--;
+			}
+			if (g_sLevel3Guard[1].m_cLocation.X <= 46)
+			{
+				g_sLevel3Guard[1].m_cLocation.X++;
+			}
+			if (g_dGuardMove > 0.21)
+			{
+				g_dGuardMove = 0.0;
+			}
+		}
+		else if ((g_sLevel3Char.m_cLocation.Y > 15) && (g_sLevel3Guard[1].m_cLocation.Y < 14) && g_dGuardMove == 0.0)
+		{
+			if (g_sLevel3Guard[1].m_cLocation.X >= 46)
+			{
+				g_sLevel3Guard[1].m_cLocation.X--;
+			}
+			if (g_sLevel3Guard[1].m_cLocation.X <= 46)
+			{
+				g_sLevel3Guard[1].m_cLocation.X++;
+			}
+			if (g_dGuardMove > 0.21)
+			{
+				g_dGuardMove = 0.0;
+			}
+		}
+		else if (g_sLevel3Guard[1].m_cLocation.X != g_sLevel3Char.m_cLocation.X && g_dGuardMove == 0.0)
+		{
+			if (g_sLevel3Char.m_cLocation.X > g_sLevel3Guard[1].m_cLocation.X && level3[g_sLevel3Guard[1].m_cLocation.Y][g_sLevel3Guard[1].m_cLocation.X + 1] == ' ')
 			{
 				cntcnt = 1;
 				g_sLevel3Guard[1].m_cLocation.X++;
 			}
-			if (g_sLevel3Char.m_cLocation.X < g_sLevel3Guard[1].m_cLocation.X)
+			if (g_sLevel3Char.m_cLocation.X < g_sLevel3Guard[1].m_cLocation.X && level3[g_sLevel3Guard[1].m_cLocation.Y][g_sLevel3Guard[1].m_cLocation.X - 1] == ' ')
 			{
 				cntcnt = 2;
 				g_sLevel3Guard[1].m_cLocation.X--;
@@ -3740,19 +3770,18 @@ void guardChase()
 		}
 		if (g_sLevel3Guard[1].m_cLocation.Y != g_sLevel3Char.m_cLocation.Y && g_dGuardMove == 0.0)
 		{
-			if (g_sLevel3Char.m_cLocation.Y > g_sLevel3Guard[1].m_cLocation.Y)
+			if (g_sLevel3Char.m_cLocation.Y > g_sLevel3Guard[1].m_cLocation.Y && level3[g_sLevel3Guard[1].m_cLocation.Y + 1][g_sLevel3Guard[1].m_cLocation.X] == ' ')
 			{
 				cntcnt = 3;
 				g_sLevel3Guard[1].m_cLocation.Y++;
 			}
-			if (g_sLevel3Char.m_cLocation.Y < g_sLevel3Guard[1].m_cLocation.Y)
+			if (g_sLevel3Char.m_cLocation.Y < g_sLevel3Guard[1].m_cLocation.Y && level3[g_sLevel3Guard[1].m_cLocation.Y - 1][g_sLevel3Guard[1].m_cLocation.X] == ' ')
 			{
 				cntcnt = 4;
 				g_sLevel3Guard[1].m_cLocation.Y--;
 			}
 		}
-
-		if (g_dGuardMove > 2.15)
+		if (g_dGuardMove > 0.21)
 		{
 			g_dGuardMove = 0.0;
 		}

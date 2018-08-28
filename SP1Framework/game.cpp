@@ -75,6 +75,8 @@ SGameChar   g_sLevel2LeftGuard;
 SGameChar   g_sLevel2RightGuard;
 SGameChar   g_sLevel2CafeGuard;
 
+SGameChar   g_sLevel2PrisonerCell; //Level 2 Prisoner
+
 SGameChar   g_sLevel3Guard[3]; //Level 3 Guard
 SGameChar   g_sMidGLOS[3];
 //------------------------------------------------------------------
@@ -392,6 +394,10 @@ void init(void)
 	
 	g_sLevel2CafeGuard.m_cLocation.X = 2;
 	g_sLevel2CafeGuard.m_cLocation.Y = 28;
+
+	//LEVEL 2 CHARACTERS
+	g_sLevel2PrisonerCell.m_cLocation.X = 42;
+	g_sLevel2PrisonerCell.m_cLocation.Y = 8;
 
 	//LEVEL 2 ARROWS/LOS
 
@@ -1504,49 +1510,52 @@ void moveCharacterLevel1()
 	// Updating the location of the character based on the key press
 
 	//Level 1
-	if ((g_abKeyPressed[K_UP] || g_abKeyPressed[W]) && level1[g_sChar.m_cLocation.Y - 1][g_sChar.m_cLocation.X] == ' ') //To move up checking
+	if (movementLock == false)
 	{
-		PlaySound(TEXT("mysound.wav"), NULL, SND_FILENAME | SND_ASYNC);
-		g_sChar.m_cLocation.Y--;
-		bSomethingHappened = true;
-		if (((Ch1X == CeX) && (Ch1Y == CeY + 1)) || ((Ch1X == CaX) && (Ch1Y == CaY + 1)) || ((Ch1X == F1X) && (Ch1Y == F1Y + 1)) || ((Ch1X == F2X) && (Ch1Y == F2Y + 1)))
+		if ((g_abKeyPressed[K_UP] || g_abKeyPressed[W]) && level1[g_sChar.m_cLocation.Y - 1][g_sChar.m_cLocation.X] == ' ') //To move up checking
 		{
-			/*Ch1Y = */g_sChar.m_cLocation.Y++;
-			g_eGameState = S_GAMEOVER;
-		}
-	}
-	if ((g_abKeyPressed[K_LEFT] || g_abKeyPressed[A]) && g_sChar.m_cLocation.X > 0 && level1[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X - 1] == ' ')
-	{
-		PlaySound(TEXT("mysound.wav"), NULL, SND_FILENAME | SND_ASYNC);
-		g_sChar.m_cLocation.X--;
-		bSomethingHappened = true;
-
-		if (((Ch1X == CeX + 1) && (Ch1Y == CeY)) || ((Ch1X == CaX + 1) && (Ch1Y == CaY)) || ((Ch1X == F1X + 1) && (Ch1Y == F1Y)) || ((Ch1X == F2X + 1) && (Ch1Y == F2Y)))
-		{
-			g_sChar.m_cLocation.X++;
-			g_eGameState = S_GAMEOVER;
-		}
-	}
-	if ((g_abKeyPressed[K_DOWN] || g_abKeyPressed[S]) && g_sChar.m_cLocation.Y < g_Console.getConsoleSize().Y - 1 && g_sChar.m_cLocation.X > 0 && level1[g_sChar.m_cLocation.Y + 1][g_sChar.m_cLocation.X] == ' ')
-	{
-		PlaySound(TEXT("mysound.wav"), NULL, SND_FILENAME | SND_ASYNC);
-		g_sChar.m_cLocation.Y++;
-		bSomethingHappened = true;
-		if (((Ch1X == CeX) && (Ch1Y == CeY - 1)) || ((Ch1X == CaX) && (Ch1Y == CaY - 1)) || ((Ch1X == F1X) && (Ch1Y == F1Y - 1)) || ((Ch1X == F2X) && (Ch1Y == F2Y - 1)))
-		{
+			PlaySound(TEXT("mysound.wav"), NULL, SND_FILENAME | SND_ASYNC);
 			g_sChar.m_cLocation.Y--;
-			g_eGameState = S_GAMEOVER;
+			bSomethingHappened = true;
+			if (((Ch1X == CeX) && (Ch1Y == CeY + 1)) || ((Ch1X == CaX) && (Ch1Y == CaY + 1)) || ((Ch1X == F1X) && (Ch1Y == F1Y + 1)) || ((Ch1X == F2X) && (Ch1Y == F2Y + 1)))
+			{
+				/*Ch1Y = */g_sChar.m_cLocation.Y++;
+				g_eGameState = S_GAMEOVER;
+			}
 		}
-	}
-	if ((g_abKeyPressed[K_RIGHT] || g_abKeyPressed[D]) && g_sChar.m_cLocation.X < g_Console.getConsoleSize().X - 1 && g_sChar.m_cLocation.X > 0 && level1[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X + 1] == ' ')
-	{
-		PlaySound(TEXT("mysound.wav"), NULL, SND_FILENAME | SND_ASYNC);
-		g_sChar.m_cLocation.X++;
-		bSomethingHappened = true;
-		if (((Ch1X == CeX - 1) && (Ch1Y == CeY)) || ((Ch1X == CaX - 1) && (Ch1Y == CaY)) || ((Ch1X == F1X - 1) && (Ch1Y == F1Y)) || ((Ch1X == F2X - 1) && (Ch1Y == F2Y)))
+		if ((g_abKeyPressed[K_LEFT] || g_abKeyPressed[A]) && g_sChar.m_cLocation.X > 0 && level1[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X - 1] == ' ')
 		{
+			PlaySound(TEXT("mysound.wav"), NULL, SND_FILENAME | SND_ASYNC);
 			g_sChar.m_cLocation.X--;
-			g_eGameState = S_GAMEOVER;
+			bSomethingHappened = true;
+
+			if (((Ch1X == CeX + 1) && (Ch1Y == CeY)) || ((Ch1X == CaX + 1) && (Ch1Y == CaY)) || ((Ch1X == F1X + 1) && (Ch1Y == F1Y)) || ((Ch1X == F2X + 1) && (Ch1Y == F2Y)))
+			{
+				g_sChar.m_cLocation.X++;
+				g_eGameState = S_GAMEOVER;
+			}
+		}
+		if ((g_abKeyPressed[K_DOWN] || g_abKeyPressed[S]) && g_sChar.m_cLocation.Y < g_Console.getConsoleSize().Y - 1 && g_sChar.m_cLocation.X > 0 && level1[g_sChar.m_cLocation.Y + 1][g_sChar.m_cLocation.X] == ' ')
+		{
+			PlaySound(TEXT("mysound.wav"), NULL, SND_FILENAME | SND_ASYNC);
+			g_sChar.m_cLocation.Y++;
+			bSomethingHappened = true;
+			if (((Ch1X == CeX) && (Ch1Y == CeY - 1)) || ((Ch1X == CaX) && (Ch1Y == CaY - 1)) || ((Ch1X == F1X) && (Ch1Y == F1Y - 1)) || ((Ch1X == F2X) && (Ch1Y == F2Y - 1)))
+			{
+				g_sChar.m_cLocation.Y--;
+				g_eGameState = S_GAMEOVER;
+			}
+		}
+		if ((g_abKeyPressed[K_RIGHT] || g_abKeyPressed[D]) && g_sChar.m_cLocation.X < g_Console.getConsoleSize().X - 1 && g_sChar.m_cLocation.X > 0 && level1[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X + 1] == ' ')
+		{
+			PlaySound(TEXT("mysound.wav"), NULL, SND_FILENAME | SND_ASYNC);
+			g_sChar.m_cLocation.X++;
+			bSomethingHappened = true;
+			if (((Ch1X == CeX - 1) && (Ch1Y == CeY)) || ((Ch1X == CaX - 1) && (Ch1Y == CaY)) || ((Ch1X == F1X - 1) && (Ch1Y == F1Y)) || ((Ch1X == F2X - 1) && (Ch1Y == F2Y)))
+			{
+				g_sChar.m_cLocation.X--;
+				g_eGameState = S_GAMEOVER;
+			}
 		}
 	}
 
@@ -1676,6 +1685,7 @@ void Level1ItemInteractions()
 		if (ShiveNumber == '3')
 		{
 			level1[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X + 1] = ' ';
+			ShiveNumber = '0';
 		}
 
 	}
@@ -2231,7 +2241,7 @@ void crafting()
 		c.X = 0;
 		c.Y = 0;
 
-		g_Console.writeToBuffer(c, "You can now craft a Key, press 'C' to craft one", 0x03);
+		g_Console.writeToBuffer(c, "You can now craft a Key, press 'C' to craft one", 0xF0);
 		if (g_abKeyPressed[K_CRAFT])
 		{
 			KeyFragment -= 3;
@@ -2247,57 +2257,58 @@ void renderDialogue()
 	c.X = 28;
 	c.Y = 27;
 
-	g_Console.writeToBuffer(c, "Dialogue:", 0x03);
+	g_Console.writeToBuffer(c, "Dialogue:", 0xF0);
 
 	c.X = 30;
 	c.Y = 31;
 
 	//PrisonerCell Dialogue
 
+
 	switch (PcDial)
 	{
 	case 1:
 		movementLock = true;
-		g_Console.writeToBuffer(c, "Prisoner: What do you want?", 0x03);
+		g_Console.writeToBuffer(c, "Prisoner: What do you want?", 0xF0);
 		c.Y = 32;
-		g_Console.writeToBuffer(c, "          Why are you in my cell?", 0x03);
+		g_Console.writeToBuffer(c, "          Why are you in my cell?", 0xF0);
 		break;
 	case 2:
 		c.Y = 31;
-		g_Console.writeToBuffer(c, "Faizal: Do you know anything about the secret", 0x03);
+		g_Console.writeToBuffer(c, "Faizal: Do you know anything about the secret", 0xF0);
 		c.Y = 32;
-		g_Console.writeToBuffer(c, "        passage to get out of this place?", 0x03);
+		g_Console.writeToBuffer(c, "        passage to get out of this place?", 0xF0);
 		break;
 	case 3:
 		c.Y = 31;
-		g_Console.writeToBuffer(c, "Prisoner: How the hell do you know about that", 0x03);
+		g_Console.writeToBuffer(c, "Prisoner: How the hell do you know about that", 0xF0);
 		c.Y = 32;
-		g_Console.writeToBuffer(c, "          Who the hell are you?", 0x03);
+		g_Console.writeToBuffer(c, "          Who the hell are you?", 0xF0);
 		break;
 	case 4:
 		c.Y = 31;
-		g_Console.writeToBuffer(c, "Faizal: Just shut up and tell me", 0x03);
+		g_Console.writeToBuffer(c, "Faizal: Just shut up and tell me", 0xF0);
 		c.Y = 32;
-		g_Console.writeToBuffer(c, "        what I want to know.", 0x03);
+		g_Console.writeToBuffer(c, "        what I want to know.", 0xF0);
 		break;
 	case 5:
 		c.Y = 31;
-		g_Console.writeToBuffer(c, "Prisoner: Alright chill out dude, I don't", 0x03);
+		g_Console.writeToBuffer(c, "Prisoner: Alright chill out dude, I don't", 0xF0);
 		c.Y = 32;
-		g_Console.writeToBuffer(c, "          know much, but I do know someone who", 0x03);
+		g_Console.writeToBuffer(c, "          know much, but I do know someone who", 0xF0);
 		c.Y = 33;
-		g_Console.writeToBuffer(c, "          might just have the info you need.", 0x03);
+		g_Console.writeToBuffer(c, "          might just have the info you need.", 0xF0);
 		break;
 	case 6:
 		c.Y = 31;
-		g_Console.writeToBuffer(c, "Prisoner: Well, that guy in the cafe.", 0x03);
+		g_Console.writeToBuffer(c, "Prisoner: Well, that guy in the cafe.", 0xF0);
 		c.Y = 32;
-		g_Console.writeToBuffer(c, "          He probably can tell you more.", 0x03);
+		g_Console.writeToBuffer(c, "          He probably can tell you more.", 0xF0);
 		movementLock = false;
 		break;
 	case 7:
 		c.Y = 31;
-		g_Console.writeToBuffer(c, " ", 0x03);
+		g_Console.writeToBuffer(c, " ", 0xF0);
 		intelcountlevel1 = 1;
 		break;
 	}
@@ -2311,40 +2322,40 @@ void renderDialogue()
 	{
 	case 1:
 		movementLock = true;
-		g_Console.writeToBuffer(c, "Faizal: Hey nigger! You know anything", 0x03);
+		g_Console.writeToBuffer(c, "Faizal: Hey nigger! You know anything", 0xF0);
 		c.Y = 32;
-		g_Console.writeToBuffer(c, "        bout that secret passage", 0x03);
+		g_Console.writeToBuffer(c, "        bout that secret passage", 0xF0);
 		break;
 	case 2:
 		c.Y = 31;
-		g_Console.writeToBuffer(c, "Prisoner: Not so loud my man. Alright, there", 0x03);
+		g_Console.writeToBuffer(c, "Prisoner: Not so loud my man. Alright, there", 0xF0);
 		c.Y = 32;
-		g_Console.writeToBuffer(c, "          really isn't much I can tell you,", 0x03);
+		g_Console.writeToBuffer(c, "          really isn't much I can tell you,", 0xF0);
 		c.Y = 33;
-		g_Console.writeToBuffer(c, "          but all I know is...", 0x03);
+		g_Console.writeToBuffer(c, "          but all I know is...", 0xF0);
 		break;
 	case 3:
 		c.Y = 31;
-		g_Console.writeToBuffer(c, "Faizal: What do you mean by isn't much?", 0x03);
+		g_Console.writeToBuffer(c, "Faizal: What do you mean by isn't much?", 0xF0);
 		c.Y = 32;
-		g_Console.writeToBuffer(c, "        That dude in the cell told me", 0x03);
+		g_Console.writeToBuffer(c, "        That dude in the cell told me", 0xF0);
 		c.Y = 33;
-		g_Console.writeToBuffer(c, "        you knew everything.", 0x03);
+		g_Console.writeToBuffer(c, "        you knew everything.", 0xF0);
 		break;
 	case 4:
 		c.Y = 31;
-		g_Console.writeToBuffer(c, "Prisoner: Your great friend Ryan is", 0x03);
+		g_Console.writeToBuffer(c, "Prisoner: Your great friend Ryan is", 0xF0);
 		c.Y = 32;
-		g_Console.writeToBuffer(c, "          the one who actually planned", 0x03);
+		g_Console.writeToBuffer(c, "          the one who actually planned", 0xF0);
 		c.Y = 33;
-		g_Console.writeToBuffer(c, "          this entire thing, go ask him", 0x03);
+		g_Console.writeToBuffer(c, "          this entire thing, go ask him", 0xF0);
 		c.Y = 34;
-		g_Console.writeToBuffer(c, "          He should be in the toilet.", 0x03);
+		g_Console.writeToBuffer(c, "          He should be in the toilet.", 0xF0);
 		movementLock = false;
 		break;
 	case 5:
 		c.Y = 31;
-		g_Console.writeToBuffer(c, " ", 0x03);
+		g_Console.writeToBuffer(c, " ", 0xF0);
 		intelcountlevel1 = 2;
 		break;
 	}
@@ -2358,49 +2369,49 @@ void renderDialogue()
 	{
 	case 1:
 		movementLock = true;
-		g_Console.writeToBuffer(c, "Faizal: Well, I haven't thought that you are the", 0x03);
+		g_Console.writeToBuffer(c, "Faizal: Well, I haven't thought that you are the", 0xF0);
 		c.Y = 32;
-		g_Console.writeToBuffer(c, "        one who knows about the secret passage", 0x03);
+		g_Console.writeToBuffer(c, "        one who knows about the secret passage", 0xF0);
 		break;
 	case 2:
 		c.Y = 31;
-		g_Console.writeToBuffer(c, "Ryan: I wasn't planning to let you know", 0x03);
+		g_Console.writeToBuffer(c, "Ryan: I wasn't planning to let you know", 0xF0);
 		c.Y = 32;
-		g_Console.writeToBuffer(c, "          either, I was about to leave you", 0x03);
+		g_Console.writeToBuffer(c, "          either, I was about to leave you", 0xF0);
 		c.Y = 33;
-		g_Console.writeToBuffer(c, "          to rot in this hellhole", 0x03);
+		g_Console.writeToBuffer(c, "          to rot in this hellhole", 0xF0);
 		break;
 	case 3:
 		c.Y = 31;
-		g_Console.writeToBuffer(c, "Faizal: You better reveal it to me", 0x03);
+		g_Console.writeToBuffer(c, "Faizal: You better reveal it to me", 0xF0);
 		c.Y = 32;
-		g_Console.writeToBuffer(c, "        or else you won't be leaving this", 0x03);
+		g_Console.writeToBuffer(c, "        or else you won't be leaving this", 0xF0);
 		c.Y = 33;
-		g_Console.writeToBuffer(c, "        place once the authorities know about it", 0x03);
+		g_Console.writeToBuffer(c, "        place once the authorities know about it", 0xF0);
 		break;
 	case 4:
 		c.Y = 31;
-		g_Console.writeToBuffer(c, "Ryan: Fine, I've been planning this sweet", 0x03);
+		g_Console.writeToBuffer(c, "Ryan: Fine, I've been planning this sweet", 0xF0);
 		c.Y = 32;
-		g_Console.writeToBuffer(c, "      escape since day one so you better not", 0x03);
+		g_Console.writeToBuffer(c, "      escape since day one so you better not", 0xF0);
 		c.Y = 33;
-		g_Console.writeToBuffer(c, "      screw my plan over.", 0x03);
+		g_Console.writeToBuffer(c, "      screw my plan over.", 0xF0);
 		break;
 	case 5:
 		c.Y = 31;
-		g_Console.writeToBuffer(c, "Ryan: That wall right there, at the", 0x03);
+		g_Console.writeToBuffer(c, "Ryan: That wall right there, at the", 0xF0);
 		c.Y = 32;
-		g_Console.writeToBuffer(c, "      other end of this toilet, there is a crack.", 0x03);
+		g_Console.writeToBuffer(c, "      other end of this toilet, there is a crack.", 0xF0);
 		c.Y = 33;
-		g_Console.writeToBuffer(c, "      However, I just can't seem to break it open", 0x03);
+		g_Console.writeToBuffer(c, "      However, I just can't seem to break it open", 0xF0);
 		c.Y = 34;
-		g_Console.writeToBuffer(c, "      Though... you can try using the shives lying around", 0x03);
+		g_Console.writeToBuffer(c, "      Though... you can try using the shives lying around", 0xF0);
 		level1[22][72] = '~';
 		movementLock = false;
 		break;
 	case 6:
 		c.Y = 31;
-		g_Console.writeToBuffer(c, " ", 0x03);
+		g_Console.writeToBuffer(c, " ", 0xF0);
 		intelcountlevel1 = 3;
 
 		break;
@@ -2447,7 +2458,7 @@ void renderSplashScreen()  // renders the splash screen
 				{
 					line[col] = 219;
 				}
-				g_Console.writeToBuffer(c, line[col], 0x03);
+				g_Console.writeToBuffer(c, line[col], 0XF1);
 				c.X++;
 			}
 			c.Y++;
@@ -2457,47 +2468,48 @@ void renderSplashScreen()  // renders the splash screen
 
 	c.X = 21;
 	c.Y = 20;
-	g_Console.writeToBuffer(c, "Welcome to the BlackStone Prison Complex, do your best to escape", 0X0F);
+	g_Console.writeToBuffer(c, "Welcome to the BlackStone Prison Complex, do your best to escape", 0XF1);
 	c.X = 21;
 	c.Y = 21;
-	g_Console.writeToBuffer(c, "----------------------------------------------------------------", 0X0F);
+	g_Console.writeToBuffer(c, "----------------------------------------------------------------", 0XF1);
 	c.X = 21;
 	c.Y = 22;
-	g_Console.writeToBuffer(c, " Complex: Stone", 0X0F);
+	g_Console.writeToBuffer(c, " Complex: Stone", 0XF1);
 	c.X = 21;
 	c.Y = 23;
-	g_Console.writeToBuffer(c, " Complex: Bronze", 0X0F);
+	g_Console.writeToBuffer(c, " Complex: Bronze", 0XF1);
 	c.X = 21;
 	c.Y = 24;
-	g_Console.writeToBuffer(c, " Complex: Steel", 0X0F);
+	g_Console.writeToBuffer(c, " Complex: Steel", 0XF1);
 	c.X = 21;
 	c.Y = 25;
-	g_Console.writeToBuffer(c, " Exit the Game", 0X0F);
+	g_Console.writeToBuffer(c, " Exit the Game", 0XF1);
 	if (MenuItem == 0)
 	{
 		c.X = 20;
 		c.Y = 22;
-		g_Console.writeToBuffer(c, (char)4, 0X0F);
+		g_Console.writeToBuffer(c, (char)4, 0XF1);
 	}
 	else if (MenuItem == 1)
 	{
 		c.X = 20;
 		c.Y = 23;
-		g_Console.writeToBuffer(c, (char)4, 0X0F);
+		g_Console.writeToBuffer(c, (char)4, 0XF1);
 	}
 	else if (MenuItem == 2)
 	{
 		c.X = 20;
 		c.Y = 24;
-		g_Console.writeToBuffer(c, (char)4, 0X0F);
+		g_Console.writeToBuffer(c, (char)4, 0XF1);
 	}
 	else if (MenuItem == 3)
 	{
 		c.X = 20;
 		c.Y = 25;
-		g_Console.writeToBuffer(c, (char)4, 0X0F);
+		g_Console.writeToBuffer(c, (char)4, 0XF1);
 	}
 }
+
 
 //Section (FULL RENDERING)
 void renderTutorialMap()
@@ -2511,7 +2523,7 @@ void renderTutorialMap()
 		for (int x = 0; x < 250; x++)
 		{
 			c.Y = x;
-			g_Console.writeToBuffer(c, level1[x][y], 0x03);
+			g_Console.writeToBuffer(c, level1[x][y], 0xF0);
 		}
 	}
 }
@@ -2714,7 +2726,7 @@ void renderBronzeMap()
 		for (int x = 0; x < 250; x++)
 		{
 			c.Y = x;
-			g_Console.writeToBuffer(c, level2[x][y], 0x03);
+			g_Console.writeToBuffer(c, level2[x][y], 0xF0);
 		}
 	}
 }
@@ -2857,27 +2869,27 @@ void renderArrowLevel2()
 	{
 	case 1:
 		for (int sett = 0; sett < 18; sett++)
-		{g_Console.writeToBuffer(g_sRotatingGuardUpLOS[sett].m_cLocation, "Û", 0X08);}
+		{g_Console.writeToBuffer(g_sRotatingGuardUpLOS[sett].m_cLocation, "Û", 0X0C);}
 		for (int sett = 0; sett < 4; sett++)
-		{g_Console.writeToBuffer(g_sCafeRotatingGuardUpLOS[sett].m_cLocation, "Û", 0X08);}
+		{g_Console.writeToBuffer(g_sCafeRotatingGuardUpLOS[sett].m_cLocation, "Û", 0X0C);}
 		break;
 	case 2:
 		for (int sett = 0; sett < 34; sett++)
-		{g_Console.writeToBuffer(g_sRotatingGuardRightLOS[sett].m_cLocation, "Û", 0X08);}
+		{g_Console.writeToBuffer(g_sRotatingGuardRightLOS[sett].m_cLocation, "Û", 0X0C);}
 		for (int sett = 0; sett < 20; sett++)
-		{g_Console.writeToBuffer(g_sCafeRotatingGuardRightLOS[sett].m_cLocation, "Û", 0X08);}
+		{g_Console.writeToBuffer(g_sCafeRotatingGuardRightLOS[sett].m_cLocation, "Û", 0X0C);}
 		break;
 	case 3:
 		for (int sett = 0; sett < 18; sett++)
-		{g_Console.writeToBuffer(g_sRotatingGuardDownLOS[sett].m_cLocation, "Û", 0X08);}
+		{g_Console.writeToBuffer(g_sRotatingGuardDownLOS[sett].m_cLocation, "Û", 0X0C);}
 		for (int sett = 0; sett < 4; sett++)
-		{g_Console.writeToBuffer(g_sCafeRotatingGuardUpLOS[sett].m_cLocation, "Û", 0X08);}
+		{g_Console.writeToBuffer(g_sCafeRotatingGuardUpLOS[sett].m_cLocation, "Û", 0X0C);}
 		break;
 	case 4:
 		for (int sett = 0; sett < 34; sett++)
-		{g_Console.writeToBuffer(g_sRotatingGuardLeftLOS[sett].m_cLocation, "Û", 0X08);}
+		{g_Console.writeToBuffer(g_sRotatingGuardLeftLOS[sett].m_cLocation, "Û", 0X0C);}
 		for (int sett = 0; sett < 20; sett++)
-		{g_Console.writeToBuffer(g_sCafeRotatingGuardRightLOS[sett].m_cLocation, "Û", 0X08);}
+		{g_Console.writeToBuffer(g_sCafeRotatingGuardRightLOS[sett].m_cLocation, "Û", 0X0C);}
 		break;
 	}
 
@@ -2886,15 +2898,15 @@ void renderArrowLevel2()
 	case 0:
 		for (int sett = 0; sett < 12; sett++)
 		{
-			g_Console.writeToBuffer(g_sUpGuardDownLOS[sett].m_cLocation, "Û", 0X0F);
-			g_Console.writeToBuffer(g_sDownGuardUpLOS[sett].m_cLocation, "Û", 0X0F);
+			g_Console.writeToBuffer(g_sUpGuardDownLOS[sett].m_cLocation, "Û", 0X08);
+			g_Console.writeToBuffer(g_sDownGuardUpLOS[sett].m_cLocation, "Û", 0X08);
 		}
 		break;
 	case 1:
 		for (int sett = 0; sett < 12; sett++)
 		{
-			g_Console.writeToBuffer(g_sUpGuardUpLOS[sett].m_cLocation, "Û", 0X0F);
-			g_Console.writeToBuffer(g_sDownGuardDownLOS[sett].m_cLocation, "Û", 0X0F);
+			g_Console.writeToBuffer(g_sUpGuardUpLOS[sett].m_cLocation, "Û", 0X08);
+			g_Console.writeToBuffer(g_sDownGuardDownLOS[sett].m_cLocation, "Û", 0X08);
 		}
 		break;
 
@@ -2905,21 +2917,19 @@ void renderArrowLevel2()
 	case 0:
 		for (int sett = 0; sett < 8; sett++)
 		{
-			g_Console.writeToBuffer(g_sLeftGuardRightLOS[sett].m_cLocation, "Û", 0X0F);
-			g_Console.writeToBuffer(g_sRightGuardLeftLOS[sett].m_cLocation, "Û", 0X0F);
+			g_Console.writeToBuffer(g_sLeftGuardRightLOS[sett].m_cLocation, "Û", 0X08);
+			g_Console.writeToBuffer(g_sRightGuardLeftLOS[sett].m_cLocation, "Û", 0x08);
 		}
 		break;
 	case 1:
 		for (int sett = 0; sett < 8; sett++)
 		{
-			g_Console.writeToBuffer(g_sLeftGuardLeftLOS[sett].m_cLocation, "Û", 0X0F);
-			g_Console.writeToBuffer(g_sRightGuardRightLOS[sett].m_cLocation, "Û", 0X0F);
+			g_Console.writeToBuffer(g_sLeftGuardLeftLOS[sett].m_cLocation, "Û", 0X08);
+			g_Console.writeToBuffer(g_sRightGuardRightLOS[sett].m_cLocation, "Û", 0X08);
 		}
 		break;
 	}
 
-
-\
 }
 void HiddenEntranceOne()
 {
@@ -3054,7 +3064,7 @@ void renderSteelMap()
 		for (int x = 0; x < 300; x++)
 		{
 			c.Y = x;
-			g_Console.writeToBuffer(c, level3[x][y], 0x03);
+			g_Console.writeToBuffer(c, level3[x][y], 0xF0);
 		}
 	}
 }
@@ -3302,71 +3312,71 @@ void renderUserInterface()
 		//Controls
 		c.X = 2;
 		c.Y = 27;
-		g_Console.writeToBuffer(c, "Controls:", 0x03);
+		g_Console.writeToBuffer(c, "Controls:", 0xF0);
 		c.Y = 28;
-		g_Console.writeToBuffer(c, "Move: W, A, S, D", 0x03);
+		g_Console.writeToBuffer(c, "Move: W, A, S, D", 0xF0);
 		c.Y = 29;
-		g_Console.writeToBuffer(c, "Move: Arrow keys", 0x03);
+		g_Console.writeToBuffer(c, "Move: Arrow keys", 0xF0);
 		c.Y = 30;
-		g_Console.writeToBuffer(c, "Interact: E ", 0x03);
+		g_Console.writeToBuffer(c, "Interact: E ", 0xF0);
 		c.Y = 31;
-		g_Console.writeToBuffer(c, "Return titlescreen: R", 0x03);
+		g_Console.writeToBuffer(c, "Return titlescreen: R", 0xF0);
 
 		c.X = 108;
 		c.Y = 2;
-		g_Console.writeToBuffer(c, "Intel:", 0x03);
+		g_Console.writeToBuffer(c, "Intel:", 0xF0);
 		switch (intelcountlevel1)
 		{
 		case 1:
 			c.Y = 3;
-			g_Console.writeToBuffer(c, "> The Prisoner in the Cafe knows", 0x03);
+			g_Console.writeToBuffer(c, "> The Prisoner in the Cafe knows", 0xF0);
 			c.Y = 4;
-			g_Console.writeToBuffer(c, "  something about this secret", 0x03);
+			g_Console.writeToBuffer(c, "  something about this secret", 0xF0);
 			c.Y = 5;
-			g_Console.writeToBuffer(c, "  passage.", 0x03);
+			g_Console.writeToBuffer(c, "  passage.", 0xF0);
 			break;
 		case 2:
 			c.Y = 3;
-			g_Console.writeToBuffer(c, "> Someone in the toilet holds", 0x03);
+			g_Console.writeToBuffer(c, "> Someone in the toilet holds", 0xF0);
 			c.Y = 4;
-			g_Console.writeToBuffer(c, "  the information I need.", 0x03);
+			g_Console.writeToBuffer(c, "  the information I need.", 0xF0);
 			break;
 		case 3:
 			c.Y = 3;
-			g_Console.writeToBuffer(c, "> That person happened to be Ryan!", 0x03);
+			g_Console.writeToBuffer(c, "> That person happened to be Ryan!", 0xF0);
 			c.Y = 4;
-			g_Console.writeToBuffer(c, "  Well I still need to", 0x03);
+			g_Console.writeToBuffer(c, "  Well I still need to", 0xF0);
 			c.Y = 5;
-			g_Console.writeToBuffer(c, "  get the required tools.", 0x03);
+			g_Console.writeToBuffer(c, "  get the required tools.", 0xF0);
 			break;
 		}
 
 		c.X = 108;
 		c.Y = 11;
-		g_Console.writeToBuffer(c, "Items:", 0x03);
+		g_Console.writeToBuffer(c, "Items:", 0xF0);
 		c.X = 120;
 		c.Y = 23;
-		g_Console.writeToBuffer(c, "Lives:", 0x03);
+		g_Console.writeToBuffer(c, "Lives:", 0xF0);
 		c.X = 128;
 		c.Y = 23;
-		g_Console.writeToBuffer(c, lives, 0x03);
+		g_Console.writeToBuffer(c, lives, 0xF0);
 		if (ShiveNumber > '0')
 		{
 			c.X = 110;
 			c.Y = 12;
-			g_Console.writeToBuffer(c, "Shive(s)", 0x03);
+			g_Console.writeToBuffer(c, "Shive(s)", 0xF0);
 			c.X = 108;
 			c.Y = 12;
-			g_Console.writeToBuffer(c, ShiveNumber, 0x03);
+			g_Console.writeToBuffer(c, ShiveNumber, 0xF0);
 		}
 		if (KeyNumber > '0')
 		{
 			c.X = 110;
 			c.Y = 23;
-			g_Console.writeToBuffer(c, "Key(s)", 0x03);
+			g_Console.writeToBuffer(c, "Key(s)", 0xF0);
 			c.X = 108;
 			c.Y = 23;
-			g_Console.writeToBuffer(c, KeyNumber, 0x03);
+			g_Console.writeToBuffer(c, KeyNumber, 0xF0);
 		}
 	}
 
@@ -3375,71 +3385,71 @@ void renderUserInterface()
 		//Controls
 		c.X = 89;
 		c.Y = 2;
-		g_Console.writeToBuffer(c, "Controls:", 0x03);
+		g_Console.writeToBuffer(c, "Controls:", 0xF0);
 		c.Y = 3;
-		g_Console.writeToBuffer(c, "Move: W, A, S, D", 0x03);
+		g_Console.writeToBuffer(c, "Move: W, A, S, D", 0xF0);
 		c.Y = 4;
-		g_Console.writeToBuffer(c, "Move: Arrow keys", 0x03);
+		g_Console.writeToBuffer(c, "Move: Arrow keys", 0xF0);
 		c.Y = 5;
-		g_Console.writeToBuffer(c, "Interact: E ", 0x03);
+		g_Console.writeToBuffer(c, "Interact: E ", 0xF0);
 		c.Y = 6;
-		g_Console.writeToBuffer(c, "Return titlescreen: R", 0x03);
+		g_Console.writeToBuffer(c, "Return titlescreen: R", 0xF0);
 
 		c.X = 89;
 		c.Y = 29;
-		g_Console.writeToBuffer(c, "Intel:", 0x03);
+		g_Console.writeToBuffer(c, "Intel:", 0xF0);
 		switch (intelcountlevel1)
 		{
 		case 1:
 			c.Y = 3;
-			g_Console.writeToBuffer(c, "> The Prisoner in the Cafe knows", 0x03);
+			g_Console.writeToBuffer(c, "> The Prisoner in the Cafe knows", 0xF0);
 			c.Y = 4;
-			g_Console.writeToBuffer(c, "  something about this secret", 0x03);
+			g_Console.writeToBuffer(c, "  something about this secret", 0xF0);
 			c.Y = 5;
-			g_Console.writeToBuffer(c, "  passage.", 0x03);
+			g_Console.writeToBuffer(c, "  passage.", 0xF0);
 			break;
 		case 2:
 			c.Y = 3;
-			g_Console.writeToBuffer(c, "> Someone in the toilet holds", 0x03);
+			g_Console.writeToBuffer(c, "> Someone in the toilet holds", 0xF0);
 			c.Y = 4;
-			g_Console.writeToBuffer(c, "  the information I need.", 0x03);
+			g_Console.writeToBuffer(c, "  the information I need.", 0xF0);
 			break;
 		case 3:
 			c.Y = 3;
-			g_Console.writeToBuffer(c, "> That person happened to be Ryan!", 0x03);
+			g_Console.writeToBuffer(c, "> That person happened to be Ryan!", 0xF0);
 			c.Y = 4;
-			g_Console.writeToBuffer(c, "  Well I still need to", 0x03);
+			g_Console.writeToBuffer(c, "  Well I still need to", 0xF0);
 			c.Y = 5;
-			g_Console.writeToBuffer(c, "  get the required tools.", 0x03);
+			g_Console.writeToBuffer(c, "  get the required tools.", 0xF0);
 			break;
 		}
 
 		c.X = 108;
 		c.Y = 11;
-		g_Console.writeToBuffer(c, "Items:", 0x03);
+		g_Console.writeToBuffer(c, "Items:", 0xF0);
 		c.X = 120;
 		c.Y = 23;
-		g_Console.writeToBuffer(c, "Lives:", 0x03);
+		g_Console.writeToBuffer(c, "Lives:", 0xF0);
 		c.X = 128;
 		c.Y = 23;
-		g_Console.writeToBuffer(c, lives, 0x03);
+		g_Console.writeToBuffer(c, lives, 0xF0);
 		if (ShiveNumber > '0')
 		{
 			c.X = 110;
 			c.Y = 12;
-			g_Console.writeToBuffer(c, "Shive(s)", 0x03);
+			g_Console.writeToBuffer(c, "Shive(s)", 0xF0);
 			c.X = 108;
 			c.Y = 12;
-			g_Console.writeToBuffer(c, ShiveNumber, 0x03);
+			g_Console.writeToBuffer(c, ShiveNumber, 0xF0);
 		}
 		if (KeyNumber > '0')
 		{
 			c.X = 110;
 			c.Y = 23;
-			g_Console.writeToBuffer(c, "Key(s)", 0x03);
+			g_Console.writeToBuffer(c, "Key(s)", 0xF0);
 			c.X = 108;
 			c.Y = 23;
-			g_Console.writeToBuffer(c, KeyNumber, 0x03);
+			g_Console.writeToBuffer(c, KeyNumber, 0xF0);
 		}
 	}
 
@@ -3448,51 +3458,51 @@ void renderUserInterface()
 		//Controls
 		c.X = 2;
 		c.Y = 34;
-		g_Console.writeToBuffer(c, "Controls:", 0x03);
+		g_Console.writeToBuffer(c, "Controls:", 0xF0);
 		c.Y = 35;
-		g_Console.writeToBuffer(c, "Move: W, A, S, D", 0x03);
+		g_Console.writeToBuffer(c, "Move: W, A, S, D", 0xF0);
 		c.Y = 36;
-		g_Console.writeToBuffer(c, "Move: Arrow keys", 0x03);
+		g_Console.writeToBuffer(c, "Move: Arrow keys", 0xF0);
 		c.Y = 37;
-		g_Console.writeToBuffer(c, "Interact: E ", 0x03);
+		g_Console.writeToBuffer(c, "Interact: E ", 0xF0);
 		c.Y = 38;
-		g_Console.writeToBuffer(c, "Return titlescreen: R", 0x03);
+		g_Console.writeToBuffer(c, "Return titlescreen: R", 0xF0);
 
 		c.X = 26;
 		c.Y = 34;
-		g_Console.writeToBuffer(c, "Items:", 0x03);
+		g_Console.writeToBuffer(c, "Items:", 0xF0);
 		c.X = 138;
 		c.Y = 38;
-		g_Console.writeToBuffer(c, "Lives:", 0x03);
+		g_Console.writeToBuffer(c, "Lives:", 0xF0);
 		c.X = 144;
 		c.Y = 38;
-		g_Console.writeToBuffer(c, lives, 0x03);
+		g_Console.writeToBuffer(c, lives, 0xF0);
 		if (ShiveNumber > '0')
 		{
 			c.X = 28;
 			c.Y = 35;
-			g_Console.writeToBuffer(c, "Shive(s)", 0x03);
+			g_Console.writeToBuffer(c, "Shive(s)", 0xF0);
 			c.X = 26;
 			c.Y = 35;
-			g_Console.writeToBuffer(c, ShiveNumber, 0x03);
+			g_Console.writeToBuffer(c, ShiveNumber, 0xF0);
 		}
 		if (KeyNumber > '0')
 		{
 			c.X = 28;
 			c.Y = 36;
-			g_Console.writeToBuffer(c, "Key(s)", 0x03);
+			g_Console.writeToBuffer(c, "Key(s)", 0xF0);
 			c.X = 26;
 			c.Y = 36;
-			g_Console.writeToBuffer(c, KeyNumber, 0x03);
+			g_Console.writeToBuffer(c, KeyNumber, 0xF0);
 		}
 		if (KeyFragment > '0')
 		{
 			c.X = 28;
 			c.Y = 37;
-			g_Console.writeToBuffer(c, "Key Fragment(s)", 0x03);
+			g_Console.writeToBuffer(c, "Key Fragment(s)", 0xF0);
 			c.X = 26;
 			c.Y = 37;
-			g_Console.writeToBuffer(c, KeyNumber, 0x03);
+			g_Console.writeToBuffer(c, KeyNumber, 0xF0);
 		}
 	}
 }
@@ -3516,8 +3526,13 @@ void renderGameOver()
 				if (line[col] == '#')
 				{
 					line[col] = 219;
+					g_Console.writeToBuffer(c, line[col], 0x0c);
 				}
-				g_Console.writeToBuffer(c, line[col], 0x03);
+				if (line[col] == '|')
+				{
+					line[col] = 219;
+					g_Console.writeToBuffer(c, line[col], 0x08);
+				}
 				c.X++;
 			}
 			c.Y++;
@@ -3526,7 +3541,7 @@ void renderGameOver()
 		myfile.close();
 	}
 	c.X = 20;
-	c.Y = 25;
+	c.Y = 24;
 	g_Console.writeToBuffer(c, "You got caught...You will get sent back to the title screen by pressing R", 0x0F);
 
 	lives = '2';
@@ -3551,33 +3566,33 @@ void renderCharacter()
 	// Draw the location of the character
 	if (level == 1)
 	{
-		g_Console.writeToBuffer(g_sChar.m_cLocation, (char)1, 0x0C); //Player Character rendering
+		g_Console.writeToBuffer(g_sChar.m_cLocation, (char)2, 0xF0); //Player Character rendering
 
-		g_Console.writeToBuffer(g_sLevel1GuardCells.m_cLocation, (char)2, 0X0F); //Rendering of Guard near the cells area
-		g_Console.writeToBuffer(g_sLevel1GuardCafe.m_cLocation, (char)2, 0X0F); //Rendering of Guard near the Cafe area
-		g_Console.writeToBuffer(g_sLevel1GuardField1.m_cLocation, (char)2, 0X0F); //Rendering of Guard near the Field area
-		g_Console.writeToBuffer(g_sLevel1GuardField2.m_cLocation, (char)2, 0X0F); //Rendering of Guard near the Field area
+		g_Console.writeToBuffer(g_sLevel1GuardCells.m_cLocation, (char)2, 0XFC); //Rendering of Guard near the cells area
+		g_Console.writeToBuffer(g_sLevel1GuardCafe.m_cLocation, (char)2, 0XFC); //Rendering of Guard near the Cafe area
+		g_Console.writeToBuffer(g_sLevel1GuardField1.m_cLocation, (char)2, 0XFC); //Rendering of Guard near the Field area
+		g_Console.writeToBuffer(g_sLevel1GuardField2.m_cLocation, (char)2, 0XFC); //Rendering of Guard near the Field area
 
-		g_Console.writeToBuffer(g_sLevel1PrisonerCells.m_cLocation, (char)2, 0X0B); //Rendering of Guard near the cells area
-		g_Console.writeToBuffer(g_sLevel1PrisonerCafe.m_cLocation, (char)2, 0X0B); //Rendering of Guard near the cafe area
-		g_Console.writeToBuffer(g_sLevel1PrisonerShowers.m_cLocation, (char)2, 0X0B); //Rendering of Guard near the showers area
+		g_Console.writeToBuffer(g_sLevel1PrisonerCells.m_cLocation, (char)2, 0XF1); //Rendering of Guard near the cells area
+		g_Console.writeToBuffer(g_sLevel1PrisonerCafe.m_cLocation, (char)2, 0XF1); //Rendering of Guard near the cafe area
+		g_Console.writeToBuffer(g_sLevel1PrisonerShowers.m_cLocation, (char)2, 0XF1); //Rendering of Guard near the showers area
 	}
 	if (level == 2)
 	{
-		g_Console.writeToBuffer(g_sLevel2Char.m_cLocation, (char)1, 0x0C);
-		g_Console.writeToBuffer(g_sLevel2RotatingGuard.m_cLocation, (char)1, 0X0F);
-		g_Console.writeToBuffer(g_sLevel2DownGuard.m_cLocation, (char)1, 0X0F);
-		g_Console.writeToBuffer(g_sLevel2LeftGuard.m_cLocation, (char)1, 0X0F);
-		g_Console.writeToBuffer(g_sLevel2RightGuard.m_cLocation, (char)1, 0X0F);
-		g_Console.writeToBuffer(g_sLevel2UpGuard.m_cLocation, (char)1, 0X0F);
-		g_Console.writeToBuffer(g_sLevel2CafeGuard.m_cLocation, (char)1, 0X0F);
+		g_Console.writeToBuffer(g_sLevel2Char.m_cLocation, (char)2, 0xF0);
+		g_Console.writeToBuffer(g_sLevel2RotatingGuard.m_cLocation, (char)2, 0XF1);
+		g_Console.writeToBuffer(g_sLevel2DownGuard.m_cLocation, (char)1, 0XFC);
+		g_Console.writeToBuffer(g_sLevel2LeftGuard.m_cLocation, (char)1, 0XFC);
+		g_Console.writeToBuffer(g_sLevel2RightGuard.m_cLocation, (char)1, 0XFC);
+		g_Console.writeToBuffer(g_sLevel2UpGuard.m_cLocation, (char)1, 0XFC);
+		g_Console.writeToBuffer(g_sLevel2CafeGuard.m_cLocation, (char)2, 0XF1);
 	}
 	if (level == 3)
 	{
-		g_Console.writeToBuffer(g_sLevel3Char.m_cLocation, (char)1, 0x0C);
+		g_Console.writeToBuffer(g_sLevel3Char.m_cLocation, (char)2, 0xF0);
 		for (int i = 0; i < 3; i++)
 		{
-			g_Console.writeToBuffer(g_sLevel3Guard[i].m_cLocation, (char)1, 0x0C);
+			g_Console.writeToBuffer(g_sLevel3Guard[i].m_cLocation, (char)1, 0xFC);
 		}
 	}
 }
@@ -3618,7 +3633,7 @@ void renderClear()
 				{
 					line[col] = 219;
 				}
-				g_Console.writeToBuffer(c, line[col], 0x03);
+				g_Console.writeToBuffer(c, line[col], 0xF0);
 				c.X++;
 			}
 			c.Y++;
